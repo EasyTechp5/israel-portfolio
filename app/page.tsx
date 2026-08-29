@@ -73,7 +73,7 @@ const testimonials = [
 ];
 
 const colorMap: Record<string, string> = {
-  blue: "bg-[#1e3a8a]/20 border-[#3b5fc0]/30 text-[#93b4f5]",
+  blue: "bg-[#0055DA]/20 border-[#0055DA]/30 text-[#6aabff]",
   purple: "bg-purple-500/10 border-purple-500/20 text-purple-400",
   cyan: "bg-cyan-500/10 border-cyan-500/20 text-cyan-400",
   green: "bg-green-500/10 border-green-500/20 text-green-400",
@@ -84,10 +84,10 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#07091f] via-[#0d1a6e]/30 to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#040810] via-[#0055DA]/20 to-[#040810]" />
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#1e3a8a]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[#0055DA]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#e02020]/8 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
@@ -108,12 +108,12 @@ export default function HomePage() {
                 <span className="relative">
                   Run Itself
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
-                    <path d="M2 9C50 3 150 1 298 9" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M2 9C50 3 150 1 298 9" stroke="#e02020" strokeWidth="3" strokeLinecap="round" />
                   </svg>
                 </span>
               </h1>
 
-              <p className="text-[#c0cee8] text-xl leading-relaxed mb-8 max-w-lg">
+              <p className="text-[#ccdaee] text-xl leading-relaxed mb-8 max-w-lg">
                 I design intelligent automation systems that eliminate manual work, train teams to harness AI effectively, and help businesses scale — faster, leaner, smarter.
               </p>
 
@@ -143,7 +143,7 @@ export default function HomePage() {
                 {stats.map((s) => (
                   <div key={s.label}>
                     <p className="text-3xl font-black text-white">{s.value}</p>
-                    <p className="text-[#8899cc] text-sm">{s.label}</p>
+                    <p className="text-[#7799cc] text-sm">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -160,12 +160,12 @@ export default function HomePage() {
                     className="object-cover object-top"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07091f]/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#040810]/60 via-transparent to-transparent" />
                 </div>
 
                 <div className="absolute -bottom-4 -left-4 glass-card px-4 py-3 shadow-xl">
                   <p className="text-white font-black text-xl">1500+</p>
-                  <p className="text-[#c0cee8] text-xs">People Trained</p>
+                  <p className="text-[#ccdaee] text-xs">People Trained</p>
                 </div>
 
                 <div className="absolute -top-4 -right-4 glass-card px-4 py-3 shadow-xl">
@@ -176,7 +176,7 @@ export default function HomePage() {
                     </span>
                     <p className="text-green-400 text-xs font-semibold">n8n Workflow Active</p>
                   </div>
-                  <p className="text-[#8899cc] text-xs">Running 24/7 automatically</p>
+                  <p className="text-[#7799cc] text-xs">Running 24/7 automatically</p>
                 </div>
               </div>
             </div>
@@ -185,14 +185,14 @@ export default function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="section-padding bg-[#0d1540]/60">
+      <section className="section-padding bg-[#080f1e]/60">
         <div className="container-wide">
           <div className="text-center mb-16">
             <span className="badge badge-blue mb-4">Services</span>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               What I Do For Your Business
             </h2>
-            <p className="text-[#8899cc] text-lg max-w-xl mx-auto">
+            <p className="text-[#7799cc] text-lg max-w-xl mx-auto">
               From full automation builds to team training — everything you need to operate intelligently.
             </p>
           </div>
@@ -209,8 +209,8 @@ export default function HomePage() {
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-black text-white mb-3">{s.title}</h3>
-                  <p className="text-[#8899cc] leading-relaxed mb-5">{s.desc}</p>
-                  <Link href="/services" className="inline-flex items-center gap-1.5 text-[#93b4f5] hover:text-[#bdd0fb] text-sm font-semibold transition-colors group-hover:gap-3">
+                  <p className="text-[#7799cc] leading-relaxed mb-5">{s.desc}</p>
+                  <Link href="/services" className="inline-flex items-center gap-1.5 text-[#6aabff] hover:text-[#aaccff] text-sm font-semibold transition-colors group-hover:gap-3">
                     Learn more <ChevronRight className="w-4 h-4 transition-all" />
                   </Link>
                 </div>
@@ -245,12 +245,12 @@ export default function HomePage() {
                   const Icon = item.icon;
                   return (
                     <div key={item.title} className="flex gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-[#1e3a8a]/20 border border-[#3b5fc0]/40 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-[#93b4f5]" />
+                      <div className="w-10 h-10 rounded-xl bg-[#0055DA]/20 border border-[#0055DA]/40 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-[#6aabff]" />
                       </div>
                       <div>
                         <p className="text-white font-bold">{item.title}</p>
-                        <p className="text-[#8899cc] text-sm">{item.desc}</p>
+                        <p className="text-[#7799cc] text-sm">{item.desc}</p>
                       </div>
                     </div>
                   );
@@ -266,10 +266,10 @@ export default function HomePage() {
                       <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-[#c0cee8] text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
+                  <p className="text-[#ccdaee] text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
                   <div>
                     <p className="text-white font-semibold text-sm">{t.name}</p>
-                    <p className="text-[#6677aa] text-xs">{t.role}</p>
+                    <p className="text-[#5566aa] text-xs">{t.role}</p>
                   </div>
                 </div>
               ))}
@@ -279,12 +279,12 @@ export default function HomePage() {
       </section>
 
       {/* Tech Stack */}
-      <section className="section-padding bg-[#0d1540]/60">
+      <section className="section-padding bg-[#080f1e]/60">
         <div className="container-wide">
           <div className="text-center mb-12">
             <span className="badge badge-blue mb-4">Tech Stack</span>
             <h2 className="text-4xl font-black text-white mb-4">Tools I Use to Build Your Systems</h2>
-            <p className="text-[#8899cc] max-w-xl mx-auto">The exact tools that power every automation, AI agent, and workflow.</p>
+            <p className="text-[#7799cc] max-w-xl mx-auto">The exact tools that power every automation, AI agent, and workflow.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {tools.map((t) => (
@@ -293,7 +293,7 @@ export default function HomePage() {
                 className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 transition-all cursor-default"
               >
                 <span className="text-white font-semibold text-sm">{t.name}</span>
-                <span className="ml-2 text-[#6677aa] text-xs">{t.cat}</span>
+                <span className="ml-2 text-[#5566aa] text-xs">{t.cat}</span>
               </div>
             ))}
           </div>
@@ -303,13 +303,13 @@ export default function HomePage() {
       {/* CTA */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-cyan-900/20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#1e3a8a]/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#0055DA]/10 rounded-full blur-3xl" />
         <div className="container-wide relative z-10">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
               Ready to Automate Your Business?
             </h2>
-            <p className="text-[#c0cee8] text-lg mb-8">
+            <p className="text-[#ccdaee] text-lg mb-8">
               Book a free 20-minute call — no pitch, no obligation, just honest advice on what automation can do for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
