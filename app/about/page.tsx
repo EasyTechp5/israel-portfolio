@@ -144,7 +144,7 @@ export default function AboutPage() {
             <span className="badge badge-blue mb-6">Mission</span>
             <div className="relative glass-card p-10 rounded-3xl">
               <Quote className="w-12 h-12 text-blue-500/20 absolute top-6 left-6" />
-              <p className="text-2xl sm:text-3xl font-black text-white leading-snug mb-6 pl-4 border-l-4 border-[#e02020] text-left">
+              <p className="text-2xl sm:text-3xl font-black text-white leading-snug mb-6 pl-4 border-l-4 border-[#0055DA] text-left">
                 I design intelligent systems that replace manual work with automation, helping businesses scale faster, reduce costs, and operate efficiently — while training a generation of professionals to thrive in an AI-first world.
               </p>
               <p className="text-[#7799cc] text-lg">Goal: Train 1 million people in AI and automation.</p>

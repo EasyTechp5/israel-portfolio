@@ -87,7 +87,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#040810] via-[#0055DA]/20 to-[#040810]" />
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-[#0055DA]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#e02020]/8 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0055DA]/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
@@ -108,7 +108,7 @@ export default function HomePage() {
                 <span className="relative">
                   Run Itself
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
-                    <path d="M2 9C50 3 150 1 298 9" stroke="#e02020" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M2 9C50 3 150 1 298 9" stroke="#0055DA" strokeWidth="3" strokeLinecap="round" />
                   </svg>
                 </span>
               </h1>
