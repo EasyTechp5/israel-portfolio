@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
+/* Navy blue palette:
+   Navy dark:   #0a0f2e  (page background)
+   Navy mid:    #0d1540  (sections)
+   Navy accent: #1a2a6c  (cards/borders)
+   Navy bright: #1e3a8a  (buttons)
+   Navy light:  #3b5fc0  (hover)
+   Gold accent: #c9a84c  (highlight/gradient)
+*/
+
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+  body {
+    background-color: #07091f;
+    color: white;
   }
 }
 
@@ -11,17 +24,17 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: rgb(37 99 235);
+    background-color: #1e3a8a;
     color: white;
     font-weight: 700;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
     transition: all 0.2s;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
   }
   .btn-primary:hover {
-    background-color: rgb(59 130 246);
-    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.25);
+    background-color: #2546a8;
+    box-shadow: 0 10px 15px -3px rgba(59, 95, 192, 0.4);
     transform: translateY(-2px);
   }
 
@@ -29,18 +42,18 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.08);
     color: white;
     font-weight: 700;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.15);
     transition: all 0.2s;
     backdrop-filter: blur(4px);
   }
   .btn-secondary:hover {
-    background-color: rgba(255,255,255,0.2);
-    border-color: rgba(255,255,255,0.4);
+    background-color: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.35);
     transform: translateY(-2px);
   }
 
@@ -63,9 +76,9 @@
   }
 
   .glass-card {
-    background-color: rgba(255,255,255,0.04);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.1);
+    background-color: rgba(26, 42, 108, 0.25);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(59, 95, 192, 0.25);
     border-radius: 1rem;
   }
 
@@ -97,13 +110,13 @@
   }
 
   .badge-blue {
-    background-color: rgba(59, 130, 246, 0.15);
+    background-color: rgba(30, 58, 138, 0.4);
     color: rgb(147 197 253);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(59, 95, 192, 0.5);
   }
 
   .gradient-text {
-    background: linear-gradient(to right, rgb(96 165 250), rgb(34 211 238));
+    background: linear-gradient(to right, #c9a84c, #f0d080);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

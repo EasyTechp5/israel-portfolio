@@ -64,7 +64,7 @@ const projects = [
 ];
 
 const colorMap: Record<string, { card: string; icon: string; tag: string }> = {
-  blue: { card: "hover:border-blue-500/40", icon: "bg-blue-500/10 border-blue-500/20 text-blue-400", tag: "bg-blue-500/10 text-blue-300 border-blue-500/20" },
+  blue: { card: "hover:border-blue-500/40", icon: "bg-[#1e3a8a]/20 border-[#3b5fc0]/30 text-[#93b4f5]", tag: "bg-[#1e3a8a]/20 text-[#bdd0fb] border-[#3b5fc0]/30" },
   cyan: { card: "hover:border-cyan-500/40", icon: "bg-cyan-500/10 border-cyan-500/20 text-cyan-400", tag: "bg-cyan-500/10 text-cyan-300 border-cyan-500/20" },
   purple: { card: "hover:border-purple-500/40", icon: "bg-purple-500/10 border-purple-500/20 text-purple-400", tag: "bg-purple-500/10 text-purple-300 border-purple-500/20" },
   green: { card: "hover:border-green-500/40", icon: "bg-green-500/10 border-green-500/20 text-green-400", tag: "bg-green-500/10 text-green-300 border-green-500/20" },
@@ -78,9 +78,9 @@ export default function ProjectsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950/20 to-slate-950">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-[#07091f] via-[#0d1a6e]/20 to-slate-950">
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 right-10 w-72 h-72 bg-[#1e3a8a]/10 rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 container-wide section-padding pt-32 w-full text-center">
           <span className="badge badge-blue mb-6">Projects</span>
@@ -88,7 +88,7 @@ export default function ProjectsPage() {
             Real Work.{" "}
             <span className="gradient-text">Real Results.</span>
           </h1>
-          <p className="text-slate-300 text-xl max-w-2xl mx-auto">
+          <p className="text-[#c0cee8] text-xl max-w-2xl mx-auto">
             A selection of automation systems, AI agents, and training programs I&apos;ve built and delivered.
           </p>
         </div>
@@ -104,8 +104,8 @@ export default function ProjectsPage() {
                 onClick={() => setActive(c)}
                 className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${
                   active === c
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                    : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                    ? "bg-[#1e3a8a] text-white shadow-lg shadow-blue-600/25"
+                    : "bg-white/5 text-[#c0cee8] hover:bg-white/10 hover:text-white border border-white/10"
                 }`}
               >
                 {c}
@@ -128,7 +128,7 @@ export default function ProjectsPage() {
                     ))}
                   </div>
                   <h3 className="text-white font-black text-lg mb-2">{p.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4">{p.desc}</p>
+                  <p className="text-[#8899cc] text-sm leading-relaxed mb-4">{p.desc}</p>
                   <div className="flex items-start gap-2 p-3 rounded-xl bg-green-500/5 border border-green-500/15 mb-4">
                     <span className="text-green-400 text-xs font-semibold">Result:</span>
                     <span className="text-green-300 text-xs">{p.outcome}</span>
@@ -139,7 +139,7 @@ export default function ProjectsPage() {
           </div>
 
           {filtered.length === 0 && (
-            <div className="text-center py-16 text-slate-500">No projects in this category yet.</div>
+            <div className="text-center py-16 text-[#6677aa]">No projects in this category yet.</div>
           )}
         </div>
       </section>
@@ -149,7 +149,7 @@ export default function ProjectsPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-cyan-900/20" />
         <div className="container-wide relative z-10 text-center">
           <h2 className="text-4xl font-black text-white mb-4">Want Something Like This Built for Your Business?</h2>
-          <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">Let&apos;s talk about what&apos;s possible. Book a free 20-minute discovery call.</p>
+          <p className="text-[#c0cee8] text-lg mb-8 max-w-xl mx-auto">Let&apos;s talk about what&apos;s possible. Book a free 20-minute discovery call.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
               <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />
