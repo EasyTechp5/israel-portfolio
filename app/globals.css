@@ -1,34 +1,76 @@
 @import "tailwindcss";
 
-/*
-  Primary:    #0055DA  (dominant brand blue)
-  Background: #040810  (deep black)
-  Surface:    #080f1e  (card/section dark)
-  Red touch:  #e02020  (small accents only)
-  White:      #ffffff
-*/
-
-@layer base {
-  html { scroll-behavior: smooth; }
-  body { background-color: #040810; color: white; }
+/* ─── CSS Variables ─────────────────────────────────────── */
+:root {
+  /* light mode */
+  --bg:           #f0f4ff;
+  --bg-surface:   #e4ecff;
+  --bg-card:      rgba(0, 85, 218, 0.06);
+  --border-card:  rgba(0, 85, 218, 0.15);
+  --text-primary: #040810;
+  --text-muted:   #334477;
+  --text-subtle:  #5566aa;
+  --primary:      #0055DA;
+  --primary-dark: #0044bb;
+  --primary-glow: rgba(0, 85, 218, 0.25);
+  --red:          #cc1010;
+  --nav-bg:       rgba(240, 244, 255, 0.92);
+  --nav-border:   rgba(0, 85, 218, 0.15);
+  --badge-bg:     rgba(0, 85, 218, 0.12);
+  --badge-color:  #0044bb;
+  --badge-border: rgba(0, 85, 218, 0.3);
+  --footer-bg:    #e0e8ff;
 }
 
+.dark {
+  --bg:           #040810;
+  --bg-surface:   #080f1e;
+  --bg-card:      rgba(0, 85, 218, 0.07);
+  --border-card:  rgba(0, 85, 218, 0.2);
+  --text-primary: #ffffff;
+  --text-muted:   #ccdaee;
+  --text-subtle:  #7799cc;
+  --primary:      #0055DA;
+  --primary-dark: #0044bb;
+  --primary-glow: rgba(0, 85, 218, 0.4);
+  --red:          #e02020;
+  --nav-bg:       rgba(4, 8, 16, 0.92);
+  --nav-border:   rgba(0, 85, 218, 0.2);
+  --badge-bg:     rgba(0, 85, 218, 0.18);
+  --badge-color:  #6aabff;
+  --badge-border: rgba(0, 85, 218, 0.4);
+  --footer-bg:    #040810;
+}
+
+/* ─── Base ──────────────────────────────────────────────── */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* ─── Components ────────────────────────────────────────── */
 @layer components {
+
   .btn-primary {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #0055DA;
+    background-color: var(--primary);
     color: white;
     font-weight: 700;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
     transition: all 0.2s;
-    box-shadow: 0 8px 24px rgba(0, 85, 218, 0.4);
+    box-shadow: 0 8px 24px var(--primary-glow);
   }
   .btn-primary:hover {
-    background-color: #0044bb;
-    box-shadow: 0 12px 32px rgba(0, 85, 218, 0.55);
+    background-color: var(--primary-dark);
+    box-shadow: 0 12px 32px var(--primary-glow);
     transform: translateY(-2px);
   }
 
@@ -36,18 +78,18 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: rgba(255,255,255,0.06);
-    color: white;
+    background-color: rgba(0, 85, 218, 0.08);
+    color: var(--text-primary);
     font-weight: 700;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid rgba(0, 85, 218, 0.25);
     transition: all 0.2s;
     backdrop-filter: blur(6px);
   }
   .btn-secondary:hover {
-    background-color: rgba(255,255,255,0.12);
-    border-color: rgba(255,255,255,0.35);
+    background-color: rgba(0, 85, 218, 0.15);
+    border-color: rgba(0, 85, 218, 0.45);
     transform: translateY(-2px);
   }
 
@@ -69,17 +111,23 @@
   }
 
   .glass-card {
-    background-color: rgba(0, 85, 218, 0.06);
+    background-color: var(--bg-card);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 85, 218, 0.18);
+    border: 1px solid var(--border-card);
     border-radius: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .section-alt {
+    background-color: var(--bg-surface);
+    transition: background-color 0.3s ease;
   }
 
   .section-padding {
     padding: 5rem 1rem;
   }
-  @media (min-width: 640px) { .section-padding { padding: 5rem 1.5rem; } }
-  @media (min-width: 1024px) { .section-padding { padding: 5rem 2rem; } }
+  @media (min-width: 640px)  { .section-padding { padding: 5rem 1.5rem; } }
+  @media (min-width: 1024px) { .section-padding { padding: 5rem 2rem;   } }
 
   .container-wide {
     max-width: 80rem;
@@ -98,21 +146,18 @@
     text-transform: uppercase;
   }
 
-  /* Primary badge — #0055DA */
   .badge-blue {
-    background-color: rgba(0, 85, 218, 0.18);
-    color: #6aabff;
-    border: 1px solid rgba(0, 85, 218, 0.4);
+    background-color: var(--badge-bg);
+    color: var(--badge-color);
+    border: 1px solid var(--badge-border);
   }
 
-  /* Red touch badge — used sparingly */
   .badge-red {
     background-color: rgba(224, 32, 32, 0.12);
-    color: #ff8080;
+    color: var(--red);
     border: 1px solid rgba(224, 32, 32, 0.3);
   }
 
-  /* Gradient stays in the blue family */
   .gradient-text {
     background: linear-gradient(135deg, #0055DA 0%, #4d9fff 100%);
     -webkit-background-clip: text;
@@ -120,12 +165,31 @@
     background-clip: text;
   }
 
-  /* Small red underline rule — use sparingly as a design accent */
-  .accent-rule {
-    width: 2.5rem;
-    height: 3px;
-    background-color: #e02020;
-    border-radius: 9999px;
-    margin-bottom: 1rem;
-  }
+  .text-muted  { color: var(--text-muted);  }
+  .text-subtle { color: var(--text-subtle); }
 }
+
+/* ─── Light mode overrides ──────────────────────────────── */
+/* In light mode, "text-white" elements (headings) become dark */
+:root .text-white,
+:root h1, :root h2, :root h3, :root h4 {
+  color: var(--text-primary) !important;
+}
+/* Stat numbers, card labels stay primary text */
+:root p { color: var(--text-muted); }
+
+/* Restore white text inside buttons in both modes */
+:root .btn-primary,
+:root .btn-whatsapp,
+:root .btn-primary *,
+:root .btn-whatsapp * {
+  color: white !important;
+}
+
+/* Section backgrounds */
+:root section { background-color: var(--bg); }
+:root .section-alt { background-color: var(--bg-surface); }
+
+/* bg-white/[0.02] sections → surface in light */
+:root .bg-white\/\[0\.02\] { background-color: var(--bg-surface); }
+

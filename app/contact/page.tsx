@@ -15,7 +15,7 @@ const contactOptions = [
     href: "https://calendar.app.google/6EJ6aPfh3ScRUw6V9",
     label: "Book Free 20-Min Call",
     style: "btn-primary",
-    color: "bg-[#0055DA]/20 border-[#0055DA]/30 text-[#6aabff]",
+    color: "bg-[#0055DA]/20 border-[#0055DA]/30 text-muted",
   },
   {
     icon: MessageCircle,
@@ -35,7 +35,7 @@ const contactOptions = [
     href: "mailto:afolabiisraelolajide@gmail.com",
     label: "afolabiisraelolajide@gmail.com",
     style: "btn-secondary",
-    color: "bg-slate-500/10 border-slate-500/20 text-[#7799cc]",
+    color: "bg-slate-500/10 border-slate-500/20 text-subtle",
   },
 ];
 
@@ -43,7 +43,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-[#040810] via-[#0055DA]/20 to-[#040810]">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--bg)] via-[#0055DA]/20 to-[var(--bg)]">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#0055DA]/10 rounded-full blur-3xl" />
         </div>
@@ -53,7 +53,7 @@ export default function ContactPage() {
             Let&apos;s Work{" "}
             <span className="gradient-text">Together</span>
           </h1>
-          <p className="text-[#ccdaee] text-xl max-w-xl mx-auto">
+          <p className="text-muted text-xl max-w-xl mx-auto">
             Whether you have a project in mind or just want to explore what&apos;s possible — reach out and let&apos;s talk.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function ContactPage() {
                     <Icon className="w-7 h-7" />
                   </div>
                   <h3 className="text-xl font-black text-white mb-2">{o.title}</h3>
-                  <p className="text-[#7799cc] text-sm mb-1 flex-1">{o.desc}</p>
+                  <p className="text-subtle text-sm mb-1 flex-1">{o.desc}</p>
                   <p className="text-[#5566aa] text-xs mb-6">{o.note}</p>
                   <a href={o.href} target={o.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" className={`${o.style} w-full justify-center text-sm py-3`}>
                     <Icon className="w-4 h-4" />
@@ -87,21 +87,21 @@ export default function ContactPage() {
             <div className="glass-card p-8 rounded-2xl">
               <h4 className="text-white font-black text-lg mb-6">Location &amp; Availability</h4>
               <ul className="space-y-4 mb-6">
-                <li className="flex items-center gap-3 text-[#ccdaee]">
+                <li className="flex items-center gap-3 text-muted">
                   <div className="w-9 h-9 rounded-xl bg-[#0055DA]/20 border border-[#0055DA]/30 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-4 h-4 text-[#6aabff]" />
+                    <MapPin className="w-4 h-4 text-muted" />
                   </div>
                   Lagos, Nigeria
                 </li>
-                <li className="flex items-center gap-3 text-[#ccdaee]">
+                <li className="flex items-center gap-3 text-muted">
                   <div className="w-9 h-9 rounded-xl bg-[#0055DA]/20 border border-[#0055DA]/30 flex items-center justify-center flex-shrink-0">
-                    <Globe className="w-4 h-4 text-[#6aabff]" />
+                    <Globe className="w-4 h-4 text-muted" />
                   </div>
                   Available globally for remote projects
                 </li>
-                <li className="flex items-center gap-3 text-[#ccdaee]">
+                <li className="flex items-center gap-3 text-muted">
                   <div className="w-9 h-9 rounded-xl bg-[#0055DA]/20 border border-[#0055DA]/30 flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-4 h-4 text-[#6aabff]" />
+                    <Clock className="w-4 h-4 text-muted" />
                   </div>
                   Mon–Fri, 9am–6pm WAT (UTC+1)
                 </li>
@@ -123,10 +123,10 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h4 className="text-white font-black">Join the AI Community</h4>
-                  <p className="text-[#7799cc] text-sm">Free WhatsApp group</p>
+                  <p className="text-subtle text-sm">Free WhatsApp group</p>
                 </div>
               </div>
-              <p className="text-[#ccdaee] text-sm leading-relaxed mb-6">
+              <p className="text-muted text-sm leading-relaxed mb-6">
                 Connect with 1000+ professionals learning AI and automation — tips, resources, and live Q&A sessions with Israel.
               </p>
               <a

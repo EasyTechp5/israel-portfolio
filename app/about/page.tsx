@@ -19,17 +19,17 @@ const credentials = [
 ];
 
 const tools = [
-  { name: "n8n", cat: "Automation", color: "bg-[#0055DA]/20 text-[#aaccff] border-[#0055DA]/30" },
-  { name: "Make.com", cat: "Automation", color: "bg-[#0055DA]/20 text-[#aaccff] border-[#0055DA]/30" },
+  { name: "n8n", cat: "Automation", color: "bg-[#0055DA]/20 text-muted border-[#0055DA]/30" },
+  { name: "Make.com", cat: "Automation", color: "bg-[#0055DA]/20 text-muted border-[#0055DA]/30" },
   { name: "Claude AI", cat: "AI", color: "bg-purple-500/10 text-purple-300 border-purple-500/20" },
   { name: "ChatGPT", cat: "AI", color: "bg-purple-500/10 text-purple-300 border-purple-500/20" },
-  { name: "Google Apps Script", cat: "Automation", color: "bg-[#0055DA]/20 text-[#aaccff] border-[#0055DA]/30" },
+  { name: "Google Apps Script", cat: "Automation", color: "bg-[#0055DA]/20 text-muted border-[#0055DA]/30" },
   { name: "Google Workspace", cat: "Productivity", color: "bg-green-500/10 text-green-300 border-green-500/20" },
   { name: "Airtable", cat: "Database", color: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20" },
   { name: "Slack", cat: "Integration", color: "bg-orange-500/10 text-orange-300 border-orange-500/20" },
   { name: "WhatsApp API", cat: "Integration", color: "bg-green-500/10 text-green-300 border-green-500/20" },
   { name: "Webhooks", cat: "Integration", color: "bg-orange-500/10 text-orange-300 border-orange-500/20" },
-  { name: "Zapier", cat: "Automation", color: "bg-[#0055DA]/20 text-[#aaccff] border-[#0055DA]/30" },
+  { name: "Zapier", cat: "Automation", color: "bg-[#0055DA]/20 text-muted border-[#0055DA]/30" },
   { name: "YouTube API", cat: "API", color: "bg-red-500/10 text-red-300 border-red-500/20" },
 ];
 
@@ -37,7 +37,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden bg-gradient-to-br from-[#040810] via-[#0055DA]/20 to-[#040810]">
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--bg)] via-[#0055DA]/20 to-[var(--bg)]">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-[#0055DA]/10 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-72 h-72 bg-cyan-600/8 rounded-full blur-3xl" />
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 Helping Businesses{" "}
                 <span className="gradient-text">Operate Intelligently</span>
               </h1>
-              <p className="text-[#ccdaee] text-lg leading-relaxed mb-8">
+              <p className="text-muted text-lg leading-relaxed mb-8">
                 Israel Afolabi is an AI Automation Specialist and the Founder of EasyTech Academy. He designs intelligent systems that eliminate manual work, trains teams to harness AI effectively, and helps businesses scale with automation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -68,11 +68,11 @@ export default function AboutPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-3xl blur-2xl scale-105" />
                 <div className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
                   <Image src="/images/israel-hero.jpg" alt="Israel Afolabi" fill className="object-cover object-top" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#040810]/50 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/50 via-transparent to-transparent" />
                 </div>
                 <div className="absolute -bottom-4 -right-4 glass-card px-4 py-3 shadow-xl">
                   <p className="text-white font-black text-xl">1500+</p>
-                  <p className="text-[#ccdaee] text-xs">People Trained</p>
+                  <p className="text-muted text-xs">People Trained</p>
                 </div>
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <div>
               <h2 className="text-4xl font-black text-white mb-6">The Story</h2>
-              <div className="space-y-4 text-[#ccdaee] leading-relaxed">
+              <div className="space-y-4 text-muted leading-relaxed">
                 <p>
                   Israel Afolabi didn&apos;t start in AI — he started with a frustration. Watching businesses repeat the same manual tasks day after day, he became obsessed with the question:{" "}
                   <em className="text-white">&ldquo;What if this could just run itself?&rdquo;</em>
@@ -108,7 +108,7 @@ export default function AboutPage() {
               <ul className="space-y-3">
                 {credentials.map((c) => (
                   <li key={c} className="flex items-start gap-3 glass-card p-4">
-                    <CheckCircle2 className="w-5 h-5 text-[#6aabff] flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-muted flex-shrink-0 mt-0.5" />
                     <span className="text-slate-200 font-medium">{c}</span>
                   </li>
                 ))}
@@ -124,7 +124,7 @@ export default function AboutPage() {
           <div className="text-center mb-12">
             <span className="badge badge-blue mb-4">Tech Stack</span>
             <h2 className="text-4xl font-black text-white mb-4">Tools I Use to Build Your Systems</h2>
-            <p className="text-[#7799cc] max-w-xl mx-auto">The exact tools that power every automation, AI agent, and workflow Israel builds.</p>
+            <p className="text-subtle max-w-xl mx-auto">The exact tools that power every automation, AI agent, and workflow Israel builds.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {tools.map((t) => (
@@ -147,7 +147,7 @@ export default function AboutPage() {
               <p className="text-2xl sm:text-3xl font-black text-white leading-snug mb-6 pl-4 border-l-4 border-[#0055DA] text-left">
                 I design intelligent systems that replace manual work with automation, helping businesses scale faster, reduce costs, and operate efficiently — while training a generation of professionals to thrive in an AI-first world.
               </p>
-              <p className="text-[#7799cc] text-lg">Goal: Train 1 million people in AI and automation.</p>
+              <p className="text-subtle text-lg">Goal: Train 1 million people in AI and automation.</p>
             </div>
           </div>
         </div>
@@ -158,7 +158,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-cyan-900/20" />
         <div className="container-wide relative z-10 text-center">
           <h2 className="text-4xl font-black text-white mb-4">Work With Israel</h2>
-          <p className="text-[#ccdaee] text-lg mb-8 max-w-xl mx-auto">Ready to automate your business or level up your AI skills? Let&apos;s talk.</p>
+          <p className="text-muted text-lg mb-8 max-w-xl mx-auto">Ready to automate your business or level up your AI skills? Let&apos;s talk.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
               <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />

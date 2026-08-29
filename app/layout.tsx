@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
@@ -32,12 +33,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="text-white antialiased" style={{ backgroundColor: '#040810' }}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <WhatsAppFAB />
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="antialiased" style={{ backgroundColor: "var(--bg)", color: "var(--text-primary)" }}>
+        <ThemeProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <WhatsAppFAB />
+        </ThemeProvider>
       </body>
     </html>
   );

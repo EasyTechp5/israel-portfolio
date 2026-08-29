@@ -77,8 +77,8 @@ const services = [
 const colorMap: Record<string, { card: string; icon: string; badge: string }> = {
   blue: {
     card: "border-[#0055DA]/30 hover:border-blue-500/40",
-    icon: "bg-[#0055DA]/20 border-[#0055DA]/30 text-[#6aabff]",
-    badge: "bg-[#0055DA]/20 text-[#aaccff]",
+    icon: "bg-[#0055DA]/20 border-[#0055DA]/30 text-muted",
+    badge: "bg-[#0055DA]/20 text-muted",
   },
   purple: {
     card: "border-purple-500/20 hover:border-purple-500/40",
@@ -108,7 +108,7 @@ export default function ServicesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-[#040810] via-[#0055DA]/20 to-[#040810]">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--bg)] via-[#0055DA]/20 to-[var(--bg)]">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-[#0055DA]/10 rounded-full blur-3xl" />
         </div>
@@ -118,7 +118,7 @@ export default function ServicesPage() {
             Everything You Need to{" "}
             <span className="gradient-text">Run on Autopilot</span>
           </h1>
-          <p className="text-[#ccdaee] text-xl max-w-2xl mx-auto">
+          <p className="text-muted text-xl max-w-2xl mx-auto">
             Whether you need a complete automation build, team training, or personal coaching — I have a service designed to meet you where you are.
           </p>
         </div>
@@ -140,11 +140,11 @@ export default function ServicesPage() {
                     {s.tagline}
                   </span>
                   <h3 className="text-2xl font-black text-white mb-3">{s.title}</h3>
-                  <p className="text-[#7799cc] leading-relaxed mb-6">{s.desc}</p>
+                  <p className="text-subtle leading-relaxed mb-6">{s.desc}</p>
                   <ul className="space-y-2 mb-8">
                     {s.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2.5 text-sm text-[#ccdaee]">
-                        <CheckCircle2 className="w-4 h-4 text-[#6aabff] flex-shrink-0 mt-0.5" />
+                      <li key={f} className="flex items-start gap-2.5 text-sm text-muted">
+                        <CheckCircle2 className="w-4 h-4 text-muted flex-shrink-0 mt-0.5" />
                         {f}
                       </li>
                     ))}
@@ -172,7 +172,7 @@ export default function ServicesPage() {
           <div className="text-center mb-16">
             <span className="badge badge-blue mb-4">How It Works</span>
             <h2 className="text-4xl font-black text-white mb-4">My Process</h2>
-            <p className="text-[#7799cc] max-w-xl mx-auto">Simple, transparent, and built around your outcome.</p>
+            <p className="text-subtle max-w-xl mx-auto">Simple, transparent, and built around your outcome.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {process.map((p, i) => (
@@ -186,7 +186,7 @@ export default function ServicesPage() {
                   {p.step}
                 </div>
                 <h3 className="text-white font-bold mb-2">{p.title}</h3>
-                <p className="text-[#7799cc] text-sm leading-relaxed">{p.desc}</p>
+                <p className="text-subtle text-sm leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -198,7 +198,7 @@ export default function ServicesPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-cyan-900/20" />
         <div className="container-wide relative z-10 text-center">
           <h2 className="text-4xl font-black text-white mb-4">Not Sure Which Service Fits?</h2>
-          <p className="text-[#ccdaee] text-lg mb-8 max-w-xl mx-auto">Book a free 20-minute call and I&apos;ll tell you exactly what would work best for your situation.</p>
+          <p className="text-muted text-lg mb-8 max-w-xl mx-auto">Book a free 20-minute call and I&apos;ll tell you exactly what would work best for your situation.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
               <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />
