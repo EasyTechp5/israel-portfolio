@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, CheckCircle2, Quote, ArrowUpRight } from "lucide-react";
+import Gallery, { type Shot } from "@/components/Gallery";
 
 export const metadata: Metadata = {
   title: "About | Israel Afolabi",
@@ -66,6 +67,58 @@ const credentials = [
   "Expert in n8n, Make.com & Claude AI",
   "Google Apps Script practitioner",
   "Trusted by teams across multiple industries",
+];
+
+const shots: Shot[] = [
+  {
+    src: "/images/gallery/training-staff.jpg",
+    alt: "Israel Afolabi presenting the Inside AI Mastery Program to a training room",
+    caption: "Delivering the AI Mastery Program",
+    meta: "EasyTech Academy · Cohort 2026",
+    portrait: true,
+  },
+  {
+    src: "/images/gallery/africa-tech-expo.jpg",
+    alt: "Israel Afolabi at the Africa Technology Expo 2026",
+    caption: "Africa Technology Expo",
+    meta: "Lagos, 2026",
+    portrait: true,
+  },
+  {
+    src: "/images/gallery/ai-summit.jpg",
+    alt: "Israel Afolabi at a Data and AI leadership summit",
+    caption: "Data & AI Leadership Summit",
+    meta: "Attended, 2026",
+    portrait: true,
+  },
+  {
+    src: "/images/gallery/workspace.jpg",
+    alt: "Israel Afolabi at his desk with laptop and monitor, wearing an EasyTech shirt",
+    caption: "Where the systems get built",
+    meta: "The workspace",
+    portrait: true,
+  },
+  {
+    src: "/images/gallery/live-class.jpg",
+    alt: "Israel Afolabi teaching a live online class for EasyTech Academy",
+    caption: "Teaching a live cohort",
+    meta: "EasyTech Academy · Online",
+    portrait: false,
+  },
+  {
+    src: "/images/gallery/tech-conference.jpg",
+    alt: "Israel Afolabi at a technology conference venue",
+    caption: "Tech conference",
+    meta: "Lagos, 2026",
+    portrait: true,
+  },
+  {
+    src: "/images/gallery/tech-meetup.jpg",
+    alt: "Israel Afolabi at a technology meetup",
+    caption: "Tech meetup",
+    meta: "Lagos, 2026",
+    portrait: true,
+  },
 ];
 
 export default function AboutPage() {
@@ -264,6 +317,22 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── In the field ──────────────────────────────────────── */}
+      <section className="section-padding">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 mx-auto">
+          <div className="max-w-2xl mb-12">
+            <span className="eyebrow">In the field</span>
+            <h2 className="mb-4">Training rooms, conferences and the desk it all runs from</h2>
+            <p className="section-lead">
+              Teaching, speaking, attending, and building. A look at the work behind
+              the systems and the training programmes.
+            </p>
+          </div>
+
+          <Gallery shots={shots} />
         </div>
       </section>
 
