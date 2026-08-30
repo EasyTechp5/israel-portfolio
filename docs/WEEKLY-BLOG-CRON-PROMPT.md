@@ -30,7 +30,27 @@ what you did at the end.
 
 ---
 
-## STEP 1 — RESEARCH (do this first, every run)
+## STEP 0 — CHECK WHAT IS ALREADY PUBLISHED
+
+Before researching anything, read `lib/posts.ts` and skim the **four most recent posts**
+(the ones with the latest `date` values).
+
+Note what each one covered. Then, while researching:
+
+- **Do not re-cover a story** that a recent roundup already explained, unless there is a
+  genuine, material development since — in which case lead with what changed, and link
+  back to the earlier post rather than repeating it.
+- **Do not reuse an angle** from a recent week. If the last two posts were both broadly
+  "agents are getting more capable", find a different through-line even if agent news
+  dominates again.
+- **Check your intended `slug` does not already exist** in the file.
+
+This step exists because the most likely failure mode over months is not a bad post — it
+is the same post, slightly reworded, every week.
+
+---
+
+## STEP 1 — RESEARCH
 
 Search the web for what actually happened in AI and AI automation **in the last 7 days**.
 
@@ -92,6 +112,32 @@ becomes the post's angle. A post with an argument outperforms a list of unrelate
 3. For each item: what happened, the source, and what it means practically.
 4. A closing `<h2>` — what you would actually do about this, if anything. It is fine and
    often better to conclude "nothing this week requires action, but watch X".
+
+**Link to Israel's existing posts — this is required, not optional.**
+
+Work **2–4 internal links** naturally into the body, wherever a reader would genuinely
+benefit from the background. Use a normal `<a href="/blog/the-slug">descriptive text</a>`
+with a relative URL. Never force one in where it does not fit, and never link the same
+post twice in one article.
+
+The evergreen posts available to link to:
+
+| Link to | When the roundup touches on |
+|---|---|
+| `/blog/ai-agents-vs-ai-automation` | agents, agentic AI, or the agent-vs-workflow distinction |
+| `/blog/how-to-become-ai-automation-engineer` | careers, skills, hiring, the job market |
+| `/blog/n8n-vs-make-vs-zapier` | n8n, Make.com, Zapier, choosing a platform |
+| `/blog/ai-automation-ideas-for-business` | use cases, what to automate, practical examples |
+| `/blog/build-your-first-ai-agent-n8n` | building agents, tool calling, n8n agent features |
+| `/blog/what-ai-automation-costs` | pricing, model costs, budgets, ROI |
+| `/blog/ai-automation-for-small-business` | small business, getting started, first project |
+| `/blog/ai-automation-mistakes` | failures, reliability, things going wrong |
+| `/blog/ai-tools-every-business-should-use` | tooling, stacks, new products, tool choice |
+| `/blog/will-ai-replace-my-job` | jobs, displacement, workforce, automation anxiety |
+| `/blog/automate-customer-support-with-ai` | support, chatbots, customer service, RAG |
+
+Re-read `lib/posts.ts` each run — if new posts have been added since this list was
+written, they are linkable too.
 
 **Do NOT write a call to action or contact section.** The website appends Israel's
 "DM me" CTA automatically below every post. Adding your own creates a duplicate.
@@ -168,6 +214,8 @@ Check every one of these. If any fails, fix it and re-check.
 - [ ] No emoji, no banned hype words, no self-written CTA section
 - [ ] Every factual claim traces to a source you actually read and linked
 - [ ] Word count is 700–1,100
+- [ ] 2–4 internal links to `/blog/...` posts, each genuinely relevant
+- [ ] Topic and angle do not repeat any of the last four posts
 
 ---
 
