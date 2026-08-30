@@ -1,276 +1,223 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Calendar, MessageCircle, ArrowRight, Bot, Zap, Users,
-  CheckCircle2, Star, ChevronRight, TrendingUp, Shield, Clock,
+  Calendar, MessageCircle, ArrowRight, Bot, Zap, Users, TrendingUp,
+  CheckCircle2, Star, Search, PenTool, Rocket, LifeBuoy, Quote,
 } from "lucide-react";
+import Reveal from "@/components/Reveal";
+import Faq from "@/components/Faq";
+
+const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
 
 const stats = [
-  { value: "1500+", label: "Professionals Trained" },
-  { value: "10+", label: "Organizations Served" },
-  { value: "3+", label: "Years Automating" },
-  { value: "100%", label: "Client Satisfaction" },
+  { value: "1,500+", label: "Professionals trained" },
+  { value: "10+", label: "Organizations served" },
+  { value: "3+", label: "Years automating" },
+  { value: "50+", label: "Systems delivered" },
 ];
 
 const services = [
   {
     icon: Bot,
-    title: "AI & Automation Solutions",
-    desc: "Custom workflows built with n8n, Make.com, and AI agents that run 24/7 without human intervention.",
-    color: "blue",
+    title: "AI & Automation Systems",
+    desc: "Custom workflows built with n8n, Make.com and AI agents that run 24/7 without human intervention.",
+    points: ["Workflow automation", "AI agents", "System integrations"],
   },
   {
     icon: Users,
     title: "AI Training & Consulting",
-    desc: "Corporate training programs that upskill your team to leverage AI tools confidently and effectively.",
-    color: "purple",
+    desc: "Corporate programmes that upskill your team to use AI tools confidently and effectively.",
+    points: ["Team workshops", "Hands-on labs", "Adoption roadmaps"],
   },
   {
     icon: Zap,
     title: "Personal AI Coaching",
-    desc: "1-on-1 sessions tailored to your role — whether you're a professional, entrepreneur, or team lead.",
-    color: "cyan",
+    desc: "One-to-one sessions tailored to your role — whether you lead a team or run the whole business.",
+    points: ["1-on-1 sessions", "Role-specific", "Practical outcomes"],
   },
   {
     icon: TrendingUp,
-    title: "AI Projects & Consulting",
-    desc: "End-to-end project delivery — from scoping and design to deployment and handover.",
-    color: "green",
+    title: "End-to-End Delivery",
+    desc: "From scoping and design through to deployment, documentation and handover.",
+    points: ["Discovery & scoping", "Build & test", "Deploy & handover"],
   },
 ];
 
+const process = [
+  { icon: Search, step: "01", title: "Discover", desc: "We map your current workflow and find exactly where time and money leak out of the business." },
+  { icon: PenTool, step: "02", title: "Design", desc: "I architect the automation — the tools, the logic, the fail-safes — and show you the plan before a line is built." },
+  { icon: Rocket, step: "03", title: "Deploy", desc: "The system goes live, gets tested against real data, and your team is trained to run it." },
+  { icon: LifeBuoy, step: "04", title: "Support", desc: "Post-launch monitoring and refinements, so the system keeps performing as your business grows." },
+];
+
 const tools = [
-  { name: "n8n", cat: "Automation" },
-  { name: "Make.com", cat: "Automation" },
-  { name: "Claude AI", cat: "AI" },
-  { name: "ChatGPT", cat: "AI" },
-  { name: "Google Apps Script", cat: "Automation" },
-  { name: "Google Workspace", cat: "Productivity" },
-  { name: "Airtable", cat: "Database" },
-  { name: "Slack", cat: "Integration" },
-  { name: "WhatsApp API", cat: "Integration" },
-  { name: "Zapier", cat: "Automation" },
-  { name: "Webhooks", cat: "Integration" },
-  { name: "YouTube API", cat: "API" },
+  "n8n", "Make.com", "Claude AI", "OpenAI", "Google Apps Script", "LangChain",
+  "Supabase", "Airtable", "Zapier", "Power Automate", "WhatsApp API", "Streamlit",
+  "Docker", "Python", "Power BI", "Telegram API",
 ];
 
 const testimonials = [
   {
-    text: "Israel built an automation that processes all our client onboarding — what used to take 3 hours now takes zero human time.",
+    text: "Israel built an automation that processes all our client onboarding. What used to take three hours now takes zero human time.",
     name: "Business Owner",
     role: "Lagos, Nigeria",
   },
   {
     text: "The training was eye-opening. I went from zero to building my own AI workflows in two weeks.",
-    name: "Corporate Professional",
-    role: "HR Manager",
+    name: "HR Manager",
+    role: "Corporate Professional",
   },
   {
-    text: "Our lead generation bot runs 24/7, qualifying prospects while we sleep. ROI was immediate.",
+    text: "Our lead generation bot runs 24/7, qualifying prospects while we sleep. The ROI was immediate.",
     name: "Startup Founder",
-    role: "Tech Startup",
+    role: "Technology Sector",
   },
 ];
 
-const colorMap: Record<string, string> = {
-  blue: "bg-[#0055DA]/20 border-[#0055DA]/30 text-muted",
-  purple: "bg-purple-500/10 border-purple-500/20 text-purple-400",
-  cyan: "bg-cyan-500/10 border-cyan-500/20 text-cyan-400",
-  green: "bg-green-500/10 border-green-500/20 text-green-400",
-};
+const faqs = [
+  {
+    q: "How long does a typical automation take to build?",
+    a: "Most systems are delivered in one to three weeks depending on complexity. Simple workflows — invoice automation, booking systems, email sequences — are often live within five working days. Larger agentic AI systems take four to eight weeks.",
+  },
+  {
+    q: "Do I need technical knowledge to work with you?",
+    a: "Not at all. My background is teaching, so explaining technical systems in plain language is the part I enjoy most. You describe the business problem; I handle the technical decisions and train your team on the finished system.",
+  },
+  {
+    q: "What happens after the system is delivered?",
+    a: "Every project includes documentation, a handover walkthrough and a support window. I stay available for refinements as your process evolves, and ongoing support retainers are available if you would prefer I manage the system for you.",
+  },
+  {
+    q: "Do you work with clients outside Nigeria?",
+    a: "Yes. I work remotely with clients across time zones. Calls are scheduled around your working hours and all delivery, documentation and training happens online.",
+  },
+  {
+    q: "What does the free consultation involve?",
+    a: "A 20 to 30 minute call where you walk me through your current process. I will tell you honestly whether automation is worth it for your situation, roughly what it would cost, and how long it would take. No pitch, no obligation.",
+  },
+];
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg)] via-[#0055DA]/20 to-[var(--bg)]" />
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#0055DA]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0055DA]/10 rounded-full blur-3xl" />
-        </div>
+      {/* ══════════════ HERO ══════════════ */}
+      <section className="relative overflow-hidden" style={{ paddingTop: "8rem", paddingBottom: "5rem" }}>
+        <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
+        <div className="glow" style={{ top: "-6rem", left: "-8rem", width: "34rem", height: "34rem", background: "var(--primary)" }} aria-hidden />
+        <div className="glow" style={{ bottom: "-10rem", right: "-6rem", width: "28rem", height: "28rem", background: "var(--primary)" }} aria-hidden />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="badge badge-blue mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+        <div className="container-wide relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+            {/* Copy */}
+            <div className="lg:col-span-7">
+              <div className="hero-in">
+                <span className="badge badge-green mb-6">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "var(--success)" }} />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: "var(--success)" }} />
+                  </span>
+                  Available for new projects
                 </span>
-                Available for AI Projects &amp; Consulting
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] mb-6">
-                I Build{" "}
-                <span className="gradient-text">AI Systems</span>{" "}
-                That Make Your Business{" "}
-                <span className="relative">
-                  Run Itself
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
-                    <path d="M2 9C50 3 150 1 298 9" stroke="#0055DA" strokeWidth="3" strokeLinecap="round" />
-                  </svg>
-                </span>
-              </h1>
-
-              <p className="text-muted text-xl leading-relaxed mb-8 max-w-lg">
-                I design intelligent automation systems that eliminate manual work, train teams to harness AI effectively, and help businesses scale — faster, leaner, smarter.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <a
-                  href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary py-3.5 px-8 text-base"
-                >
-                  <Calendar className="w-5 h-5" />
-                  Book Free 20-Min Call
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary py-3.5 px-8 text-base"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  Chat on WhatsApp
-                </a>
+              <div className="hero-in" style={{ "--in-delay": "70ms" } as React.CSSProperties}>
+                <h1 className="mb-6" style={{ fontWeight: 800 }}>
+                  I build AI systems that make your business{" "}
+                  <span className="underline-accent" style={{ color: "var(--primary-text)" }}>run itself</span>
+                </h1>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                {stats.map((s) => (
-                  <div key={s.label}>
-                    <p className="text-3xl font-black text-white">{s.value}</p>
-                    <p className="text-subtle text-sm">{s.label}</p>
-                  </div>
-                ))}
+              <div className="hero-in" style={{ "--in-delay": "140ms" } as React.CSSProperties}>
+                <p className="text-lg sm:text-xl leading-relaxed mb-9 max-w-2xl" style={{ color: "var(--text-muted)" }}>
+                  I design intelligent automation that removes manual work, train teams to use AI
+                  effectively, and help businesses scale — faster, leaner, smarter.
+                </p>
               </div>
-            </div>
 
-            <div className="flex justify-center lg:justify-end">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-3xl blur-2xl scale-110" />
-                <div className="relative w-72 h-80 sm:w-80 sm:h-96 lg:w-96 lg:h-[450px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-                  <Image
-                    src="/images/israel-hero.jpg"
-                    alt="Israel Afolabi — AI Automation Specialist"
-                    fill
-                    className="object-cover object-top"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/60 via-transparent to-transparent" />
-                </div>
-
-                <div className="absolute -bottom-4 -left-4 glass-card px-4 py-3 shadow-xl">
-                  <p className="text-white font-black text-xl">1500+</p>
-                  <p className="text-muted text-xs">People Trained</p>
-                </div>
-
-                <div className="absolute -top-4 -right-4 glass-card px-4 py-3 shadow-xl">
-                  <div className="flex items-center gap-1.5">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                    </span>
-                    <p className="text-green-400 text-xs font-semibold">n8n Workflow Active</p>
-                  </div>
-                  <p className="text-subtle text-xs">Running 24/7 automatically</p>
+              <div className="hero-in" style={{ "--in-delay": "210ms" } as React.CSSProperties}>
+                <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                  <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
+                    <Calendar className="w-[18px] h-[18px]" />
+                    Book a free 20-min call
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-secondary btn-lg">
+                    <MessageCircle className="w-[18px] h-[18px]" />
+                    Chat on WhatsApp
+                  </a>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Services */}
-      <section className="section-padding bg-[var(--bg-surface)]/60">
-        <div className="container-wide">
-          <div className="text-center mb-16">
-            <span className="badge badge-blue mb-4">Services</span>
-            <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
-              What I Do For Your Business
-            </h2>
-            <p className="text-subtle text-lg max-w-xl mx-auto">
-              From full automation builds to team training — everything you need to operate intelligently.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((s) => {
-              const Icon = s.icon;
-              return (
-                <div
-                  key={s.title}
-                  className="glass-card p-8 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 group"
-                >
-                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${colorMap[s.color]}`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-black text-white mb-3">{s.title}</h3>
-                  <p className="text-subtle leading-relaxed mb-5">{s.desc}</p>
-                  <Link href="/services" className="inline-flex items-center gap-1.5 text-muted hover:text-muted text-sm font-semibold transition-colors group-hover:gap-3">
-                    Learn more <ChevronRight className="w-4 h-4 transition-all" />
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link href="/services" className="btn-secondary">
-              View All Services <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Me */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="badge badge-blue mb-6">Why Israel?</span>
-              <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">
-                Real Systems. Real Results.
-              </h2>
-              <div className="space-y-5">
-                {[
-                  { icon: CheckCircle2, title: "3+ Years of Automation Experience", desc: "Hands-on expertise with real business deployments — not theory." },
-                  { icon: Shield, title: "Trusted by 10+ Organizations", desc: "From startups to established brands across Nigeria and beyond." },
-                  { icon: Clock, title: "Fast Turnaround", desc: "Most automation systems delivered and running within days." },
-                  { icon: Star, title: "Trainer of 1500+ Professionals", desc: "Proven ability to simplify AI for any skill level." },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.title} className="flex gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-[#0055DA]/20 border border-[#0055DA]/40 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-muted" />
-                      </div>
-                      <div>
-                        <p className="text-white font-bold">{item.title}</p>
-                        <p className="text-subtle text-sm">{item.desc}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {testimonials.map((t) => (
-                <div key={t.name} className="glass-card p-6">
-                  <div className="flex gap-1 mb-3">
+              <div className="hero-in" style={{ "--in-delay": "280ms" } as React.CSSProperties}>
+                <div className="flex items-center gap-3 text-sm" style={{ color: "var(--text-subtle)" }}>
+                  <div className="flex gap-0.5">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      <Star key={i} className="w-4 h-4" style={{ color: "#f5a524", fill: "#f5a524" }} />
                     ))}
                   </div>
-                  <p className="text-muted text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
-                  <div>
-                    <p className="text-white font-semibold text-sm">{t.name}</p>
-                    <p className="text-[#5566aa] text-xs">{t.role}</p>
+                  <span>Trusted by <strong style={{ color: "var(--text-body)" }}>1,500+</strong> professionals and <strong style={{ color: "var(--text-body)" }}>10+</strong> organizations</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Portrait */}
+            <div className="lg:col-span-5">
+              <div className="hero-in" style={{ "--in-delay": "160ms" } as React.CSSProperties}>
+                <div className="relative mx-auto lg:ml-auto lg:mr-0" style={{ maxWidth: "24rem" }}>
+                  <div
+                    className="relative aspect-[4/5] rounded-2xl overflow-hidden"
+                    style={{ boxShadow: "var(--shadow-xl)", border: "1px solid var(--border)" }}
+                  >
+                    <Image
+                      src="/images/israel-hero.jpg"
+                      alt="Israel Afolabi, AI Engineer and Automation Specialist"
+                      fill
+                      sizes="(max-width: 1024px) 24rem, 24rem"
+                      className="object-cover object-top"
+                      priority
+                    />
                   </div>
+
+                  <div
+                    className="absolute -bottom-5 -left-5 rounded-xl px-4 py-3"
+                    style={{ backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}
+                  >
+                    <p className="text-xl font-bold leading-none" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)" }}>1,500+</p>
+                    <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>People trained</p>
+                  </div>
+
+                  <div
+                    className="absolute -top-5 -right-4 rounded-xl px-4 py-3"
+                    style={{ backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "var(--success)" }} />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: "var(--success)" }} />
+                      </span>
+                      <p className="text-xs font-semibold" style={{ color: "var(--success)" }}>Workflow active</p>
+                    </div>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--text-subtle)" }}>Running 24/7</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats strip */}
+          <div className="hero-in" style={{ "--in-delay": "340ms" } as React.CSSProperties}>
+            <div
+              className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden"
+              style={{ backgroundColor: "var(--border)", border: "1px solid var(--border)" }}
+            >
+              {stats.map((s) => (
+                <div key={s.label} className="px-6 py-7 text-center" style={{ backgroundColor: "var(--bg)" }}>
+                  <p className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: "var(--primary-text)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}>
+                    {s.value}
+                  </p>
+                  <p className="text-sm" style={{ color: "var(--text-muted)" }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -278,62 +225,221 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Tech Stack */}
-      <section className="section-padding bg-[var(--bg-surface)]/60">
+      {/* ══════════════ TOOL MARQUEE ══════════════ */}
+      <section className="py-12 section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
-          <div className="text-center mb-12">
-            <span className="badge badge-blue mb-4">Tech Stack</span>
-            <h2 className="text-4xl font-black text-white mb-4">Tools I Use to Build Your Systems</h2>
-            <p className="text-subtle max-w-xl mx-auto">The exact tools that power every automation, AI agent, and workflow.</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {tools.map((t) => (
-              <div
-                key={t.name}
-                className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 transition-all cursor-default"
-              >
-                <span className="text-white font-semibold text-sm">{t.name}</span>
-                <span className="ml-2 text-[#5566aa] text-xs">{t.cat}</span>
-              </div>
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.14em] mb-8" style={{ color: "var(--text-subtle)" }}>
+            Built with the tools that power modern business
+          </p>
+        </div>
+        <div className="marquee-mask overflow-hidden">
+          <div className="marquee-track gap-3">
+            {[...tools, ...tools].map((t, i) => (
+              <span key={i} className="chip flex-shrink-0" style={{ backgroundColor: "var(--bg)" }}>{t}</span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-cyan-900/20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#0055DA]/10 rounded-full blur-3xl" />
-        <div className="container-wide relative z-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
-              Ready to Automate Your Business?
-            </h2>
-            <p className="text-muted text-lg mb-8">
-              Book a free 20-minute call — no pitch, no obligation, just honest advice on what automation can do for you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary py-4 px-10 text-base"
-              >
-                <Calendar className="w-5 h-5" />
-                Book Free Call
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-whatsapp py-4 px-10 text-base"
-              >
-                <MessageCircle className="w-5 h-5" />
-                WhatsApp Israel
-              </a>
+      {/* ══════════════ SERVICES ══════════════ */}
+      <section className="section-padding">
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-14">
+              <span className="eyebrow">Services</span>
+              <h2 className="mb-4">What I do for your business</h2>
+              <p className="section-lead">
+                From complete automation builds to team training — everything you need to
+                operate intelligently and scale without adding headcount.
+              </p>
             </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {services.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <Reveal key={s.title} delay={i * 70}>
+                  <div className="card card-hover p-7 h-full flex flex-col">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                      style={{ backgroundColor: "var(--primary-soft)", border: "1px solid var(--primary-line)" }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: "var(--primary-text)" }} />
+                    </div>
+
+                    <h3 className="mb-2.5">{s.title}</h3>
+                    <p className="leading-relaxed mb-5" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
+
+                    <ul className="space-y-2 mb-6">
+                      {s.points.map((p) => (
+                        <li key={p} className="flex items-center gap-2.5 text-sm" style={{ color: "var(--text-body)" }}>
+                          <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "var(--primary-text)" }} />
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link href="/services" className="link-arrow mt-auto">
+                      Learn more <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
+
+          <Reveal delay={120}>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Link href="/services" className="btn-secondary">
+                View all services <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/service-packages" className="btn-ghost">
+                See pricing &amp; packages <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══════════════ PROCESS ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-14">
+              <span className="eyebrow">How it works</span>
+              <h2 className="mb-4">A clear path from problem to working system</h2>
+              <p className="section-lead">
+                No jargon, no surprises. You know what is happening at every stage,
+                and what it will cost before any work begins.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {process.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <Reveal key={p.step} delay={i * 80}>
+                  <div className="card card-hover p-7 h-full relative">
+                    <span
+                      className="absolute top-6 right-6 text-4xl font-bold leading-none select-none"
+                      style={{ color: "var(--primary-text)", opacity: 0.12, fontFamily: "var(--font-display)" }}
+                      aria-hidden
+                    >
+                      {p.step}
+                    </span>
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                      style={{ backgroundColor: "var(--primary-soft)", border: "1px solid var(--primary-line)" }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: "var(--primary-text)" }} />
+                    </div>
+                    <h3 className="mb-2">{p.title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{p.desc}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ TESTIMONIALS ══════════════ */}
+      <section className="section-padding">
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-14">
+              <span className="eyebrow">Client results</span>
+              <h2 className="mb-4">Real systems. Real results.</h2>
+              <p className="section-lead">
+                Every project is measured the same way: how much time it gives back,
+                and how much it costs to run.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 80}>
+                <figure className="card card-hover p-7 h-full flex flex-col">
+                  <Quote className="w-7 h-7 mb-4" style={{ color: "var(--primary-text)", opacity: 0.35 }} aria-hidden />
+                  <blockquote className="leading-relaxed mb-6 flex-1" style={{ color: "var(--text-body)" }}>
+                    {t.text}
+                  </blockquote>
+                  <figcaption className="pt-5" style={{ borderTop: "1px solid var(--border)" }}>
+                    <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{t.name}</p>
+                    <p className="text-sm" style={{ color: "var(--text-subtle)" }}>{t.role}</p>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ FAQ ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <Reveal className="lg:col-span-5">
+              <span className="eyebrow">FAQ</span>
+              <h2 className="mb-4">Questions, answered</h2>
+              <p className="section-lead mb-7">
+                Still unsure about something? Send me a message and I will answer
+                it directly — usually within a few hours.
+              </p>
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                <MessageCircle className="w-[18px] h-[18px]" /> Ask a question
+              </a>
+            </Reveal>
+
+            <Reveal delay={100} className="lg:col-span-7">
+              <Faq items={faqs} />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ CTA ══════════════ */}
+      <section className="section-padding relative overflow-hidden">
+        <div className="glow" style={{ top: "-8rem", left: "50%", transform: "translateX(-50%)", width: "36rem", height: "26rem", background: "var(--primary)" }} aria-hidden />
+        <div className="container-wide relative">
+          <Reveal>
+            <div
+              className="rounded-3xl px-8 py-14 sm:px-14 sm:py-16 text-center"
+              style={{
+                background: "linear-gradient(135deg, var(--primary-fill) 0%, #003a96 100%)",
+                boxShadow: "var(--shadow-xl)",
+              }}
+            >
+              <h2 className="mb-4" style={{ color: "#fff" }}>Ready to automate your business?</h2>
+              <p className="text-lg mb-9 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.82)" }}>
+                Book a free 20-minute call. No pitch, no obligation — just honest advice
+                on what automation can realistically do for you.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href={CAL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-lg inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: "#fff", color: "var(--primary-text)", boxShadow: "var(--shadow-lg)" }}
+                >
+                  <Calendar className="w-[18px] h-[18px]" /> Book free call <ArrowRight className="w-4 h-4" />
+                </a>
+                <a
+                  href={WA}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-lg inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors"
+                  style={{ backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", border: "1px solid rgba(255,255,255,0.28)" }}
+                >
+                  <MessageCircle className="w-[18px] h-[18px]" /> WhatsApp Israel
+                </a>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

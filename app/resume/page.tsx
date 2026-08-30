@@ -1,112 +1,119 @@
 import type { Metadata } from "next";
-import { Download, FileText, Calendar, MessageCircle, ArrowRight } from "lucide-react";
+import { Download, FileText, Calendar, MessageCircle, ArrowRight, ExternalLink } from "lucide-react";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Resume | Israel Afolabi",
-  description: "View and download the resume of Israel Afolabi — AI Engineer, AI Automation Specialist, and Agentic AI Builder.",
+  description: "View and download the resume of Israel Afolabi — AI Engineer, AI Automation Specialist and Agentic AI Builder.",
 };
+
+const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
 
 export default function ResumePage() {
   return (
     <>
-      {/* Hero */}
-      <section
-        className="relative min-h-[40vh] flex items-center overflow-hidden pt-24 pb-12 section-padding"
-        style={{ background: "linear-gradient(135deg, var(--bg) 0%, rgba(0,85,218,0.08) 100%)" }}
-      >
-        <div className="absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl" style={{ backgroundColor: "rgba(0,85,218,0.08)" }} />
-        <div className="container-wide relative z-10 text-center">
-          <span className="badge badge-blue mb-6">Resume</span>
-          <h1 className="text-5xl sm:text-6xl font-black text-white mb-4">
-            Israel <span style={{ color: "#0055DA" }}>Afolabi</span>
-          </h1>
-          <p className="text-lg mb-2 font-semibold" style={{ color: "#0055DA" }}>
-            AI Engineer &nbsp;·&nbsp; AI Automation Specialist &nbsp;·&nbsp; Agentic AI Builder
-          </p>
-          <p className="mb-8 max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
-            View my full resume below or download a copy to your device.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/resume.pdf"
-              download="Israel_Afolabi_Resume.pdf"
-              className="btn-primary py-3.5 px-8"
-            >
-              <Download className="w-5 h-5" />
-              Download Resume (PDF)
-            </a>
-            <a
-              href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary py-3.5 px-8"
-            >
-              <Calendar className="w-5 h-5" />
-              Book a Call Instead
-            </a>
+      {/* ══════════════ HERO ══════════════ */}
+      <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
+        <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
+        <div className="glow" style={{ top: "-6rem", left: "50%", transform: "translateX(-50%)", width: "30rem", height: "20rem", background: "var(--primary)" }} aria-hidden />
+
+        <div className="container-wide relative text-center">
+          <div className="hero-in">
+            <span className="eyebrow justify-center">Resume</span>
+            <h1 className="mb-4" style={{ fontWeight: 800 }}>Israel Afolabi</h1>
+            <p className="text-base font-medium mb-5" style={{ color: "var(--primary-text)" }}>
+              AI Engineer &nbsp;·&nbsp; AI Automation Specialist &nbsp;·&nbsp; Agentic AI Builder
+            </p>
+            <p className="section-lead mx-auto mb-9 text-center">
+              Read the full resume below, or download a copy to keep.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href="/resume.pdf" download="Israel_Afolabi_Resume.pdf" className="btn-primary btn-lg">
+                <Download className="w-[18px] h-[18px]" /> Download resume (PDF)
+              </a>
+              <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-secondary btn-lg">
+                <Calendar className="w-[18px] h-[18px]" /> Book a call instead
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* PDF Viewer */}
-      <section className="section-padding">
+      {/* ══════════════ VIEWER ══════════════ */}
+      <section className="section-padding" style={{ paddingTop: "2.5rem" }}>
         <div className="container-wide">
-          <div className="glass-card p-4 sm:p-6 rounded-2xl">
-            {/* Toolbar */}
-            <div className="flex items-center justify-between mb-4 pb-4" style={{ borderBottom: "1px solid var(--border-card)" }}>
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5" style={{ color: "#0055DA" }} />
-                <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-                  Israel_Afolabi_Resume.pdf
-                </span>
-              </div>
-              <a
-                href="/resume.pdf"
-                download="Israel_Afolabi_Resume.pdf"
-                className="btn-primary py-2 px-4 text-sm"
+          <Reveal>
+            <div className="card overflow-hidden">
+              {/* Toolbar */}
+              <div
+                className="flex items-center justify-between gap-4 px-5 py-3.5"
+                style={{ borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-inset)" }}
               >
-                <Download className="w-4 h-4" />
-                Download
-              </a>
-            </div>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <FileText className="w-[18px] h-[18px] flex-shrink-0" style={{ color: "var(--primary-text)" }} />
+                  <span className="font-medium text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                    Israel_Afolabi_Resume.pdf
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-ghost text-sm hidden sm:inline-flex"
+                  >
+                    <ExternalLink className="w-4 h-4" /> Open
+                  </a>
+                  <a href="/resume.pdf" download="Israel_Afolabi_Resume.pdf" className="btn-primary text-sm">
+                    <Download className="w-4 h-4" /> Download
+                  </a>
+                </div>
+              </div>
 
-            {/* Embedded PDF */}
-            <div className="w-full rounded-xl overflow-hidden" style={{ height: "90vh", minHeight: "600px" }}>
-              <iframe
-                src="/resume.pdf"
-                className="w-full h-full"
-                title="Israel Afolabi Resume"
-                style={{ border: "none" }}
-              />
+              {/* Embed */}
+              <div className="w-full" style={{ height: "min(88vh, 1000px)", minHeight: "520px", backgroundColor: "var(--bg-inset)" }}>
+                <iframe
+                  src="/resume.pdf"
+                  className="w-full h-full"
+                  title="Israel Afolabi resume"
+                  style={{ border: "none" }}
+                />
+              </div>
             </div>
+          </Reveal>
 
-            {/* Mobile fallback */}
-            <div className="mt-4 text-center text-sm" style={{ color: "var(--text-subtle)" }}>
-              Can&apos;t see the PDF?{" "}
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="font-semibold underline" style={{ color: "#0055DA" }}>
-                Open in a new tab
+          <Reveal delay={80}>
+            <p className="mt-4 text-center text-sm" style={{ color: "var(--text-subtle)" }}>
+              Cannot see the PDF?{" "}
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--primary-text)" }}>
+                Open it in a new tab
               </a>
-            </div>
-          </div>
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,85,218,0.12), rgba(0,85,218,0.04))" }} />
-        <div className="container-wide relative z-10 text-center">
-          <h2 className="text-3xl font-black text-white mb-4">Ready to Work Together?</h2>
-          <p className="mb-8 max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
-            Book a free 20-minute call and let&apos;s discuss how I can help your business run on autopilot.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
-              <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you" target="_blank" rel="noopener noreferrer" className="btn-whatsapp py-3.5 px-8">
-              <MessageCircle className="w-5 h-5" /> WhatsApp Israel
-            </a>
-          </div>
+      {/* ══════════════ CTA ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderTop: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="card p-10 sm:p-14 text-center">
+              <h2 className="mb-4">Ready to work together?</h2>
+              <p className="section-lead mx-auto mb-9 text-center">
+                Book a free 20-minute call and let&apos;s talk about how automation could
+                change the way your business runs.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
+                  <Calendar className="w-[18px] h-[18px]" /> Book free call <ArrowRight className="w-4 h-4" />
+                </a>
+                <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-whatsapp btn-lg">
+                  <MessageCircle className="w-[18px] h-[18px]" /> WhatsApp Israel
+                </a>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

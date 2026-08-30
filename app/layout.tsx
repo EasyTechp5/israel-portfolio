@@ -1,12 +1,23 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-sora",
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Israel Afolabi | AI Engineer | AI Automation Specialist | Agentic AI Builder",
@@ -39,11 +50,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        {/* Scroll-reveal starts hidden only when scripting is available, so the
+            page still renders fully if JS is disabled or fails to load. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
-      <body className="antialiased" style={{ backgroundColor: "var(--bg)", color: "var(--text-primary)" }}>
+      <body>
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>

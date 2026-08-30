@@ -8,10 +8,17 @@ export default function WhatsAppFAB() {
       href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-xl hover:shadow-green-500/40 transition-all duration-200 hover:scale-110"
-      aria-label="Chat on WhatsApp"
+      className="group fixed bottom-5 right-5 z-40 flex items-center gap-0 hover:gap-2.5 rounded-full pl-3.5 pr-3.5 hover:pr-5 py-3.5 transition-all duration-300"
+      style={{ backgroundColor: "#0b7a3e", boxShadow: "0 8px 28px rgba(11,122,62,0.42)" }}
+      aria-label="Chat with Israel on WhatsApp"
     >
-      <MessageCircle className="w-7 h-7 text-white" />
+      <MessageCircle className="w-6 h-6 flex-shrink-0" style={{ color: "#fff" }} />
+      <span
+        className="overflow-hidden whitespace-nowrap font-semibold text-sm max-w-0 group-hover:max-w-[9rem] transition-all duration-300"
+        style={{ color: "#fff" }}
+      >
+        Chat with me
+      </span>
     </a>
   );
 }
