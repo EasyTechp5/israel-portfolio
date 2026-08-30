@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     "I design intelligent systems that replace manual work with automation, helping businesses scale faster, reduce costs, and operate efficiently.",
   authors: [{ name: "Israel Afolabi" }],
   keywords: ["AI Automation", "AI Engineer", "Agentic AI", "n8n", "Make.com", "AI Consultant", "AI Training", "Workflow Automation", "Israel Afolabi", "EasyTech", "Business Automation"],
+  // Google Search Console verification.
+  // Paste the content value from the "HTML tag" method here, then push.
+  // Example tag: <meta name="google-site-verification" content="AbC123..." />
+  // verification: { google: "PASTE_YOUR_CODE_HERE" },
+
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
