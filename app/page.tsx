@@ -112,16 +112,6 @@ export default function HomePage() {
 
             {/* Copy */}
             <div className="lg:col-span-7">
-              <div className="hero-in">
-                <span className="badge badge-green mb-6">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "var(--success)" }} />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: "var(--success)" }} />
-                  </span>
-                  Available for new projects
-                </span>
-              </div>
-
               <div className="hero-in" style={{ "--in-delay": "70ms" } as React.CSSProperties}>
                 <h1 className="mb-6" style={{ fontWeight: 800 }}>
                   I build AI systems that make your business{" "}
@@ -178,28 +168,6 @@ export default function HomePage() {
                       className="object-cover object-top"
                       priority
                     />
-                  </div>
-
-                  <div
-                    className="absolute -bottom-5 -left-5 rounded-xl px-4 py-3"
-                    style={{ backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}
-                  >
-                    <p className="text-xl font-bold leading-none" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)" }}>1,500+</p>
-                    <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>People trained</p>
-                  </div>
-
-                  <div
-                    className="absolute -top-5 -right-4 rounded-xl px-4 py-3"
-                    style={{ backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "var(--success)" }} />
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: "var(--success)" }} />
-                      </span>
-                      <p className="text-xs font-semibold" style={{ color: "var(--success)" }}>Workflow active</p>
-                    </div>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-subtle)" }}>Running 24/7</p>
                   </div>
                 </div>
               </div>
