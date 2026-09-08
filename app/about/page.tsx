@@ -92,6 +92,13 @@ const shots: Shot[] = [
     portrait: true,
   },
   {
+    src: "/images/gallery/workspace-desk.jpg",
+    alt: "Israel Afolabi at his desk, laptop and monitor showing his portfolio site",
+    caption: "Behind the desk",
+    meta: "The workspace, Lagos",
+    portrait: true,
+  },
+  {
     src: "/images/gallery/workspace.jpg",
     alt: "Israel Afolabi at his desk with laptop and monitor, wearing an EasyTech shirt",
     caption: "Where the systems get built",
