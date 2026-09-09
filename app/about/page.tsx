@@ -106,6 +106,13 @@ const shots: Shot[] = [
     portrait: true,
   },
   {
+    src: "/images/gallery/live-demo-session.jpg",
+    alt: "Israel Afolabi demonstrating an n8n AI support agent live during a training session",
+    caption: "Demoing a live AI support agent",
+    meta: "Training session · n8n + Gemini",
+    portrait: false,
+  },
+  {
     src: "/images/gallery/live-class.jpg",
     alt: "Israel Afolabi teaching a live online class for EasyTech Academy",
     caption: "Teaching a live cohort",

@@ -1,460 +1,582 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Calendar, MessageCircle, ArrowRight, Clock, CheckCircle2, Zap, Star } from "lucide-react";
+import {
+  Calendar, MessageCircle, ArrowRight, Check, Minus, Clock,
+  Shield, FileText, Headphones, KeyRound, Repeat, Sparkles,
+} from "lucide-react";
+import Reveal from "@/components/Reveal";
+import Faq from "@/components/Faq";
 
 export const metadata: Metadata = {
-  title: "Service Packages | Israel Afolabi",
-  description: "AI Automation service packages with transparent pricing and delivery times. From marketing automation to agentic AI systems.",
+  title: "Pricing | Israel Afolabi",
+  description:
+    "Transparent pricing for AI automation projects — three engagement tiers with fixed scope, clear delivery windows and what every project includes.",
+  alternates: { canonical: "https://israel.easytech365.com/service-packages" },
 };
 
-const packages = [
+const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20would%20like%20to%20discuss%20a%20project";
+
+/* ── Three engagement tiers ─────────────────────────────────
+   Deliberately three, not thirty-nine. A pricing page is a
+   decision aid, not a menu.                                  */
+const tiers = [
   {
-    icon: "📣",
-    category: "Marketing & Social Media Automation",
-    desc: "Automate how your business creates, distributes, and manages marketing content across all channels.",
-    color: "var(--primary-text)",
-    badge: "Popular",
-    services: [
-      "Automated Social Media Content Generation & Posting",
-      "AI Content Repurposing System",
-      "Automated Social Media Scheduling",
-      "AI-Powered Content Calendar",
-      "Automated Email Marketing Campaigns",
-      "Personalized Email Campaign Automation",
-      "Bulk Email Campaign System",
-      "Automated Lead Nurturing & Follow-up",
-      "YouTube Content & Newsletter Automation",
+    name: "Single Workflow",
+    tagline: "One process, automated properly",
+    price: "$450",
+    priceNote: "from",
+    delivery: "3–7 days",
+    forWho: "A business with one obvious time drain and clear rules.",
+    includes: [
+      "One end-to-end automated workflow",
+      "Up to 3 system integrations",
+      "Error handling and retry logic",
+      "Testing against your real data",
+      "Documentation and handover call",
+      "14 days of post-launch support",
     ],
-    tiers: [
-      { name: "Starter", price: "$499", delivery: "5–7 days", desc: "1 platform + basic scheduling" },
-      { name: "Professional", price: "$1,200", delivery: "10–14 days", desc: "Multi-platform + AI content + campaigns" },
-      { name: "Enterprise", price: "$2,500+", delivery: "3–4 weeks", desc: "Full suite + custom AI + analytics" },
-    ],
+    excludes: ["AI agents", "Custom interfaces"],
+    cta: "Discuss a workflow",
+    featured: false,
   },
   {
-    icon: "💰",
-    category: "Finance, Invoicing & Payment Automation",
-    desc: "End-to-end automation from invoice generation to payment confirmation and receipt delivery.",
-    color: "var(--primary-text)",
-    badge: "Best Seller",
-    services: [
-      "Automated Invoice Generation & Delivery",
-      "Automated Payment Confirmation & Receipt",
-      "Invoice → Payment → Receipt Workflow",
-      "Automated Payment Reminder System",
-      "Customer Payment Status Tracking",
-      "Invoice PDF Generation",
-      "Automated Transaction Record Management",
-      "Financial Notification System",
+    name: "Business System",
+    tagline: "Several processes, working together",
+    price: "$1,200",
+    priceNote: "from",
+    delivery: "2–3 weeks",
+    forWho: "A growing business ready to automate a whole function — sales, finance or support.",
+    includes: [
+      "Multi-step system across several workflows",
+      "Unlimited system integrations",
+      "AI in the loop where it earns its place",
+      "Database and persistent state",
+      "Monitoring and failure alerts",
+      "Team training session",
+      "30 days of post-launch support",
     ],
-    tiers: [
-      { name: "Starter", price: "$399", delivery: "3–5 days", desc: "Invoice + receipt automation" },
-      { name: "Professional", price: "$899", delivery: "7–10 days", desc: "Full payment workflow + reminders" },
-      { name: "Enterprise", price: "$1,800+", delivery: "2–3 weeks", desc: "Custom ERP integration + full automation" },
-    ],
+    excludes: [],
+    cta: "Discuss a system",
+    featured: true,
   },
   {
-    icon: "🤝",
-    category: "Customer Service & Experience Automation",
-    desc: "AI-powered chatbots, voice agents, and automated support systems that delight your customers 24/7.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "AI Customer Service Chatbot",
-      "AI Website Chatbot",
-      "AI Voice Agent",
-      "AI Customer Enquiry System",
-      "Automated Customer Support",
-      "AI FAQ / Knowledge Base",
-      "AI Customer Qualification",
-      "Customer Follow-up Automation",
-      "AI Appointment/Booking Assistant",
+    name: "Agentic & Custom",
+    tagline: "Systems that decide, not just execute",
+    price: "$3,000",
+    priceNote: "from",
+    delivery: "4–8 weeks",
+    forWho: "Teams needing AI agents, voice systems or retrieval over their own documents.",
+    includes: [
+      "AI agents with tool use and memory",
+      "RAG pipelines and vector databases",
+      "Voice or multi-channel conversational AI",
+      "Custom dashboards and internal tools",
+      "Staged rollout with shadow-mode testing",
+      "Full architecture documentation",
+      "60 days of post-launch support",
     ],
-    tiers: [
-      { name: "Starter", price: "$599", delivery: "5–7 days", desc: "FAQ chatbot + basic responses" },
-      { name: "Professional", price: "$1,500", delivery: "10–14 days", desc: "AI chatbot + voice + qualification" },
-      { name: "Enterprise", price: "$3,000+", delivery: "3–4 weeks", desc: "Full AI support suite + CRM integration" },
-    ],
-  },
-  {
-    icon: "📅",
-    category: "Booking & Appointment Automation",
-    desc: "Intelligent scheduling systems that book, confirm, and remind — so you never miss an appointment.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "AI Appointment Booking System",
-      "Telegram → Google Calendar Integration",
-      "Automated Calendar Scheduling",
-      "Healthcare Booking Assistant",
-      "Automated Booking Confirmation",
-      "Automated Appointment Reminders",
-      "Customer → AI → Calendar → Confirmation Workflow",
-    ],
-    tiers: [
-      { name: "Starter", price: "$349", delivery: "3–5 days", desc: "Calendar booking + confirmations" },
-      { name: "Professional", price: "$799", delivery: "7–10 days", desc: "AI booking + reminders + Telegram" },
-      { name: "Enterprise", price: "$1,500+", delivery: "2–3 weeks", desc: "Multi-channel + custom AI assistant" },
-    ],
-  },
-  {
-    icon: "👥",
-    category: "HR & Staff Management Automation",
-    desc: "Automated staff monitoring, alerts, and reporting systems built on your existing Excel/SharePoint data.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Automated Staff Monitoring System",
-      "Excel & SharePoint Staff Monitoring",
-      "Automated Staff Alerts & Notifications",
-      "Employee Record Monitoring",
-      "Automated Reporting from Staff Data",
-      "Condition-based Employee Notifications",
-      "Excel → Alert Workflows",
-    ],
-    tiers: [
-      { name: "Starter", price: "$449", delivery: "5–7 days", desc: "Excel monitoring + basic alerts" },
-      { name: "Professional", price: "$1,000", delivery: "10–14 days", desc: "SharePoint + smart alerts + reports" },
-      { name: "Enterprise", price: "$2,000+", delivery: "2–3 weeks", desc: "Full HR automation + custom dashboards" },
-    ],
-  },
-  {
-    icon: "📊",
-    category: "Data & Business Intelligence Automation",
-    desc: "Automated reporting, KPI monitoring, and data pipelines that keep you informed without manual effort.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Automated Business Reporting",
-      "Automated Excel & Data Collection",
-      "Automated Data Validation",
-      "Automated Dashboard Data Preparation",
-      "Automated KPI/Metrics Monitoring",
-      "Automated Business Alerts",
-      "Google Forms → Database Automation",
-      "Automated Data-processing Workflows",
-    ],
-    tiers: [
-      { name: "Starter", price: "$499", delivery: "5–7 days", desc: "Automated reporting + alerts" },
-      { name: "Professional", price: "$1,200", delivery: "10–14 days", desc: "KPI monitoring + dashboards + pipelines" },
-      { name: "Enterprise", price: "$2,500+", delivery: "3–4 weeks", desc: "Full BI automation + custom integrations" },
-    ],
-  },
-  {
-    icon: "🗄️",
-    category: "Database & Record Management Automation",
-    desc: "Automated database workflows that capture, update, and manage your business records in real time.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Google Form → Supabase Automation",
-      "Automated Record Creation & Updates",
-      "Automated Customer Database Management",
-      "Automated Lead Database Management",
-      "Automated Student Record Management",
-      "Unique ID Generation & Assignment",
-      "Database → Email/Notification Automation",
-    ],
-    tiers: [
-      { name: "Starter", price: "$399", delivery: "3–5 days", desc: "Form → database + notifications" },
-      { name: "Professional", price: "$899", delivery: "7–10 days", desc: "Full record management + ID generation" },
-      { name: "Enterprise", price: "$1,800+", delivery: "2–3 weeks", desc: "Multi-source DB automation + custom logic" },
-    ],
-  },
-  {
-    icon: "📧",
-    category: "Email Automation",
-    desc: "Personalized, automated email systems — from welcome sequences to bulk campaigns and follow-ups.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Automated Email Campaign System",
-      "Personalized Email Generation",
-      "Google Form → Personalized Email",
-      "Automated Welcome & Confirmation Emails",
-      "Automated Invoice & Receipt Emails",
-      "Automated Newsletter & Follow-up Emails",
-      "Bulk Email Automation",
-      "Email → Database Workflows",
-    ],
-    tiers: [
-      { name: "Starter", price: "$299", delivery: "3–5 days", desc: "Welcome + confirmation automation" },
-      { name: "Professional", price: "$699", delivery: "7–10 days", desc: "Full campaign + personalization system" },
-      { name: "Enterprise", price: "$1,500+", delivery: "2–3 weeks", desc: "Bulk + segmentation + CRM sync" },
-    ],
-  },
-  {
-    icon: "🧠",
-    category: "AI Knowledge & Document Automation",
-    desc: "RAG-powered AI systems that let you and your team instantly query company documents and knowledge bases.",
-    color: "var(--accent-text)",
-    badge: "Advanced",
-    services: [
-      "AI PDF Chatbot",
-      "AI Document Q&A System",
-      "RAG-based Knowledge Assistant",
-      "AI Knowledge Base Builder",
-      "Document Search & Retrieval",
-      "Company Knowledge Assistant",
-      "Internal Documentation Assistant",
-      "PDF → Embeddings → Vector DB → AI",
-    ],
-    tiers: [
-      { name: "Starter", price: "$799", delivery: "7–10 days", desc: "PDF chatbot + basic Q&A" },
-      { name: "Professional", price: "$1,800", delivery: "2–3 weeks", desc: "Full RAG system + vector DB + UI" },
-      { name: "Enterprise", price: "$3,500+", delivery: "4–6 weeks", desc: "Multi-source knowledge system + custom AI" },
-    ],
-  },
-  {
-    icon: "🤖",
-    category: "Agentic AI & Intelligent Workflow Automation",
-    desc: "Next-generation AI agents that don't just automate — they understand, reason, decide, and take action.",
-    color: "var(--accent-text)",
-    badge: "Premium",
-    services: [
-      "AI Agents (custom-built)",
-      "Agentic Customer Support System",
-      "AI Lead Qualification Agent",
-      "AI Booking Agent",
-      "AI Research & Knowledge Agent",
-      "Multi-step AI Workflows",
-      "AI + n8n Agentic Workflows",
-      "Tool-using AI Agents",
-    ],
-    tiers: [
-      { name: "Starter", price: "$1,200", delivery: "10–14 days", desc: "Single-task AI agent" },
-      { name: "Professional", price: "$2,800", delivery: "3–4 weeks", desc: "Multi-tool agent + workflow integration" },
-      { name: "Enterprise", price: "$5,000+", delivery: "4–8 weeks", desc: "Full agentic system + custom tools + deploy" },
-    ],
-  },
-  {
-    icon: "🎓",
-    category: "Education & Training Automation",
-    desc: "Complete student lifecycle automation — from registration and payments to communications and follow-ups.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Automated Student Registration",
-      "Automated Student ID Generation",
-      "Student Database Management",
-      "Automated Student Emails & Notifications",
-      "Automated Invoice & Payment Confirmation",
-      "Automated Receipts for Students",
-      "Training Marketing Automation",
-      "Scholarship Application Automation",
-      "Automated Cohort Communication",
-    ],
-    tiers: [
-      { name: "Starter", price: "$499", delivery: "5–7 days", desc: "Registration + ID + emails" },
-      { name: "Professional", price: "$1,200", delivery: "10–14 days", desc: "Full student lifecycle automation" },
-      { name: "Enterprise", price: "$2,500+", delivery: "3–4 weeks", desc: "LMS integration + marketing + payments" },
-    ],
-  },
-  {
-    icon: "📱",
-    category: "Telegram & Messaging Automation",
-    desc: "Business assistants and automation workflows delivered through Telegram and messaging platforms.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "Telegram AI Assistant",
-      "Telegram → Google Calendar Booking Bot",
-      "Telegram AI Voice/Message Interactions",
-      "Automated Telegram Notifications",
-      "Telegram → n8n → AI Workflows",
-      "Messaging-based Business Assistants",
-    ],
-    tiers: [
-      { name: "Starter", price: "$349", delivery: "3–5 days", desc: "Telegram bot + basic automation" },
-      { name: "Professional", price: "$799", delivery: "7–10 days", desc: "AI Telegram assistant + calendar + AI" },
-      { name: "Enterprise", price: "$1,500+", delivery: "2–3 weeks", desc: "Multi-platform messaging + full AI" },
-    ],
-  },
-  {
-    icon: "🎥",
-    category: "Content & YouTube Automation",
-    desc: "AI-powered content pipelines that generate, publish, and distribute video and social content automatically.",
-    color: "var(--primary-text)",
-    badge: null,
-    services: [
-      "AI YouTube Automation System",
-      "Automated Video Content Generation",
-      "AI Script Generation",
-      "AI Video Generation & Publishing",
-      "Automated Content Publishing",
-      "Social Media Content Repurposing",
-      "AI Content Distribution System",
-    ],
-    tiers: [
-      { name: "Starter", price: "$599", delivery: "5–7 days", desc: "Script + publishing automation" },
-      { name: "Professional", price: "$1,400", delivery: "10–14 days", desc: "AI video + repurposing + distribution" },
-      { name: "Enterprise", price: "$2,800+", delivery: "3–4 weeks", desc: "Full content factory + multi-platform" },
-    ],
+    excludes: [],
+    cta: "Discuss a custom build",
+    featured: false,
   },
 ];
 
-export default function ServicePackagesPage() {
+/* Comparison rows — value is either boolean or a short string */
+const comparison: { label: string; values: (boolean | string)[] }[] = [
+  { label: "Workflows included", values: ["1", "Up to 5", "Unlimited"] },
+  { label: "System integrations", values: ["Up to 3", "Unlimited", "Unlimited"] },
+  { label: "AI in the workflow", values: [false, true, true] },
+  { label: "AI agents with tool use", values: [false, false, true] },
+  { label: "Retrieval over your documents", values: [false, false, true] },
+  { label: "Voice / conversational AI", values: [false, false, true] },
+  { label: "Database & persistent state", values: [false, true, true] },
+  { label: "Monitoring & failure alerts", values: [false, true, true] },
+  { label: "Team training session", values: [false, true, true] },
+  { label: "Post-launch support", values: ["14 days", "30 days", "60 days"] },
+  { label: "Typical delivery", values: ["3–7 days", "2–3 weeks", "4–8 weeks"] },
+];
+
+/* Included in every engagement, regardless of tier */
+const alwaysIncluded = [
+  { icon: KeyRound, title: "You own everything", desc: "Built on your accounts and infrastructure. Nothing is hostage to my login." },
+  { icon: FileText, title: "Written documentation", desc: "How it works, how to change it, and what to do when something breaks." },
+  { icon: Shield, title: "Failure handling", desc: "Retries, alerts and a defined fallback. Silent failure is not acceptable." },
+  { icon: Headphones, title: "A support window", desc: "Time after launch to fix anything real use uncovers, at no extra cost." },
+];
+
+/* What can actually be built — reference, not a price list */
+const capabilities = [
+  { area: "Sales & Lead Generation", items: "Lead qualification, prospecting pipelines, instant enquiry response, CRM sync" },
+  { area: "Finance & Invoicing", items: "Invoice generation, payment tracking, reminders, receipts, expense capture" },
+  { area: "Customer Support", items: "AI support agents, ticket triage, order status, feedback analysis" },
+  { area: "Booking & Scheduling", items: "Self-service booking, confirmations, reminders, calendar sync" },
+  { area: "HR & Staff Operations", items: "Onboarding sequences, staff monitoring, condition-based alerts, reporting" },
+  { area: "Data & Reporting", items: "Automated reports, KPI monitoring, dashboards, data pipelines" },
+  { area: "Marketing & Content", items: "Content repurposing, multi-channel publishing, email sequences, newsletters" },
+  { area: "Documents & Records", items: "Document generation, database automation, ID assignment, record management" },
+];
+
+const process = [
+  { step: "01", title: "Free discovery call", desc: "20 minutes. You describe the process, I tell you honestly whether automating it is worth it." },
+  { step: "02", title: "Fixed-price proposal", desc: "Written scope, price and delivery date. No hourly billing and no moving numbers." },
+  { step: "03", title: "Build and test", desc: "I build it, then run it against your real data before it touches anything live." },
+  { step: "04", title: "Handover and support", desc: "Training, documentation and a support window while the system beds in." },
+];
+
+const faqs = [
+  {
+    q: "Why is the price a range rather than a fixed number?",
+    a: "Because the same sentence can describe a three-day job or a three-week one. \"Automate my invoicing\" means something different for a business with clean data in one system than for one with invoices in three places and four undocumented exceptions. The tier prices are honest starting points; you get a fixed number in writing after the discovery call, before any work begins.",
+  },
+  {
+    q: "What are the ongoing costs after you hand it over?",
+    a: "Two things: the automation platform, and AI model usage if the system uses AI. Self-hosted n8n is a flat server cost that does not scale with volume; Make.com and Zapier charge per operation, so they scale with success. I will model your expected monthly cost during the proposal rather than leaving you to discover it on the first invoice.",
+  },
+  {
+    q: "Do you offer ongoing support after the included window?",
+    a: "Yes, on a monthly retainer covering monitoring, fixes, and new workflows as you grow. Most clients start without one and add it once the system is genuinely load-bearing. It is optional, and I will tell you if I think you do not need it.",
+  },
+  {
+    q: "What if the project turns out to be bigger than the tier suggests?",
+    a: "You find out in the proposal, not halfway through. If discovery reveals the work is larger than expected, I re-scope and re-quote before starting. I do not begin work and then come back asking for more.",
+  },
+  {
+    q: "Can I start small and expand later?",
+    a: "That is usually the right approach. Start with the single workflow that wastes the most time, see it working, then decide whether to go further. Systems built at the lower tier are designed so they can be extended rather than rebuilt.",
+  },
+  {
+    q: "What if you think my project is not worth doing?",
+    a: "I will say so on the call, and explain why. Processes that change monthly, run a handful of times a year, or where nobody can explain the current rules are usually better fixed than automated. Turning down the wrong project is cheaper for both of us than finishing it.",
+  },
+];
+
+function Cell({ value }: { value: boolean | string }) {
+  if (typeof value === "string") {
+    return <span className="text-sm font-medium" style={{ color: "var(--text-body)" }}>{value}</span>;
+  }
+  return value ? (
+    <Check className="w-[18px] h-[18px] mx-auto" style={{ color: "var(--success)" }} aria-label="Included" />
+  ) : (
+    <Minus className="w-[18px] h-[18px] mx-auto" style={{ color: "var(--text-subtle)", opacity: 0.5 }} aria-label="Not included" />
+  );
+}
+
+export default function PricingPage() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "4rem" }}>
+      {/* ══════════════ HERO ══════════════ */}
+      <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
-        <div className="glow" style={{ top: "-6rem", right: "8%", width: "30rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
+        <div className="glow" style={{ top: "-6rem", left: "50%", transform: "translateX(-50%)", width: "32rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative text-center">
           <div className="hero-in">
-          <span className="eyebrow justify-center">Pricing</span>
-          <h1 className="mb-6 mx-auto max-w-4xl" style={{ fontWeight: 800 }}>
-            AI automation packages built for <span style={{ color: "var(--primary-text)" }}>your business</span>
-          </h1>
-          <p className="section-lead mx-auto mb-10 text-center">
-            13 categories, transparent pricing and fixed delivery times. Every package is
-            built custom — you pay for results, not hours.
-          </p>
-
-          {/* Stats row */}
-          <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {[
-              { value: "13", label: "Service Categories" },
-              { value: "50+", label: "Automation Types" },
-              { value: "3–8 wks", label: "Avg Delivery" },
-              { value: "100%", label: "Custom Built" },
-            ].map((s) => (
-              <div key={s.label} className="card px-6 py-4 rounded-2xl text-center" style={{ minWidth: "120px" }}>
-                <p className="text-2xl font-bold" style={{ color: "var(--primary-text)" }}>{s.value}</p>
-                <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
-              <Calendar className="w-[18px] h-[18px]" /> Book a free consultation <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20am%20interested%20in%20your%20service%20packages" target="_blank" rel="noopener noreferrer" className="btn-whatsapp btn-lg">
-              <MessageCircle className="w-[18px] h-[18px]" /> WhatsApp Israel
-            </a>
-          </div>
+            <span className="eyebrow justify-center">Pricing</span>
+            <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
+              Fixed scope, fixed price, <span style={{ color: "var(--primary-text)" }}>fixed date</span>
+            </h1>
+            <p className="section-lead mx-auto text-center mb-9">
+              Three ways to work together, priced on outcome rather than hours. Every
+              engagement is quoted in writing before anything is built.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
+                <Calendar className="w-[18px] h-[18px]" /> Book a free call <ArrowRight className="w-4 h-4" />
+              </a>
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-secondary btn-lg">
+                <MessageCircle className="w-[18px] h-[18px]" /> Ask a question
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Note ─────────────────────────────────────────────── */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ backgroundColor: "var(--bg-surface)", borderBlock: "1px solid var(--border)" }}>
-        <div className="container-wide mx-auto flex flex-wrap items-center justify-center gap-6 text-sm" style={{ color: "var(--text-muted)" }}>
-          <div className="flex items-center gap-2"><Zap className="w-4 h-4" style={{ color: "var(--primary-text)" }} /> All packages are <strong style={{ color: "var(--text-primary)" }}>custom built</strong> — no templates</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" style={{ color: "var(--primary-text)" }} /> <strong style={{ color: "var(--text-primary)" }}>Free 30-min consultation</strong> before you commit</div>
-          <div className="flex items-center gap-2"><Star className="w-4 h-4" style={{ color: "var(--primary-text)" }} /> Prices in <strong style={{ color: "var(--text-primary)" }}>USD</strong> — payment plans available</div>
-        </div>
-      </div>
+      {/* ══════════════ TIERS ══════════════ */}
+      <section className="section-padding" style={{ paddingTop: "3rem" }}>
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            {tiers.map((t, i) => (
+              <Reveal key={t.name} delay={i * 80}>
+                <div
+                  className="card h-full flex flex-col relative"
+                  style={
+                    t.featured
+                      ? { borderColor: "var(--primary)", borderWidth: "2px", boxShadow: "var(--shadow-lg)" }
+                      : undefined
+                  }
+                >
+                  {t.featured && (
+                    <span
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap"
+                      style={{ backgroundColor: "var(--primary-fill)", color: "#fff", boxShadow: "var(--shadow-brand)" }}
+                    >
+                      Most projects start here
+                    </span>
+                  )}
 
-      {/* ── Packages Grid ─────────────────────────────────────── */}
+                  <div className="p-8 pb-6" style={{ borderBottom: "1px solid var(--border)" }}>
+                    <h2 className="mb-1.5" style={{ fontSize: "1.3rem" }}>{t.name}</h2>
+                    <p className="text-sm mb-6" style={{ color: "var(--primary-text)" }}>{t.tagline}</p>
+
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-xs font-medium" style={{ color: "var(--text-subtle)" }}>
+                        {t.priceNote}
+                      </span>
+                      <span
+                        className="font-bold"
+                        style={{ fontSize: "2.5rem", color: "var(--text-primary)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}
+                      >
+                        {t.price}
+                      </span>
+                      <span className="text-sm" style={{ color: "var(--text-subtle)" }}>USD</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 mb-6 text-sm" style={{ color: "var(--text-muted)" }}>
+                      <Clock className="w-4 h-4" style={{ color: "var(--primary-text)" }} />
+                      Delivered in {t.delivery}
+                    </div>
+
+                    <a
+                      href={`https://wa.me/2348139464398?text=${encodeURIComponent(
+                        `Hi Israel, I am interested in the "${t.name}" tier and would like to discuss my project.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={t.featured ? "btn-primary w-full" : "btn-secondary w-full"}
+                    >
+                      {t.cta} <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+
+                  <div className="p-8 pt-6 flex flex-col flex-1">
+                    <p className="text-sm mb-6 leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                      <strong style={{ color: "var(--text-primary)" }}>Right for you if:</strong> {t.forWho}
+                    </p>
+
+                    <p className="text-xs font-semibold uppercase tracking-[0.1em] mb-4" style={{ color: "var(--text-subtle)" }}>
+                      What you get
+                    </p>
+                    <ul className="space-y-2.5 mb-6">
+                      {t.includes.map((inc) => (
+                        <li key={inc} className="flex items-start gap-2.5">
+                          <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--success)" }} />
+                          <span className="text-sm" style={{ color: "var(--text-body)" }}>{inc}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {t.excludes.length > 0 && (
+                      <ul className="space-y-2.5 mt-auto pt-5" style={{ borderTop: "1px solid var(--border)" }}>
+                        {t.excludes.map((ex) => (
+                          <li key={ex} className="flex items-start gap-2.5">
+                            <Minus className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--text-subtle)", opacity: 0.6 }} />
+                            <span className="text-sm" style={{ color: "var(--text-subtle)" }}>{ex}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={120}>
+            <p className="text-center text-sm mt-8" style={{ color: "var(--text-subtle)" }}>
+              Prices in USD. Payment plans available. Ongoing running costs (platform and AI usage)
+              are modelled in your proposal, not left as a surprise.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══════════════ COMPARISON ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-12">
+              <span className="eyebrow">Compare</span>
+              <h2 className="mb-4">What is included at each tier</h2>
+              <p className="section-lead">
+                The honest version — including what each tier does not cover.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div className="card overflow-hidden">
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "44rem" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "var(--bg-inset)" }}>
+                      <th
+                        className="text-left text-sm font-semibold"
+                        style={{ padding: "1rem 1.25rem", color: "var(--text-primary)" }}
+                      >
+                        &nbsp;
+                      </th>
+                      {tiers.map((t) => (
+                        <th
+                          key={t.name}
+                          className="text-center text-sm font-semibold"
+                          style={{
+                            padding: "1rem 1.25rem",
+                            color: t.featured ? "var(--primary-text)" : "var(--text-primary)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {t.name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comparison.map((row) => (
+                      <tr key={row.label}>
+                        <td
+                          className="text-sm"
+                          style={{ padding: "0.85rem 1.25rem", borderTop: "1px solid var(--border)", color: "var(--text-body)" }}
+                        >
+                          {row.label}
+                        </td>
+                        {row.values.map((v, i) => (
+                          <td
+                            key={i}
+                            className="text-center"
+                            style={{
+                              padding: "0.85rem 1.25rem",
+                              borderTop: "1px solid var(--border)",
+                              backgroundColor: tiers[i].featured ? "var(--primary-soft)" : undefined,
+                            }}
+                          >
+                            <Cell value={v} />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══════════════ ALWAYS INCLUDED ══════════════ */}
       <section className="section-padding">
-        <div className="container-wide px-4 sm:px-6 lg:px-8 mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {packages.map((pkg, i) => (
-              <div
-                key={i}
-                className="card rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col"
-                style={{ borderColor: pkg.color === "var(--accent)" ? "color-mix(in srgb, var(--accent) 26%, transparent)" : "var(--primary-soft)" }}
-              >
-                {/* Card header */}
-                <div className="p-6 pb-4" style={{ background: pkg.color === "var(--accent)" ? "linear-gradient(135deg, var(--accent-soft), var(--accent-soft))" : "linear-gradient(135deg, var(--primary-soft), var(--primary-soft))" }}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{pkg.icon}</span>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>{pkg.category}</h2>
-                          {pkg.badge && (
-                            <span className="text-xs font-bold px-2 py-0.5 rounded-full"
-                              style={{
-                                backgroundColor: pkg.badge === "Premium" || pkg.badge === "Advanced" ? "var(--accent-soft)" : "var(--primary-soft)",
-                                color: pkg.badge === "Premium" || pkg.badge === "Advanced" ? "var(--accent-text)" : "var(--primary-text)",
-                              }}>
-                              {pkg.badge === "Best Seller" ? "⭐ " : ""}{pkg.badge}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>{pkg.desc}</p>
-                      </div>
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-12">
+              <span className="eyebrow">Every engagement</span>
+              <h2 className="mb-4">Included regardless of what you spend</h2>
+              <p className="section-lead">
+                These are not upsells. They are what separates a system you own from a
+                dependency you rent.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {alwaysIncluded.map((a, i) => {
+              const Icon = a.icon;
+              return (
+                <Reveal key={a.title} delay={i * 70}>
+                  <div className="card card-hover p-7 h-full">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                      style={{ backgroundColor: "var(--primary-soft)", border: "1px solid var(--primary-line)" }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: "var(--primary-text)" }} />
+                    </div>
+                    <h3 className="mb-2">{a.title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{a.desc}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ RETAINER ══════════════ */}
+      <section style={{ paddingBottom: "5rem" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="card p-8 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-8">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <Repeat className="w-5 h-5" style={{ color: "var(--primary-text)" }} />
+                  <span className="badge badge-blue">Optional</span>
+                </div>
+                <h2 className="mb-3" style={{ fontSize: "clamp(1.4rem, 2.4vw, 1.9rem)" }}>
+                  Ongoing support retainer
+                </h2>
+                <p className="leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                  Once a system is genuinely load-bearing, most clients want someone watching it.
+                  A retainer covers monitoring, fixes when an API changes, and new workflows as you
+                  grow — billed monthly, cancellable, and only worth taking once you actually need it.
+                </p>
+              </div>
+              <div className="lg:col-span-4 lg:text-right">
+                <div className="flex items-baseline gap-2 lg:justify-end mb-1">
+                  <span className="text-xs font-medium" style={{ color: "var(--text-subtle)" }}>from</span>
+                  <span
+                    className="font-bold"
+                    style={{ fontSize: "2.1rem", color: "var(--text-primary)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}
+                  >
+                    $300
+                  </span>
+                  <span className="text-sm" style={{ color: "var(--text-subtle)" }}>/month</span>
+                </div>
+                <p className="text-sm mb-5" style={{ color: "var(--text-subtle)" }}>Scoped to your systems</p>
+                <a
+                  href={`https://wa.me/2348139464398?text=${encodeURIComponent(
+                    "Hi Israel, I would like to discuss an ongoing support retainer."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary"
+                >
+                  Discuss a retainer <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══════════════ PROCESS ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-12">
+              <span className="eyebrow">How it works</span>
+              <h2 className="mb-4">From first call to working system</h2>
+              <p className="section-lead">
+                You know the price and the date before any work starts.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {process.map((p, i) => (
+              <Reveal key={p.step} delay={i * 80}>
+                <div className="card card-hover p-7 h-full">
+                  <span
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-sm font-bold mb-5"
+                    style={{ backgroundColor: "var(--primary-fill)", color: "#fff", fontFamily: "var(--font-display)" }}
+                  >
+                    {p.step}
+                  </span>
+                  <h3 className="mb-2">{p.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{p.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ CAPABILITIES ══════════════ */}
+      <section className="section-padding">
+        <div className="container-wide">
+          <Reveal>
+            <div className="max-w-2xl mb-12">
+              <span className="eyebrow">What can be built</span>
+              <h2 className="mb-4">The kinds of systems these tiers cover</h2>
+              <p className="section-lead">
+                Any of these can be a single workflow or a full system — the tier depends on
+                scope, not on subject.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-px rounded-2xl overflow-hidden"
+            style={{ backgroundColor: "var(--border)", border: "1px solid var(--border)" }}>
+            {capabilities.map((c, i) => (
+              <Reveal key={c.area} delay={Math.min(i, 6) * 50}>
+                <div className="p-6 h-full" style={{ backgroundColor: "var(--bg)" }}>
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="w-[18px] h-[18px] flex-shrink-0 mt-0.5" style={{ color: "var(--primary-text)" }} />
+                    <div>
+                      <h3 className="mb-1.5" style={{ fontSize: "1rem" }}>{c.area}</h3>
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{c.items}</p>
                     </div>
                   </div>
                 </div>
-
-                {/* Services included */}
-                <div className="px-6 pb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: pkg.color === "var(--accent)" ? "var(--accent-text)" : "var(--primary-text)" }}>What&apos;s Included</p>
-                  <div className="grid grid-cols-1 gap-1.5">
-                    {pkg.services.map((s) => (
-                      <div key={s} className="flex items-start gap-2 text-sm" style={{ color: "var(--text-muted)" }}>
-                        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: pkg.color === "var(--accent)" ? "var(--accent-text)" : "var(--primary-text)" }} />
-                        {s}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Pricing tiers */}
-                <div className="px-6 pb-6 mt-auto">
-                  <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: pkg.color === "var(--accent)" ? "var(--accent-text)" : "var(--primary-text)" }}>Pricing Tiers</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {pkg.tiers.map((tier, ti) => (
-                      <div
-                        key={ti}
-                        className="rounded-xl p-3 text-center transition-all"
-                        style={{
-                          backgroundColor: ti === 1 ? (pkg.color === "var(--accent)" ? "var(--accent)" : "var(--primary-fill)") : "var(--bg-card)",
-                          border: ti === 1 ? "none" : `1px solid ${pkg.color === "var(--accent)" ? "color-mix(in srgb, var(--accent) 26%, transparent)" : "var(--primary-soft)"}`,
-                        }}
-                      >
-                        <p className="text-xs font-bold mb-1" style={{ color: ti === 1 ? "#ffffff" : "var(--text-muted)" }}>{tier.name}</p>
-                        <p className="text-lg font-bold" style={{ color: ti === 1 ? "white" : "var(--text-primary)" }}>{tier.price}</p>
-                        <div className="flex items-center justify-center gap-1 mt-1">
-                          <Clock className="w-3 h-3" style={{ color: ti === 1 ? "rgba(255,255,255,0.95)" : "var(--text-subtle)" }} />
-                          <p className="text-xs" style={{ color: ti === 1 ? "rgba(255,255,255,0.95)" : "var(--text-subtle)" }}>{tier.delivery}</p>
-                        </div>
-                        <p className="text-xs mt-1.5 leading-tight" style={{ color: ti === 1 ? "rgba(255,255,255,0.92)" : "var(--text-subtle)" }}>{tier.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <a
-                    href={`https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20am%20interested%20in%20your%20${encodeURIComponent(pkg.category)}%20package`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all"
-                    style={{ backgroundColor: "var(--primary-soft)", color: "var(--primary-text)", border: "1px solid var(--primary-line)" }}
-                  >
-                    <MessageCircle className="w-4 h-4" /> Get a Quote
-                  </a>
-                </div>
-              </div>
+              </Reveal>
             ))}
+          </div>
+
+          <Reveal delay={100}>
+            <p className="text-center text-sm mt-8" style={{ color: "var(--text-subtle)" }}>
+              Not listed?{" "}
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--primary-text)" }}>
+                Ask anyway
+              </a>{" "}
+              — most business processes automate the same way underneath.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══════════════ FAQ ══════════════ */}
+      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <Reveal className="lg:col-span-5">
+              <span className="eyebrow">Pricing FAQ</span>
+              <h2 className="mb-4">The questions people actually ask</h2>
+              <p className="section-lead mb-7">
+                If something here is still unclear, message me directly. I would rather answer
+                it now than have you guess.
+              </p>
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                <MessageCircle className="w-[18px] h-[18px]" /> Ask about pricing
+              </a>
+            </Reveal>
+
+            <Reveal delay={100} className="lg:col-span-7">
+              <Faq items={faqs} />
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="section-padding relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, var(--primary-soft) 0%, var(--accent-soft) 100%)" }} />
-        <div className="container-wide px-4 sm:px-6 lg:px-8 mx-auto relative z-10 text-center">
-          <span className="badge badge-blue mb-6">Not Sure Which Package?</span>
-          <h2 className="text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Let&apos;s Talk About Your Business</h2>
-          <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
-            Book a free 30-minute consultation. I&apos;ll listen to your challenges and recommend exactly what you need — no upsells, no fluff.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
-              <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you" target="_blank" rel="noopener noreferrer" className="btn-whatsapp py-3.5 px-8">
-              <MessageCircle className="w-5 h-5" /> WhatsApp Israel
-            </a>
-            <Link href="/services" className="btn-secondary py-3.5 px-8">
-              View All Services <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+      {/* ══════════════ CTA ══════════════ */}
+      <section className="section-padding">
+        <div className="container-wide">
+          <Reveal>
+            <div
+              className="rounded-3xl px-8 py-14 sm:px-14 sm:py-16 text-center"
+              style={{ background: "linear-gradient(135deg, var(--primary-fill) 0%, #003a96 100%)", boxShadow: "var(--shadow-xl)" }}
+            >
+              <h2 className="mb-4" style={{ color: "#fff" }}>Not sure which tier fits?</h2>
+              <p className="text-lg mb-9 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.84)" }}>
+                Describe the process on a free 20-minute call. I will tell you which tier it
+                falls into — or that it is not worth automating at all.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href={CAL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-lg inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: "#fff", color: "var(--primary-text)", boxShadow: "var(--shadow-lg)" }}
+                >
+                  <Calendar className="w-[18px] h-[18px]" /> Book free call <ArrowRight className="w-4 h-4" />
+                </a>
+                <Link
+                  href="/projects"
+                  className="btn-lg inline-flex items-center justify-center gap-2 rounded-xl font-semibold"
+                  style={{ backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
+                >
+                  See the work first
+                </Link>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
