@@ -5,6 +5,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
+import NewsletterPopup from "@/components/NewsletterPopup";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           <Footer />
           <WhatsAppFAB />
+          <NewsletterPopup />
         </ThemeProvider>
       </body>
     </html>
