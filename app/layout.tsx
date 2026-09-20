@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -73,6 +74,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <WhatsAppFAB />
           <NewsletterPopup />
         </ThemeProvider>
+        {/* Privacy-friendly visitor analytics (page views, referrers, top pages).
+            Requires Web Analytics to be enabled in the Vercel project settings. */}
+        <Analytics />
       </body>
     </html>
   );
