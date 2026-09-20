@@ -17,7 +17,7 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);

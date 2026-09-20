@@ -183,7 +183,7 @@ export default function AboutPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <a href="https://calendar.app.google/8Pfj98atpuSk14RH9" target="_blank" rel="noopener noreferrer" className="btn-primary">
                   <Calendar className="w-4 h-4" /> Book Free Call <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you" target="_blank" rel="noopener noreferrer" className="btn-secondary">
@@ -400,7 +400,7 @@ export default function AboutPage() {
             Let&apos;s talk about how AI can transform your business. First call is free — no pitch, just honest advice.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://calendar.app.google/6EJ6aPfh3ScRUw6V9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
+            <a href="https://calendar.app.google/8Pfj98atpuSk14RH9" target="_blank" rel="noopener noreferrer" className="btn-primary py-3.5 px-8">
               <Calendar className="w-5 h-5" /> Book Free Call <ArrowRight className="w-4 h-4" />
             </a>
             <a href="https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you" target="_blank" rel="noopener noreferrer" className="btn-whatsapp py-3.5 px-8">

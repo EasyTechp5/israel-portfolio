@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "View and download the resume of Israel Afolabi — AI Engineer, AI Automation Specialist and Agentic AI Builder.",
 };
 
-const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
 
 export default function ResumePage() {

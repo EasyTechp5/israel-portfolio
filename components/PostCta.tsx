@@ -1,6 +1,6 @@
 import { MessageCircle, Calendar, ArrowRight } from "lucide-react";
 
-const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 
 /**
  * End-of-article call to action. The WhatsApp link is pre-filled with the

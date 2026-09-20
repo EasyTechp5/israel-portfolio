@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, MessageCircle, Calendar, ArrowUpRight } from "lucide-react";
 
-const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
 
 const nav = [

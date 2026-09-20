@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
 };
 
-const CAL = "https://calendar.app.google/6EJ6aPfh3ScRUw6V9";
+const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA =
   "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20read%20your%20blog%20and%20I%20am%20interested%20in%20your%20AI%20automation%20services";
 
