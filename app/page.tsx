@@ -120,36 +120,12 @@ export default function HomePage() {
               </div>
 
               <div className="hero-in" style={{ "--in-delay": "140ms" } as React.CSSProperties}>
-                <p className="text-lg sm:text-xl leading-relaxed mb-9 max-w-2xl" style={{ color: "var(--text-muted)" }}>
+                <p className="text-lg sm:text-xl leading-relaxed max-w-2xl" style={{ color: "var(--text-muted)" }}>
                   I design intelligent automation that removes manual work, train teams to use AI
                   effectively, and help businesses scale — faster, leaner, smarter.
                 </p>
               </div>
 
-              <div className="hero-in" style={{ "--in-delay": "210ms" } as React.CSSProperties}>
-                <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                  <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
-                    <Calendar className="w-[18px] h-[18px]" />
-                    Book a free 20-min call
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                  <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-secondary btn-lg">
-                    <MessageCircle className="w-[18px] h-[18px]" />
-                    Chat on WhatsApp
-                  </a>
-                </div>
-              </div>
-
-              <div className="hero-in" style={{ "--in-delay": "280ms" } as React.CSSProperties}>
-                <div className="flex items-center gap-3 text-sm" style={{ color: "var(--text-subtle)" }}>
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4" style={{ color: "#f5a524", fill: "#f5a524" }} />
-                    ))}
-                  </div>
-                  <span>Trusted by <strong style={{ color: "var(--text-body)" }}>1,500+</strong> professionals and <strong style={{ color: "var(--text-body)" }}>10+</strong> organizations</span>
-                </div>
-              </div>
             </div>
 
             {/* Portrait */}

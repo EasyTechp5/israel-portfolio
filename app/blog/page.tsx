@@ -30,7 +30,6 @@ const WA =
   "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20read%20your%20blog%20and%20I%20am%20interested%20in%20your%20AI%20automation%20services";
 
 export default function BlogIndex() {
-  const [featured, ...rest] = allPosts;
 
   return (
     <>
@@ -56,60 +55,12 @@ export default function BlogIndex() {
         </div>
       </section>
 
-      {/* ══════════════ FEATURED ══════════════ */}
-      <section style={{ paddingBottom: "3rem" }}>
-        <div className="container-wide">
-          <Reveal>
-            <Link href={`/blog/${featured.slug}`} className="block group">
-              <article
-                className="card card-hover overflow-hidden grid grid-cols-1 lg:grid-cols-2"
-                style={{ minHeight: "20rem" }}
-              >
-                <div
-                  className="relative flex items-end p-8 sm:p-10"
-                  style={{ background: "linear-gradient(135deg, var(--primary-fill) 0%, #003a96 100%)", minHeight: "14rem" }}
-                >
-                  <div>
-                    <span
-                      className="inline-block px-2.5 py-1 rounded-full text-xs font-semibold mb-4"
-                      style={{ backgroundColor: "rgba(255,255,255,0.18)", color: "#fff" }}
-                    >
-                      Latest
-                    </span>
-                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.82)" }}>
-                      {featured.category} &nbsp;·&nbsp; {featured.readTime}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-8 sm:p-10 flex flex-col justify-center">
-                  <h2 className="mb-4" style={{ fontSize: "clamp(1.5rem, 2.4vw, 2rem)" }}>
-                    {featured.h1}
-                  </h2>
-                  <p className="leading-relaxed mb-6" style={{ color: "var(--text-muted)" }}>
-                    {featured.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <span className="text-sm" style={{ color: "var(--text-subtle)" }}>
-                      {formatDate(featured.date)}
-                    </span>
-                    <span className="link-arrow">
-                      Read article <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </article>
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ══════════════ GRID ══════════════ */}
-      <section className="section-padding" style={{ paddingTop: "1rem" }}>
+      <section className="section-padding" style={{ paddingTop: "2rem" }}>
         <div className="container-wide">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {rest.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 60}>
+            {allPosts.map((p, i) => (
+              <Reveal key={p.slug} delay={(i % 3) * 60}>
                 <Link href={`/blog/${p.slug}`} className="block h-full group">
                   <article className="card card-hover p-7 h-full flex flex-col">
                     <div className="flex items-center gap-2 mb-4 flex-wrap">

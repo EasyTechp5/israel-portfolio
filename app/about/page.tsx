@@ -199,32 +199,6 @@ export default function AboutPage() {
                 <div className="relative w-72 h-80 sm:w-80 sm:h-96 lg:w-96 lg:h-[460px] rounded-3xl overflow-hidden shadow-2xl" style={{ border: "2px solid var(--primary-line)" }}>
                   <Image src="/images/israel-hero.jpg" alt="Israel Afolabi" fill className="object-cover object-top" priority />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(4,8,16,0.5) 0%, transparent 50%)" }} />
-                  {/* Sits on the photo, so it stays dark in both themes */}
-                  <div
-                    className="absolute bottom-4 left-4 right-4 p-3 rounded-xl"
-                    style={{
-                      backgroundColor: "rgba(6, 9, 15, 0.72)",
-                      backdropFilter: "blur(10px)",
-                      WebkitBackdropFilter: "blur(10px)",
-                      border: "1px solid rgba(255,255,255,0.12)",
-                    }}
-                  >
-                    <p className="font-bold text-sm" style={{ color: "#ffffff" }}>Israel Afolabi</p>
-                    <p className="text-xs" style={{ color: "#8fbaff" }}>AI Engineer · EasyTech Academy</p>
-                  </div>
-                </div>
-                <div className="absolute -top-5 -right-5 card px-4 py-3 shadow-xl rounded-xl" style={{ border: "1px solid var(--primary-line)" }}>
-                  <p className="font-bold text-xl" style={{ color: "var(--text-primary)" }}>1500+</p>
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>People Trained</p>
-                </div>
-                <div className="absolute -bottom-5 -left-5 card px-4 py-3 shadow-xl rounded-xl" style={{ border: "1px solid var(--primary-line)" }}>
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: "var(--success)" }} />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ backgroundColor: "var(--success)" }} />
-                    </span>
-                    <p className="text-xs font-semibold" style={{ color: "var(--success)" }}>Available for projects</p>
-                  </div>
                 </div>
               </div>
             </div>
