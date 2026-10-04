@@ -11,6 +11,7 @@ const nav = [
   { href: "/projects", label: "Work" },
   { href: "/blog", label: "Blog" },
   { href: "/resume", label: "Resume" },
+  { href: "/automation-audit", label: "Free audit" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -164,7 +165,12 @@ export default function Footer() {
           className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p>© {year} Israel Afolabi. All rights reserved.</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>© {year} Israel Afolabi. All rights reserved.</span>
+            <Link href="/privacy" className="underline-offset-2 hover:underline hover:text-white">
+              Privacy Policy
+            </Link>
+          </p>
           <a
             href="https://easytech365.com"
             target="_blank"

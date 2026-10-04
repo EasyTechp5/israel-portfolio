@@ -22,6 +22,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://israel.easytech365.com"),
+  // "./" resolves to each page's own URL, so every page declares itself canonical
+  alternates: { canonical: "./" },
   title: "Israel Afolabi | AI Engineer | AI Automation Specialist | Agentic AI Builder",
   description:
     "I design intelligent systems that replace manual work with automation, helping businesses scale faster, reduce costs, and operate efficiently.",
@@ -45,14 +48,64 @@ export const metadata: Metadata = {
     siteName: "Israel Afolabi",
     locale: "en_US",
     type: "website",
-    images: [{ url: "https://israel.easytech365.com/og-israel.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Israel Afolabi | AI Engineer | AI Automation Specialist | Agentic AI Builder",
     description: "I design intelligent systems that replace manual work with automation.",
-    images: ["https://israel.easytech365.com/og-israel.jpg"],
   },
+};
+
+// Tells search engines who this site is about. Only facts that appear on the site.
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://israel.easytech365.com/#person",
+      name: "Israel Afolabi",
+      url: "https://israel.easytech365.com",
+      image: "https://israel.easytech365.com/images/israel-hero.jpg",
+      jobTitle: "AI Engineer and AI Automation Specialist",
+      description:
+        "AI automation engineer and consultant who designs automation systems and AI agents for businesses, and trains professionals in AI.",
+      address: { "@type": "PostalAddress", addressLocality: "Lagos", addressCountry: "NG" },
+      worksFor: { "@type": "Organization", name: "EasyTech Academy", url: "https://easytech365.com" },
+      sameAs: [
+        "https://www.linkedin.com/in/helloisrael/",
+        "https://github.com/EasyTechp5",
+        "https://www.youtube.com/@afolabiisraelolajide949",
+      ],
+      knowsAbout: [
+        "AI automation",
+        "Agentic AI",
+        "Workflow automation",
+        "n8n",
+        "Make.com",
+        "AI agents",
+        "Business intelligence",
+      ],
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://israel.easytech365.com/#service",
+      name: "Israel Afolabi — AI Automation",
+      url: "https://israel.easytech365.com",
+      image: "https://israel.easytech365.com/images/israel-hero.jpg",
+      description:
+        "AI automation, AI agents and AI training for businesses. Remote, working with clients worldwide from Lagos, Nigeria.",
+      provider: { "@id": "https://israel.easytech365.com/#person" },
+      areaServed: "Worldwide",
+      address: { "@type": "PostalAddress", addressLocality: "Lagos", addressCountry: "NG" },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://israel.easytech365.com/#website",
+      url: "https://israel.easytech365.com",
+      name: "Israel Afolabi",
+      publisher: { "@id": "https://israel.easytech365.com/#person" },
+    },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -60,6 +113,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+        />
         {/* Scroll-reveal starts hidden only when scripting is available, so the
             page still renders fully if JS is disabled or fails to load. */}
         <noscript>

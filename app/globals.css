@@ -648,3 +648,15 @@ p { text-wrap: pretty; }
 }
 
 .prose hr { border: 0; border-top: 1px solid var(--border); margin-block: 2.5em; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   PRINT — keeps the automation audit printout clean
+   ═══════════════════════════════════════════════════════════ */
+@media print {
+  header, footer, [role="dialog"], .glow, .grid-bg { display: none !important; }
+  a[aria-label*="WhatsApp"] { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .card { box-shadow: none !important; break-inside: avoid; }
+  section { padding-block: 1rem !important; }
+}

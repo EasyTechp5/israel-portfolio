@@ -77,12 +77,12 @@ export default function ProjectsPage() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Selected work</span>
             <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
-              {projects.length} systems I have built that{" "}
-              <span style={{ color: "var(--primary-text)" }}>gave time back</span>
+              {projects.length} automation and AI builds across{" "}
+              <span style={{ color: "var(--primary-text)" }}>{categories.length - 1} problem areas</span>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
-              Automation workflows, AI agents and advisory work — grouped by the kind of
-              problem they solve. Click any project to see the build.
+              Workflows, AI agents and advisory offers, grouped by the kind of problem they
+              solve. Open any one to see how it is built and what it is for.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">

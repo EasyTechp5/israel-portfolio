@@ -112,7 +112,6 @@ export default function NewsletterPopup() {
       await subscribe(name, email);
       markSubscribed();
       setStatus("done");
-      window.setTimeout(() => setOpen(false), 2600);
     } catch {
       setErrorMsg("Something went wrong. Please try again in a moment.");
       setStatus("error");
@@ -161,7 +160,7 @@ export default function NewsletterPopup() {
             <Mail className="w-5 h-5" style={{ color: "#fff" }} />
           </div>
           <h2 id="nl-title" className="text-white" style={{ fontSize: "1.4rem", lineHeight: 1.25 }}>
-            AI automation that actually works — in your inbox
+            Is your process worth automating? Find out free
           </h2>
         </div>
 
@@ -178,15 +177,19 @@ export default function NewsletterPopup() {
               <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
                 You&apos;re on the list.
               </p>
-              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-                Thanks — I&apos;ll be in touch with something useful soon.
+              <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+                Thanks — here is your free audit. It takes about three minutes.
               </p>
+              <a href="/automation-audit" className="btn-primary">
+                Open the free audit
+              </a>
             </div>
           ) : (
             <>
               <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--text-muted)" }}>
-                Occasional, practical emails on AI and automation for your business —
-                real systems, honest advice, no spam. Unsubscribe anytime.
+                Join the list for occasional, practical emails on AI and automation — real
+                systems, honest advice, no spam — and get my free 10-point automation audit
+                straight away.
               </p>
 
               <form onSubmit={onSubmit} noValidate>
@@ -252,9 +255,17 @@ export default function NewsletterPopup() {
                 </button>
               </form>
 
+              <p className="mt-4 text-xs text-center" style={{ color: "var(--text-subtle)" }}>
+                Unsubscribe anytime. See the{" "}
+                <a href="/privacy" className="underline" style={{ color: "var(--primary-text)" }}>
+                  Privacy Policy
+                </a>
+                .
+              </p>
+
               <button
                 onClick={close}
-                className="w-full mt-3 text-xs transition-colors"
+                className="w-full mt-2 text-xs transition-colors"
                 style={{ color: "var(--text-subtle)" }}
               >
                 No thanks, maybe later

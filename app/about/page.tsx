@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, CheckCircle2, Quote, ArrowUpRight } from "lucide-react";
 import Gallery, { type Shot } from "@/components/Gallery";
+import IntroVideoSection from "@/components/IntroVideo";
 
 export const metadata: Metadata = {
   title: "About | Israel Afolabi",
@@ -205,6 +206,13 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Intro video ───────────────────────────────────────── */}
+      <IntroVideoSection
+        eyebrow="In my own words"
+        heading="Hear the story from me"
+        lead="From the classroom to building automation for businesses. A short introduction, from me."
+      />
 
       {/* ── Career Timeline ───────────────────────────────────── */}
       <section className="section-padding" style={{ backgroundColor: "var(--bg-surface, var(--bg))" }}>
