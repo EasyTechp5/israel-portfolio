@@ -135,6 +135,21 @@ The evergreen posts available to link to:
 | `/blog/ai-tools-every-business-should-use` | tooling, stacks, new products, tool choice |
 | `/blog/will-ai-replace-my-job` | jobs, displacement, workforce, automation anxiety |
 | `/blog/automate-customer-support-with-ai` | support, chatbots, customer service, RAG |
+| `/blog/rag-explained-for-business` | RAG, retrieval, vector databases, grounding AI in documents |
+| `/blog/whatsapp-ai-chatbot-for-business` | WhatsApp, Meta, messaging channels, chat assistants |
+| `/blog/ai-voice-agents-for-business` | voice AI, phone agents, Vapi, Twilio, speech models |
+| `/blog/automate-invoicing-and-payment-follow-up` | invoicing, payments, reminders, accounts receivable |
+| `/blog/ai-lead-qualification` | sales automation, lead scoring, CRM, speed to lead |
+| `/blog/n8n-self-hosting-guide` | n8n releases, self-hosting, Docker, n8n licence |
+| `/blog/prompt-engineering-for-automation` | prompting, structured output, JSON, model reliability |
+| `/blog/ai-email-automation` | email, deliverability, sequences, SPF/DKIM/DMARC |
+| `/blog/measure-automation-roi` | ROI, payback, measuring results, business cases |
+| `/blog/ai-agent-security-prompt-injection` | security, prompt injection, guardrails, AI risk, data privacy |
+| `/blog/ai-automation-for-nigerian-businesses` | Nigeria, Africa, Lagos, local payments, local regulation |
+| `/blog/google-apps-script-automation` | Google Workspace, Apps Script, Sheets, Forms, Gmail |
+| `/blog/automate-recruitment-with-ai` | hiring, HR, recruitment, bias, AI regulation in employment |
+| `/blog/appointment-booking-automation` | booking, scheduling, calendars, reminders, no-shows |
+| `/blog/no-code-vs-code-automation` | no-code, low-code, coding assistants, build vs buy |
 
 Re-read `lib/posts.ts` each run — if new posts have been added since this list was
 written, they are linkable too.
@@ -161,7 +176,6 @@ export type Post = {
   category: string;    // use "AI News" for these weekly posts
   tags: string[];      // 3-5, reuse existing tags where they fit
   keywords: string[];  // 4-6 realistic search phrases
-  featured?: boolean;  // OMIT THIS. Weekly posts are not featured.
   toc: { id: string; label: string }[];
   faq?: { q: string; a: string }[];
   body: string;        // HTML in a template literal
