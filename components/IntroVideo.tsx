@@ -2,42 +2,33 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Play, Calendar, ArrowRight, Loader2 } from "lucide-react";
+import { Play, Calendar, ExternalLink, Loader2 } from "lucide-react";
 
-// Google Drive file id of the intro video. The file must stay shared as
-// "Anyone with the link" or the embed will show a permission error.
-const DRIVE_ID = "1AuuCZ5uqnemg8rJURetgeX2p9EWAgqoj";
-const EMBED_URL = `https://drive.google.com/file/d/${DRIVE_ID}/preview`;
-const TITLE = "Automation, in my own words";
+const VIDEO_ID = "IHGpIBAgcnQ";
+const TITLE = "Build Smart Systems That Work While You Sleep";
+const DURATION = "2:11";
+const WATCH_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 
 /**
  * Intro video with a custom cover.
  *
- * The cover is a still from the video, hosted on this site, so nothing is
- * requested from Google until the visitor presses play. That keeps the page
- * fast and means no Google cookies are set on first load. The Drive player
- * cannot be autoplayed from outside, so once it has loaded the visitor presses
- * play inside it; a short hint says so.
+ * The cover is a still from the video, hosted on this site, so YouTube is NOT
+ * contacted until the visitor presses play. That keeps the page fast and sets
+ * no third-party cookies on first load. The embed uses the privacy-enhanced
+ * youtube-nocookie.com domain and starts playing as soon as it has loaded.
  */
 export function IntroPlayer({ priority = false }: { priority?: boolean }) {
   const [started, setStarted] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [coverGone, setCoverGone] = useState(false);
-  const [hint, setHint] = useState(false);
 
-  // Once the player is ready: fade the cover, then remove it (and the hint)
-  // from the DOM so nothing sits on top of the player.
+  // Once the player is ready: fade the cover, then remove it from the DOM so
+  // nothing sits on top of the player.
   useEffect(() => {
     if (!loaded) return;
-    setHint(true);
     const fade = setTimeout(() => setCoverGone(true), 550);
-    const hide = setTimeout(() => setHint(false), 5000);
-    return () => {
-      clearTimeout(fade);
-      clearTimeout(hide);
-    };
+    return () => clearTimeout(fade);
   }, [loaded]);
 
   return (
@@ -53,9 +44,9 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
       {started && (
         <iframe
           className="absolute inset-0 h-full w-full"
-          src={EMBED_URL}
+          src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
           title={TITLE}
-          allow="autoplay; fullscreen; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
           onLoad={() => setLoaded(true)}
@@ -78,7 +69,7 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
             type="button"
             onClick={() => setStarted(true)}
             disabled={started}
-            aria-label={`Play video: ${TITLE}`}
+            aria-label={`Play video: ${TITLE} (${DURATION})`}
             className="group absolute inset-0 block h-full w-full text-left disabled:cursor-default"
           >
             {/* Still from the video. Full-bleed on phones, right-hand panel from sm up. */}
@@ -138,6 +129,12 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
                 >
                   Intro video
                 </span>
+                <span
+                  className="ml-2 text-xs font-medium sm:text-sm"
+                  style={{ color: "rgba(255,255,255,0.78)" }}
+                >
+                  {DURATION}
+                </span>
               </span>
 
               <span className="hidden sm:block">
@@ -155,7 +152,7 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
                   className="mt-3 hidden text-sm md:block lg:text-base"
                   style={{ color: "rgba(255,255,255,0.8)", maxWidth: "26rem" }}
                 >
-                  A short introduction: who I am and how I help businesses automate the work that eats their
+                  Who I am, the tools I work in, and how I help businesses automate the work that eats their
                   week.
                 </span>
               </span>
@@ -189,22 +186,6 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
           </button>
         </div>
       )}
-
-      {/* One-off hint once the Drive player is ready. Never blocks clicks. */}
-      {hint && (
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-3 flex justify-center">
-          <span
-            className="rounded-full px-3.5 py-1.5 text-xs font-semibold"
-            style={{
-              background: "rgba(6,9,15,0.78)",
-              color: "#fff",
-              border: "1px solid rgba(255,255,255,0.18)",
-            }}
-          >
-            Press play to start
-          </span>
-        </div>
-      )}
     </div>
   );
 }
@@ -212,7 +193,7 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
 /** Heading + player + links, ready to drop into a page. */
 export default function IntroVideoSection({
   eyebrow = "Meet Israel",
-  heading = "See how I work, in my own words",
+  heading = "Two minutes to see how I work",
   lead = "A quick, honest introduction: what I build, the tools I use, and the kind of problems I like solving.",
   priority = false,
 }: {
@@ -221,8 +202,22 @@ export default function IntroVideoSection({
   lead?: string;
   priority?: boolean;
 }) {
+  const videoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: TITLE,
+    description:
+      "A two-minute introduction to Israel Afolabi, an automation expert working with Zapier, n8n, Make and Google Apps Script, and how he helps businesses automate their workflows.",
+    thumbnailUrl: [`https://i.ytimg.com/vi/${VIDEO_ID}/maxresdefault.jpg`],
+    uploadDate: "2025-11-12T09:01:45.000Z",
+    duration: "PT2M11S",
+    contentUrl: WATCH_URL,
+    embedUrl: `https://www.youtube.com/embed/${VIDEO_ID}`,
+  };
+
   return (
     <section className="section-padding" style={{ paddingBlock: "clamp(3.5rem, 7vw, 6rem)" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }} />
       <div className="container-wide">
         <div className="mx-auto mb-9 max-w-2xl text-center">
           <span className="eyebrow justify-center">{eyebrow}</span>
@@ -237,9 +232,9 @@ export default function IntroVideoSection({
             <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary">
               <Calendar className="h-4 w-4" /> Book a free call
             </a>
-            <Link href="/projects" className="btn-secondary">
-              See my work <ArrowRight className="h-4 w-4" />
-            </Link>
+            <a href={WATCH_URL} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              <ExternalLink className="h-4 w-4" /> Watch on YouTube
+            </a>
           </div>
         </div>
       </div>

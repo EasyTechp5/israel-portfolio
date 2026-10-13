@@ -93,8 +93,8 @@ export default function PrivacyPage() {
             data to anyone.
           </p>
           <p>
-            The intro video is hosted on Google Drive. It only loads when you press play, so nothing is requested
-            from Google before then. From that point Google&apos;s own privacy policy applies to the player.
+            If you press play on the intro video, it loads from YouTube using its privacy-enhanced mode. YouTube
+            only loads when you choose to play, and YouTube&apos;s own privacy policy applies from that point.
           </p>
 
           <h2 id="basis">Why I am allowed to use your information</h2>
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
               <strong>WhatsApp (Meta)</strong>: if you message me there.
             </li>
             <li>
-              <strong>Google Drive</strong>: if you play the intro video.
+              <strong>YouTube (Google)</strong>: if you play the intro video.
             </li>
           </ul>
           <p>
