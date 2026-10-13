@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, MapPin, MessageCircle, Calendar, ArrowUpRight } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
@@ -51,12 +52,14 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 mb-5">
-              <span
-                className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm"
-                style={{ background: "linear-gradient(135deg, #0055DA, #0043ae)", color: "#fff", fontFamily: "var(--font-display)" }}
-              >
-                IA
-              </span>
+              <Image
+                src="/images/israel-logo.jpg"
+                alt=""
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover"
+                style={{ boxShadow: "0 0 0 2px rgba(255,255,255,0.18)" }}
+              />
               <span className="font-bold text-[0.9375rem]" style={{ color: "#fff", fontFamily: "var(--font-display)" }}>
                 Israel Afolabi
               </span>

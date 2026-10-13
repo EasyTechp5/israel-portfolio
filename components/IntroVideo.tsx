@@ -176,12 +176,12 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
 /** Heading + player + links, ready to drop into a page. */
 export default function IntroVideoSection({
   eyebrow = "Meet Israel",
-  heading = "Two minutes to see how I work",
+  heading,
   lead = "A quick, honest introduction: what I build, the tools I use, and the kind of problems I like solving.",
   priority = false,
 }: {
   eyebrow?: string;
-  heading?: string;
+  heading?: string; // omit for no heading
   lead?: string;
   priority?: boolean;
 }) {
@@ -204,7 +204,7 @@ export default function IntroVideoSection({
       <div className="container-wide">
         <div className="mx-auto mb-9 max-w-2xl text-center">
           <span className="eyebrow justify-center">{eyebrow}</span>
-          <h2 className="mb-4">{heading}</h2>
+          {heading && <h2 className="mb-4">{heading}</h2>}
           <p className="section-lead mx-auto text-center">{lead}</p>
         </div>
 

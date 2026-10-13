@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, Calendar, ArrowRight } from "lucide-react";
 
@@ -54,17 +55,15 @@ export default function Navbar() {
 
           {/* Wordmark */}
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0" aria-label="Israel Afolabi — home">
-            <span
-              className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 transition-transform group-hover:scale-105"
-              style={{
-                background: "linear-gradient(135deg, var(--primary-fill), #0043ae)",
-                color: "#fff",
-                fontFamily: "var(--font-display)",
-                boxShadow: "var(--shadow-brand)",
-              }}
-            >
-              IA
-            </span>
+            <Image
+              src="/images/israel-logo.jpg"
+              alt=""
+              width={40}
+              height={40}
+              priority
+              className="h-10 w-10 flex-shrink-0 rounded-full object-cover transition-transform group-hover:scale-105"
+              style={{ boxShadow: "0 0 0 2px var(--bg), 0 0 0 3.5px var(--primary-fill), var(--shadow-brand)" }}
+            />
             <span
               className="font-bold text-[0.9375rem] tracking-tight leading-none hidden sm:block"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)" }}
