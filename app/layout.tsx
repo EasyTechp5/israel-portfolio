@@ -35,12 +35,6 @@ export const metadata: Metadata = {
   // Example tag: <meta name="google-site-verification" content="AbC123..." />
   // verification: { google: "PASTE_YOUR_CODE_HERE" },
 
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-    ],
-    shortcut: "/favicon.svg",
-  },
   openGraph: {
     title: "Israel Afolabi | AI Engineer | AI Automation Specialist | Agentic AI Builder",
     description: "I design intelligent systems that replace manual work with automation.",
@@ -112,7 +106,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
