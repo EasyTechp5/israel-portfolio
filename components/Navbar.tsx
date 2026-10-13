@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Calendar, ArrowRight } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { href: "/", label: "Home" },
@@ -100,7 +99,6 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary hidden sm:inline-flex text-sm">
               <Calendar className="w-4 h-4" /> Book a call
             </a>

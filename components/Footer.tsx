@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mail, MapPin, MessageCircle, Calendar, ArrowUpRight } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
@@ -162,7 +163,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div
-          className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
+          className="pt-6 pb-24 sm:py-6 sm:pr-20 2xl:pr-0 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -171,14 +172,17 @@ export default function Footer() {
               Privacy Policy
             </Link>
           </p>
-          <a
-            href="https://easytech365.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 transition-colors hover:text-white"
-          >
-            EasyTech Academy <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
+          <div className="flex flex-shrink-0 items-center justify-center gap-4">
+            <ThemeToggle variant="footer" />
+            <a
+              href="https://easytech365.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 transition-colors hover:text-white"
+            >
+              EasyTech Academy <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
