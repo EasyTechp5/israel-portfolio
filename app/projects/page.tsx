@@ -8,7 +8,7 @@ import {
   X, ChevronLeft, ChevronRight, Check,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import { projects, categories, byCategory, type Project } from "@/lib/projects";
+import { categories, byCategory, type Project } from "@/lib/projects";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20saw%20your%20work%20and%20I%20am%20interested%20in%20your%20AI%20automation%20services";
@@ -77,11 +77,11 @@ export default function ProjectsPage() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Selected work</span>
             <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
-              {projects.length} automation and AI builds across{" "}
-              <span style={{ color: "var(--primary-text)" }}>{categories.length - 1} problem areas</span>
+              Automation and AI built around{" "}
+              <span style={{ color: "var(--primary-text)" }}>the work that slows you down</span>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
-              Workflows, AI agents and advisory offers, grouped by the kind of problem they
+              Workflows and AI agents, grouped by the kind of problem they
               solve. Open any one to see how it is built and what it is for.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -108,7 +108,6 @@ export default function ProjectsPage() {
             >
               {categories.map((c) => {
                 const on = active === c.name;
-                const count = byCategory(c.name).length;
                 return (
                   <button
                     key={c.name}
@@ -123,12 +122,6 @@ export default function ProjectsPage() {
                     }
                   >
                     {c.name}
-                    <span
-                      className="ml-1.5 text-xs"
-                      style={{ opacity: on ? 0.75 : 0.55 }}
-                    >
-                      {count}
-                    </span>
                   </button>
                 );
               })}
@@ -379,7 +372,7 @@ export default function ProjectsPage() {
                 </div>
 
                 <p className="text-xs mt-6 text-center" style={{ color: "var(--text-subtle)" }}>
-                  {(open ?? 0) + 1} of {filtered.length} in {active === "All" ? "all projects" : active}
+                  Use the arrow keys to browse
                 </p>
               </div>
             </article>

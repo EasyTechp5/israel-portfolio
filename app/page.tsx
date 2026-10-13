@@ -7,7 +7,6 @@ import {
 import Reveal from "@/components/Reveal";
 import Faq from "@/components/Faq";
 import IntroVideoSection from "@/components/IntroVideo";
-import { projects } from "@/lib/projects";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
@@ -16,7 +15,7 @@ const stats = [
   { value: "1,500+", label: "Professionals trained" },
   { value: "10+", label: "Organizations served" },
   { value: "3+", label: "Years automating" },
-  { value: String(projects.length), label: "Projects in my portfolio" },
+  { value: "Worldwide", label: "Clients served remotely" },
 ];
 
 const services = [

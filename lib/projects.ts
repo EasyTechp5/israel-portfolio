@@ -14,8 +14,7 @@ export type Category =
   | "Customer Experience"
   | "Finance & Admin"
   | "Industry Solutions"
-  | "Content & Marketing"
-  | "Strategy";
+  | "Content & Marketing";
 
 export const categories: { name: Category | "All"; blurb: string }[] = [
   { name: "All", blurb: "Everything I have built and shipped." },
@@ -25,7 +24,6 @@ export const categories: { name: Category | "All"; blurb: string }[] = [
   { name: "Finance & Admin", blurb: "Invoices, documents and back-office work that runs itself." },
   { name: "Industry Solutions", blurb: "Automation built for the way a specific sector actually works." },
   { name: "Content & Marketing", blurb: "Content pipelines that publish without a person in the loop." },
-  { name: "Strategy", blurb: "Advisory, mentoring and the thinking that decides what to build." },
 ];
 
 export const projects: Project[] = [
@@ -255,116 +253,6 @@ export const projects: Project[] = [
     helps: "Keeps publishing consistent even in the weeks when nobody has time to write.",
     tools: ["n8n", "LLM", "CMS", "Social APIs"],
     image: "/images/projects/content-ai-creation.jpg",
-  },
-  {
-    slug: "content-website-summariser",
-    title: "Website Content Summariser",
-    category: "Content & Marketing",
-    desc: "Scrapes a page or site, extracts the substance and returns a structured summary you can act on.",
-    helps: "Useful for competitor monitoring and research that would otherwise mean reading everything yourself.",
-    tools: ["n8n", "Web Scraping", "LLM"],
-    image: "/images/projects/content-website-summariser.jpg",
-  },
-
-  // ══════════ STRATEGY ══════════
-  {
-    slug: "strategy-when-not-to-use-ai",
-    title: "Knowing When Not to Use AI",
-    category: "Strategy",
-    desc: "Process judgement as a service. I map what you actually do, then tell you which parts should be automated and which should stay human.",
-    helps: "Saves you from spending months automating something that should never have been automated.",
-    tools: ["Process Mapping", "Workflow Design", "API Integration"],
-    image: "/images/projects/strategy-when-not-to-use-ai.jpg",
-  },
-  {
-    slug: "strategy-brief-to-system",
-    title: "Scoped Brief to Working System",
-    category: "Strategy",
-    desc: "Taking a brief through to production on any stack — voice agents, workflows, APIs, internal tools and dashboards. Shipped systems, not demos.",
-    helps: "You get something that survives real use, and an honest flag when a brief has a hole in it.",
-    tools: ["Claude Code", "n8n", "Make", "Zapier", "APIs"],
-    image: "/images/projects/strategy-brief-to-system.jpg",
-  },
-  {
-    slug: "strategy-mvp-in-days",
-    title: "MVP in Days, Then Automated",
-    category: "Strategy",
-    desc: "Rapid MVP development with AI app builders, then wired to automation so the manual work behind it disappears too.",
-    helps: "Gets you to something real quickly, without leaving you with a prototype nobody can run.",
-    tools: ["Lovable", "Replit", "Supabase", "n8n"],
-    image: "/images/projects/strategy-mvp-in-days.jpg",
-  },
-  {
-    slug: "strategy-beyond-the-prompt",
-    title: "Beyond the Prompt: Agentic AI",
-    category: "Strategy",
-    desc: "Designing AI agents that retrieve, reason and act — LLM integration, RAG pipelines, vector databases and workflow orchestration.",
-    helps: "For when a simple automation is not enough and the next step genuinely has to be decided at runtime.",
-    tools: ["OpenAI", "Claude", "Pinecone", "Supabase", "n8n"],
-    image: "/images/projects/strategy-beyond-the-prompt.jpg",
-  },
-  {
-    slug: "strategy-voice-agent",
-    title: "From Dial to Deal: Voice Agents",
-    category: "Strategy",
-    desc: "Building AI voice agents that make outbound calls, qualify the person on the line and hand off cleanly to a human.",
-    helps: "Extends your sales reach without hiring, and never drops the handoff at the critical moment.",
-    tools: ["Vapi", "Twilio", "n8n", "CRM APIs"],
-    image: "/images/projects/strategy-voice-agent.jpg",
-  },
-  {
-    slug: "strategy-energy-automation",
-    title: "Automation Backbone for an Energy Business",
-    category: "Strategy",
-    desc: "End-to-end automation for a sector business: web lead capture through to conversational AI, systems integration and process mapping.",
-    helps: "Shows what sector-specific automation looks like when it covers the whole customer journey.",
-    tools: ["Make.com", "Botpress", "Voiceflow", "Python"],
-    image: "/images/projects/strategy-energy-automation.jpg",
-  },
-  {
-    slug: "strategy-content-engine",
-    title: "Self-Replicating Content Engine",
-    category: "Strategy",
-    desc: "A content system that writes once and publishes everywhere — blog, YouTube and short-form — with a design you can clone for new sites.",
-    helps: "Built to be templated, so a second brand or site can run the same engine.",
-    tools: ["n8n", "WordPress", "YouTube API", "LLM"],
-    image: "/images/projects/strategy-content-engine.jpg",
-  },
-  {
-    slug: "strategy-marketing-engine",
-    title: "One Piece of Content to Marketing Engine",
-    category: "Strategy",
-    desc: "Turning a single asset into repurposed content, multi-channel posting, nurture sequences and tracked outcomes.",
-    helps: "Makes the content you already produce work considerably harder.",
-    tools: ["ChatGPT", "Meta Suite", "MailChimp", "GA4"],
-    image: "/images/projects/strategy-marketing-engine.jpg",
-  },
-  {
-    slug: "strategy-zero-to-first-ai-tool",
-    title: "Zero to Your First AI Tool",
-    category: "Strategy",
-    desc: "Mentoring a beginner from concept to a working tool — solution architecture, hands-on teaching and a curriculum broken into learnable steps.",
-    helps: "For teams who would rather build the capability in-house than stay dependent on a contractor.",
-    tools: ["Curriculum Design", "Solution Architecture", "Mentoring"],
-    image: "/images/projects/strategy-zero-to-first-ai-tool.jpg",
-  },
-  {
-    slug: "strategy-claude-code-mentor",
-    title: "Claude Code Mentoring",
-    category: "Strategy",
-    desc: "Training and onboarding on Claude Code — setup, core concepts, prompt engineering and automation setup, taught on real projects rather than toy examples.",
-    helps: "Takes a developer or team from confused to confident on AI-assisted development.",
-    tools: ["Claude Code", "Prompt Engineering", "n8n", "APIs"],
-    image: "/images/projects/strategy-claude-code-mentor.jpg",
-  },
-  {
-    slug: "strategy-claude-code-training",
-    title: "Claude Code Training Programme",
-    category: "Strategy",
-    desc: "A structured plan-code-test-deploy programme covering practical AI-assisted development with step-by-step guidance.",
-    helps: "Gets a team shipping with AI tooling instead of experimenting with it indefinitely.",
-    tools: ["Claude Code", "Workflow Design", "Testing", "Deployment"],
-    image: "/images/projects/strategy-claude-code-training.jpg",
   },
 ];
 
