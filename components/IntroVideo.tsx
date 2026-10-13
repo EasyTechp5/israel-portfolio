@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Play, Calendar, ExternalLink, Loader2 } from "lucide-react";
+import { Play, Calendar, Loader2 } from "lucide-react";
 
 const VIDEO_ID = "IHGpIBAgcnQ";
 const TITLE = "Build Smart Systems That Work While You Sleep";
 const DURATION = "2:11";
 const WATCH_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
-const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
+const BOOK_URL =
+  "https://wa.me/2348139464398?text=Hi%20Israel%2C%20how%20are%20you%20doing%3F%20I%20would%20love%20to%20discuss%20a%20project%20with%20you.%20Let%20me%20know%20when%20you%27ll%20be%20available.";
 
 /**
  * Intro video with a custom cover.
@@ -115,27 +116,9 @@ export function IntroPlayer({ priority = false }: { priority?: boolean }) {
               }}
             />
 
-            {/* Copy: badge and title, left aligned. On phones only the badge shows. */}
+            {/* Copy: title and subline, left aligned. Hidden on phones, where only the play button shows. */}
             <span className="relative z-10 flex h-full flex-col justify-between p-4 sm:w-[54%] sm:p-6 md:p-9">
-              <span className="flex items-center">
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.12em] sm:text-xs"
-                  style={{
-                    background: "rgba(255,255,255,0.16)",
-                    border: "1px solid rgba(255,255,255,0.28)",
-                    backdropFilter: "blur(6px)",
-                    WebkitBackdropFilter: "blur(6px)",
-                  }}
-                >
-                  Intro video
-                </span>
-                <span
-                  className="ml-2 text-xs font-medium sm:text-sm"
-                  style={{ color: "rgba(255,255,255,0.78)" }}
-                >
-                  {DURATION}
-                </span>
-              </span>
+              <span aria-hidden />
 
               <span className="hidden sm:block">
                 <span
@@ -229,11 +212,8 @@ export default function IntroVideoSection({
           <IntroPlayer priority={priority} />
 
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+            <a href={BOOK_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
               <Calendar className="h-4 w-4" /> Book a free call
-            </a>
-            <a href={WATCH_URL} target="_blank" rel="noopener noreferrer" className="btn-secondary">
-              <ExternalLink className="h-4 w-4" /> Watch on YouTube
             </a>
           </div>
         </div>

@@ -234,20 +234,20 @@ export default function AboutPage() {
                   <div
                     className="absolute left-3 sm:left-5 top-6 w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
                     style={{
-                      backgroundColor: item.isCurrent ? "var(--accent)" : "var(--primary)",
-                      boxShadow: `0 0 12px ${item.isCurrent ? "color-mix(in srgb, var(--accent) 45%, transparent)" : "var(--primary-line)"}`,
+                      backgroundColor: item.isCurrent ? "var(--success)" : "var(--primary)",
+                      boxShadow: `0 0 12px ${item.isCurrent ? "color-mix(in srgb, var(--success) 45%, transparent)" : "var(--primary-line)"}`,
                     }}
                   >
                     <div className="w-2 h-2 rounded-full bg-white" />
                   </div>
 
                   <div className="card p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-                    style={{ borderColor: item.isCurrent ? "color-mix(in srgb, var(--accent) 26%, transparent)" : "var(--primary-soft)" }}>
+                    style={{ borderColor: item.isCurrent ? "color-mix(in srgb, var(--success) 26%, transparent)" : "var(--primary-soft)" }}>
                     <div className="flex flex-wrap items-center gap-3 mb-3">
                       <span className="text-xs font-bold px-3 py-1 rounded-full"
                         style={{
-                          backgroundColor: item.isCurrent ? "var(--accent-soft)" : "var(--primary-soft)",
-                          color: item.isCurrent ? "var(--accent-text)" : "var(--primary-text)",
+                          backgroundColor: item.isCurrent ? "var(--success-soft)" : "var(--primary-soft)",
+                          color: item.isCurrent ? "var(--success)" : "var(--primary-text)",
                         }}>
                         {item.year}
                       </span>
@@ -297,11 +297,11 @@ export default function AboutPage() {
 
                     {"focus" in item && item.focus && (
                       <div className="mt-4">
-                        <p className="text-xs font-bold mb-2" style={{ color: "var(--accent-text)" }}>Current Focus Areas</p>
+                        <p className="text-xs font-bold mb-2" style={{ color: "var(--success)" }}>Current Focus Areas</p>
                         <div className="flex flex-wrap gap-2">
                           {item.focus.map((f) => (
                             <span key={f} className="px-2.5 py-1 rounded-lg text-xs font-bold"
-                              style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent-text)", border: "1px solid color-mix(in srgb, var(--accent) 26%, transparent)" }}>
+                              style={{ backgroundColor: "var(--success-soft)", color: "var(--success)", border: "1px solid color-mix(in srgb, var(--success) 26%, transparent)" }}>
                               {f}
                             </span>
                           ))}
