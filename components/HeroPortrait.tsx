@@ -2,29 +2,19 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { Bot, Zap, Workflow, Sparkles } from "lucide-react";
-
-const chips = [
-  { icon: Bot, label: "AI Agents", pos: "top-[9%] -left-2 sm:-left-10", delay: "0s" },
-  { icon: Zap, label: "Automation", pos: "top-[36%] -right-1 sm:-right-12", delay: "1.4s" },
-  { icon: Workflow, label: "Workflows", pos: "bottom-[26%] -left-3 sm:-left-14", delay: "2.6s" },
-  { icon: Sparkles, label: "Claude · OpenAI", pos: "bottom-[9%] -right-1 sm:-right-8", delay: "0.8s" },
-];
 
 /**
  * Portrait that dissolves into the page instead of sitting in a box: the photo
- * is feathered at the sides and bottom, a slow colour aura and orbit rings sit
- * behind it, and tool chips float around it. It tilts toward the cursor and
- * drifts slightly as the page scrolls. All of it is switched off for visitors
- * who prefer reduced motion (the chips and rings simply sit still).
+ * is feathered at the sides and bottom, and a slow colour aura and orbit rings
+ * sit behind it. It tilts toward the cursor and drifts slightly as the page
+ * scrolls. All of it is switched off for visitors who prefer reduced motion
+ * (the rings simply sit still).
  */
 export default function HeroPortrait({
   alt,
-  showChips = true,
   priority = false,
 }: {
   alt: string;
-  showChips?: boolean;
   priority?: boolean;
 }) {
   const stage = useRef<HTMLDivElement>(null);
@@ -97,21 +87,6 @@ export default function HeroPortrait({
             priority={priority}
           />
         </div>
-
-        {showChips &&
-          chips.map(({ icon: Icon, label, pos, delay }) => (
-            <span
-              key={label}
-              className={`float-chip ${pos}`}
-              style={{ "--d": delay } as React.CSSProperties}
-              aria-hidden
-            >
-              <span className="chip-ic">
-                <Icon className="h-3.5 w-3.5" />
-              </span>
-              {label}
-            </span>
-          ))}
       </div>
     </div>
   );

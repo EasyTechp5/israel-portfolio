@@ -645,35 +645,6 @@ p { text-wrap: pretty; }
 }
 .dark .portrait-feather img { filter: brightness(0.93) contrast(1.05); }
 
-.float-chip {
-  position: absolute;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  color: var(--text-primary);
-  background: color-mix(in srgb, var(--bg-card) 82%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-card);
-  box-shadow: var(--shadow-lg);
-  animation: float-y 6.5s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-}
-.float-chip .chip-ic {
-  display: grid;
-  place-items: center;
-  width: 1.5rem; height: 1.5rem;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary-text);
-}
-
 /* Buttons: light sweep across the primary button on hover */
 .btn-primary { position: relative; overflow: hidden; isolation: isolate; }
 .btn-primary::before {
@@ -824,7 +795,7 @@ p { text-wrap: pretty; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; filter: none; }
-  .glow, .ambient-drift, .portrait-aura, .orbit > i, .float-chip, .cta-band, .cta-orb,
+  .glow, .ambient-drift, .portrait-aura, .orbit > i, .cta-band, .cta-orb,
   .shimmer-text, .process-track .track-pulse, .process-track .track-node, .pulse-dot::after {
     animation: none !important;
   }
