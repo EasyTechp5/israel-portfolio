@@ -53,36 +53,32 @@ export default function Gallery({ shots }: { shots: Shot[] }) {
           <button
             onClick={() => setOpen(i)}
             aria-label={`View photo: ${s.caption}`}
-            className="group relative block w-full overflow-hidden rounded-xl text-left"
-            style={{
-              aspectRatio: s.portrait ? "4 / 5" : "16 / 10",
-              border: "1px solid var(--border)",
-              backgroundColor: "var(--bg-inset)",
-            }}
+            className="gallery-tile group block w-full text-left"
           >
-            <Image
-              src={s.src}
-              alt={s.alt}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 30vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            />
-
-            {/* Caption overlay — always dark, it sits on the photo */}
-            <div
-              className="absolute inset-x-0 bottom-0 p-3 sm:p-4"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(6,9,15,0.88) 0%, rgba(6,9,15,0.45) 55%, transparent 100%)",
-              }}
+            <span className="gallery-glow" aria-hidden />
+            <span
+              className="gallery-frame relative block"
+              style={{ aspectRatio: s.portrait ? "4 / 5" : "16 / 10" }}
             >
-              <p className="font-semibold text-xs sm:text-sm leading-tight" style={{ color: "#fff" }}>
+              <Image
+                src={s.src}
+                alt={s.alt}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 30vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.07]"
+              />
+            </span>
+            <span className="relative -mt-3 block px-2 sm:px-3">
+              <span
+                className="block text-xs font-semibold leading-tight sm:text-sm"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {s.caption}
-              </p>
-              <p className="text-[0.7rem] sm:text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.72)" }}>
+              </span>
+              <span className="mt-0.5 block text-[0.7rem] sm:text-xs" style={{ color: "var(--text-subtle)" }}>
                 {s.meta}
-              </p>
-            </div>
+              </span>
+            </span>
           </button>
           </Reveal>
         ))}
