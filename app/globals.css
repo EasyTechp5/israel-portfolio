@@ -588,7 +588,7 @@ p { text-wrap: pretty; }
   background: linear-gradient(90deg, var(--primary), #7c5cff 55%, var(--primary));
 }
 
-/* Hero portrait: aura, orbit rings, feathered edges, floating chips */
+/* Hero portrait: aura and feathered edges */
 .portrait-aura {
   position: absolute;
   inset: -14%;
@@ -605,33 +605,6 @@ p { text-wrap: pretty; }
   animation: spin-slow 18s linear infinite;
 }
 .dark .portrait-aura { opacity: 0.42; }
-
-.orbit {
-  position: absolute;
-  left: 50%; top: 50%;
-  aspect-ratio: 1;
-  border-radius: 999px;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-.orbit > i {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  border: 1px dashed var(--primary-line);
-  animation: spin-slow 55s linear infinite;
-}
-.orbit > i::after {
-  content: "";
-  position: absolute;
-  top: -4px; left: 50%;
-  width: 8px; height: 8px;
-  margin-left: -4px;
-  border-radius: 50%;
-  background: var(--primary);
-  box-shadow: 0 0 14px 3px color-mix(in srgb, var(--primary) 60%, transparent);
-}
-.orbit-2 > i { border-style: solid; opacity: 0.65; animation-name: spin-rev; animation-duration: 80s; }
 
 .portrait-feather {
   -webkit-mask-image:
@@ -795,7 +768,7 @@ p { text-wrap: pretty; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; filter: none; }
-  .glow, .ambient-drift, .portrait-aura, .orbit > i, .cta-band, .cta-orb,
+  .glow, .ambient-drift, .portrait-aura, .cta-band, .cta-orb,
   .shimmer-text, .process-track .track-pulse, .process-track .track-node, .pulse-dot::after {
     animation: none !important;
   }

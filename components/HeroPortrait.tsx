@@ -5,10 +5,9 @@ import { useEffect, useRef } from "react";
 
 /**
  * Portrait that dissolves into the page instead of sitting in a box: the photo
- * is feathered at the sides and bottom, and a slow colour aura and orbit rings
- * sit behind it. It tilts toward the cursor and drifts slightly as the page
- * scrolls. All of it is switched off for visitors who prefer reduced motion
- * (the rings simply sit still).
+ * is feathered at the sides and bottom, and a slow colour aura sits behind it.
+ * It tilts toward the cursor and drifts slightly as the page scrolls, and both
+ * effects are switched off for visitors who prefer reduced motion.
  */
 export default function HeroPortrait({
   alt,
@@ -67,14 +66,8 @@ export default function HeroPortrait({
 
   return (
     <div className="relative mx-auto lg:ml-auto lg:mr-0" style={{ maxWidth: "24rem" }}>
-      {/* Behind the photo: colour aura and orbit rings */}
+      {/* Behind the photo: slow colour aura */}
       <div className="portrait-aura" aria-hidden />
-      <div className="orbit w-[135%]" aria-hidden>
-        <i />
-      </div>
-      <div className="orbit orbit-2 w-[170%]" aria-hidden>
-        <i />
-      </div>
 
       <div ref={stage} className="relative will-change-transform">
         <div className="portrait-feather relative aspect-[4/5]">
