@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Calendar, MessageCircle, Mail, MapPin, Globe, Clock, Users, ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Contact | Israel Afolabi",
@@ -52,6 +53,7 @@ export default function ContactPage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
+        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", left: "50%", transform: "translateX(-50%)", width: "32rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
 

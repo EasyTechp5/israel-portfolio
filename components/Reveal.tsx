@@ -15,11 +15,14 @@ export default function Reveal({
   delay = 0,
   className = "",
   as: Tag = "div",
+  variant = "up",
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
   as?: "div" | "section" | "li" | "article";
+  /** How the content enters: rises, slides in from a side, zooms up, or sharpens from a blur. */
+  variant?: "up" | "left" | "right" | "scale" | "blur";
 }) {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -70,7 +73,7 @@ export default function Reveal({
     <Tag
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ref={ref as any}
-      className={`reveal ${visible ? "is-visible" : ""} ${className}`}
+      className={`reveal reveal-${variant} ${visible ? "is-visible" : ""} ${className}`}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
     >
       {children}

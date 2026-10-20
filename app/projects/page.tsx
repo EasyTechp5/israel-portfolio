@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { categories, byCategory, type Project } from "@/lib/projects";
+import HeroBackdrop from "@/components/HeroBackdrop";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20saw%20your%20work%20and%20I%20am%20interested%20in%20your%20AI%20automation%20services";
@@ -70,6 +71,7 @@ export default function ProjectsPage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
+        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", right: "5%", width: "28rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
 

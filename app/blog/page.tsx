@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, MessageCircle, Calendar } from "lucide-react";
 import { allPosts, formatDate } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
+import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "AI Automation Blog | Israel Afolabi",
@@ -35,6 +36,7 @@ export default function BlogIndex() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
+        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div
           className="glow"

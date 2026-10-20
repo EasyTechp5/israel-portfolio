@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, CheckCircle2, Quote, ArrowUpRight } from "lucide-react";
 import Gallery, { type Shot } from "@/components/Gallery";
 import IntroVideoSection from "@/components/IntroVideo";
+import HeroBackdrop from "@/components/HeroBackdrop";
+import HeroPortrait from "@/components/HeroPortrait";
+import ScrollLine from "@/components/ScrollLine";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "About | Israel Afolabi",
@@ -144,8 +147,9 @@ export default function AboutPage() {
         className="relative overflow-hidden"
         style={{ paddingTop: "7rem", paddingBottom: "5rem", background: "linear-gradient(135deg, var(--bg) 0%, var(--primary-soft) 60%, var(--bg) 100%)" }}
       >
-        <div className="absolute top-20 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--primary-soft)" }} />
-        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--accent-soft)" }} />
+        <HeroBackdrop />
+        <div className="ambient-drift absolute top-20 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--primary-soft)" }} />
+        <div className="ambient-drift absolute bottom-0 left-0 w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--accent-soft)" }} />
 
         <div className="container-wide px-4 sm:px-6 lg:px-8 mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -195,12 +199,8 @@ export default function AboutPage() {
 
             {/* Photo */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-3xl blur-2xl scale-105" style={{ background: "linear-gradient(135deg, var(--primary-line), var(--accent-soft))" }} />
-                <div className="relative w-72 h-80 sm:w-80 sm:h-96 lg:w-96 lg:h-[460px] rounded-3xl overflow-hidden shadow-2xl" style={{ border: "2px solid var(--primary-line)" }}>
-                  <Image src="/images/israel-hero.jpg" alt="Israel Afolabi" fill className="object-cover object-top" priority />
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(4,8,16,0.5) 0%, transparent 50%)" }} />
-                </div>
+              <div className="w-full" style={{ maxWidth: "26rem" }}>
+                <HeroPortrait alt="Israel Afolabi" priority />
               </div>
             </div>
           </div>
@@ -226,13 +226,14 @@ export default function AboutPage() {
           </div>
 
           <div className="relative max-w-4xl mx-auto">
-            <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5" style={{ backgroundColor: "var(--primary-line)" }} />
+            <ScrollLine className="left-6 sm:left-8" />
 
             <div className="space-y-8">
               {timeline.map((item, i) => (
-                <div key={i} className="relative pl-16 sm:pl-20">
+                <Reveal key={i} variant={i % 2 === 0 ? "left" : "right"}>
+                <div className="relative pl-16 sm:pl-20">
                   <div
-                    className="absolute left-3 sm:left-5 top-6 w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
+                    className={`absolute left-3 sm:left-5 top-6 w-6 h-6 rounded-full flex items-center justify-center shadow-lg ${item.isCurrent ? "pulse-dot" : ""}`}
                     style={{
                       backgroundColor: item.isCurrent ? "var(--success)" : "var(--primary)",
                       boxShadow: `0 0 12px ${item.isCurrent ? "color-mix(in srgb, var(--success) 45%, transparent)" : "var(--primary-line)"}`,
@@ -310,6 +311,7 @@ export default function AboutPage() {
                     )}
                   </div>
                 </div>
+                </Reveal>
               ))}
             </div>
           </div>

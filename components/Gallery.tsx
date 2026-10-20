@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Reveal from "./Reveal";
 
 export type Shot = {
   src: string;
@@ -48,8 +49,8 @@ export default function Gallery({ shots }: { shots: Shot[] }) {
     <>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {shots.map((s, i) => (
+          <Reveal key={s.src} variant="scale" delay={(i % 3) * 90}>
           <button
-            key={s.src}
             onClick={() => setOpen(i)}
             aria-label={`View photo: ${s.caption}`}
             className="group relative block w-full overflow-hidden rounded-xl text-left"
@@ -83,6 +84,7 @@ export default function Gallery({ shots }: { shots: Shot[] }) {
               </p>
             </div>
           </button>
+          </Reveal>
         ))}
       </div>
 

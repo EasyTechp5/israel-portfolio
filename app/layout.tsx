@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import { Analytics } from "@vercel/analytics/next";
+import ScrollProgress from "@/components/ScrollProgress";
+import CardSpotlight from "@/components/CardSpotlight";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -113,11 +115,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Scroll-reveal starts hidden only when scripting is available, so the
             page still renders fully if JS is disabled or fails to load. */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+          <style>{`.reveal{opacity:1 !important;transform:none !important;filter:none !important}.tw-ghost{opacity:1 !important}.tw-live{display:none !important}.word-in{opacity:1 !important;animation:none !important}.underline-accent::after{transform:none !important;animation:none !important}`}</style>
         </noscript>
       </head>
       <body>
         <ThemeProvider>
+          <ScrollProgress />
+          <CardSpotlight />
           <Navbar />
           <main>{children}</main>
           <Footer />

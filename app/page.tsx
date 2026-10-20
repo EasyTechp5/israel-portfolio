@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   Calendar, MessageCircle, ArrowRight, Bot, Zap, Users, TrendingUp,
@@ -7,6 +6,11 @@ import {
 import Reveal from "@/components/Reveal";
 import Faq from "@/components/Faq";
 import IntroVideoSection from "@/components/IntroVideo";
+import HeroBackdrop from "@/components/HeroBackdrop";
+import HeroPortrait from "@/components/HeroPortrait";
+import Typewriter from "@/components/Typewriter";
+import CountUp from "@/components/CountUp";
+import AnimatedWords from "@/components/AnimatedWords";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
@@ -105,6 +109,7 @@ export default function HomePage() {
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "8rem", paddingBottom: "5rem" }}>
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
+        <HeroBackdrop />
         <div className="glow" style={{ top: "-6rem", left: "-8rem", width: "34rem", height: "34rem", background: "var(--primary)" }} aria-hidden />
         <div className="glow" style={{ bottom: "-10rem", right: "-6rem", width: "28rem", height: "28rem", background: "var(--primary)" }} aria-hidden />
 
@@ -113,40 +118,26 @@ export default function HomePage() {
 
             {/* Copy */}
             <div className="lg:col-span-7">
-              <div className="hero-in" style={{ "--in-delay": "70ms" } as React.CSSProperties}>
-                <h1 className="mb-6" style={{ fontWeight: 800 }}>
-                  I build AI systems that make your business{" "}
-                  <span className="underline-accent" style={{ color: "var(--primary-text)" }}>run itself</span>
-                </h1>
-              </div>
+              <h1 className="mb-6" style={{ fontWeight: 800 }}>
+                <AnimatedWords text="I build AI systems that make your business" />{" "}
+                <span className="word-in underline-accent shimmer-text" style={{ "--w": 8 } as React.CSSProperties}>
+                  run itself
+                </span>
+              </h1>
 
-              <div className="hero-in" style={{ "--in-delay": "140ms" } as React.CSSProperties}>
-                <p className="text-lg sm:text-xl leading-relaxed max-w-2xl" style={{ color: "var(--text-muted)" }}>
-                  I design intelligent automation that removes manual work, train teams to use AI
-                  effectively, and help businesses scale — faster, leaner, smarter.
-                </p>
-              </div>
+              <Typewriter
+                text="I design intelligent automation that removes manual work, train teams to use AI effectively, and help businesses scale — faster, leaner, smarter."
+                startDelay={1100}
+                className="text-lg sm:text-xl leading-relaxed max-w-2xl"
+                style={{ color: "var(--text-muted)" }}
+              />
 
             </div>
 
             {/* Portrait */}
             <div className="lg:col-span-5">
-              <div className="hero-in" style={{ "--in-delay": "160ms" } as React.CSSProperties}>
-                <div className="relative mx-auto lg:ml-auto lg:mr-0" style={{ maxWidth: "24rem" }}>
-                  <div
-                    className="relative aspect-[4/5] rounded-2xl overflow-hidden"
-                    style={{ boxShadow: "var(--shadow-xl)", border: "1px solid var(--border)" }}
-                  >
-                    <Image
-                      src="/images/israel-hero.jpg"
-                      alt="Israel Afolabi, AI Engineer and Automation Specialist"
-                      fill
-                      sizes="(max-width: 1024px) 24rem, 24rem"
-                      className="object-cover object-top"
-                      priority
-                    />
-                  </div>
-                </div>
+              <div className="hero-in" style={{ "--in-delay": "200ms" } as React.CSSProperties}>
+                <HeroPortrait alt="Israel Afolabi, AI Engineer and Automation Specialist" priority />
               </div>
             </div>
           </div>
@@ -159,8 +150,8 @@ export default function HomePage() {
             >
               {stats.map((s) => (
                 <div key={s.label} className="px-6 py-7 text-center" style={{ backgroundColor: "var(--bg)" }}>
-                  <p className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: "var(--primary-text)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}>
-                    {s.value}
+                  <p className="text-[1.65rem] sm:text-4xl font-bold mb-1" style={{ color: "var(--primary-text)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}>
+                    <CountUp value={s.value} />
                   </p>
                   <p className="text-sm" style={{ color: "var(--text-muted)" }}>{s.label}</p>
                 </div>
@@ -192,7 +183,7 @@ export default function HomePage() {
       {/* ══════════════ SERVICES ══════════════ */}
       <section className="section-padding">
         <div className="container-wide">
-          <Reveal>
+          <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
               <span className="eyebrow">Services</span>
               <h2 className="mb-4">What I do for your business</h2>
@@ -207,7 +198,7 @@ export default function HomePage() {
             {services.map((s, i) => {
               const Icon = s.icon;
               return (
-                <Reveal key={s.title} delay={i * 70}>
+                <Reveal key={s.title} delay={(i % 2) * 90} variant={i % 2 === 0 ? "left" : "right"}>
                   <div className="card card-hover p-7 h-full flex flex-col">
                     <div
                       className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
@@ -253,7 +244,7 @@ export default function HomePage() {
       {/* ══════════════ PROCESS ══════════════ */}
       <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
-          <Reveal>
+          <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
               <span className="eyebrow">How it works</span>
               <h2 className="mb-4">A clear path from problem to working system</h2>
@@ -264,11 +255,20 @@ export default function HomePage() {
             </div>
           </Reveal>
 
+          {/* Pipeline graphic: a pulse runs along the line and lights each stage in turn */}
+          <div className="process-track hidden lg:block" aria-hidden>
+            <span className="track-line" />
+            <span className="track-pulse" />
+            {process.map((p, i) => (
+              <span key={p.step} className="track-node" style={{ left: `${12.5 + i * 25}%`, "--i": i } as React.CSSProperties} />
+            ))}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {process.map((p, i) => {
               const Icon = p.icon;
               return (
-                <Reveal key={p.step} delay={i * 80}>
+                <Reveal key={p.step} delay={i * 110} variant="scale">
                   <div className="card card-hover p-7 h-full relative">
                     <span
                       className="absolute top-6 right-6 text-4xl font-bold leading-none select-none"
@@ -296,7 +296,7 @@ export default function HomePage() {
       {/* ══════════════ TESTIMONIALS ══════════════ */}
       <section className="section-padding">
         <div className="container-wide">
-          <Reveal>
+          <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
               <span className="eyebrow">Client results</span>
               <h2 className="mb-4">Real systems. Real results.</h2>
@@ -309,7 +309,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 80}>
+              <Reveal key={t.name} delay={i * 120} variant="scale">
                 <figure className="card card-hover p-7 h-full flex flex-col">
                   <Quote className="w-7 h-7 mb-4" style={{ color: "var(--primary-text)", opacity: 0.35 }} aria-hidden />
                   <blockquote className="leading-relaxed mb-6 flex-1" style={{ color: "var(--text-body)" }}>
@@ -330,7 +330,7 @@ export default function HomePage() {
       <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <Reveal className="lg:col-span-5">
+            <Reveal className="lg:col-span-5" variant="left">
               <span className="eyebrow">FAQ</span>
               <h2 className="mb-4">Questions, answered</h2>
               <p className="section-lead mb-7">
@@ -342,7 +342,7 @@ export default function HomePage() {
               </a>
             </Reveal>
 
-            <Reveal delay={100} className="lg:col-span-7">
+            <Reveal delay={120} className="lg:col-span-7" variant="right">
               <Faq items={faqs} />
             </Reveal>
           </div>
@@ -353,20 +353,19 @@ export default function HomePage() {
       <section className="section-padding relative overflow-hidden">
         <div className="glow" style={{ top: "-8rem", left: "50%", transform: "translateX(-50%)", width: "36rem", height: "26rem", background: "var(--primary)" }} aria-hidden />
         <div className="container-wide relative">
-          <Reveal>
+          <Reveal variant="scale">
             <div
-              className="rounded-3xl px-8 py-14 sm:px-14 sm:py-16 text-center"
-              style={{
-                background: "linear-gradient(135deg, var(--primary-fill) 0%, #003a96 100%)",
-                boxShadow: "var(--shadow-xl)",
-              }}
+              className="cta-band rounded-3xl px-8 py-14 sm:px-14 sm:py-16 text-center"
+              style={{ boxShadow: "var(--shadow-xl)" }}
             >
-              <h2 className="mb-4" style={{ color: "#fff" }}>Ready to automate your business?</h2>
-              <p className="text-lg mb-9 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.82)" }}>
+              <span className="cta-orb" style={{ width: "16rem", height: "16rem", top: "-6rem", left: "-4rem" }} aria-hidden />
+              <span className="cta-orb" style={{ width: "13rem", height: "13rem", bottom: "-5rem", right: "-3rem", animationDelay: "-6s" }} aria-hidden />
+              <h2 className="relative mb-4" style={{ color: "#fff" }}>Ready to automate your business?</h2>
+              <p className="relative text-lg mb-9 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.82)" }}>
                 Book a free 20-minute call. No pitch, no obligation — just honest advice
                 on what automation can realistically do for you.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="relative flex flex-col sm:flex-row gap-3 justify-center">
                 <a
                   href={CAL}
                   target="_blank"

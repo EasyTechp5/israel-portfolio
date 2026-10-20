@@ -1,0 +1,118 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useRef } from "react";
+import { Bot, Zap, Workflow, Sparkles } from "lucide-react";
+
+const chips = [
+  { icon: Bot, label: "AI Agents", pos: "top-[9%] -left-2 sm:-left-10", delay: "0s" },
+  { icon: Zap, label: "Automation", pos: "top-[36%] -right-1 sm:-right-12", delay: "1.4s" },
+  { icon: Workflow, label: "Workflows", pos: "bottom-[26%] -left-3 sm:-left-14", delay: "2.6s" },
+  { icon: Sparkles, label: "Claude · OpenAI", pos: "bottom-[9%] -right-1 sm:-right-8", delay: "0.8s" },
+];
+
+/**
+ * Portrait that dissolves into the page instead of sitting in a box: the photo
+ * is feathered at the sides and bottom, a slow colour aura and orbit rings sit
+ * behind it, and tool chips float around it. It tilts toward the cursor and
+ * drifts slightly as the page scrolls. All of it is switched off for visitors
+ * who prefer reduced motion (the chips and rings simply sit still).
+ */
+export default function HeroPortrait({
+  alt,
+  showChips = true,
+  priority = false,
+}: {
+  alt: string;
+  showChips?: boolean;
+  priority?: boolean;
+}) {
+  const stage = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = stage.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let rx = 0;
+    let ry = 0;
+    let tx = 0;
+    let ty = 0;
+    let py = 0;
+    let raf = 0;
+
+    const paint = () => {
+      raf = 0;
+      // Ease toward the target for a smooth, weighted feel.
+      rx += (tx - rx) * 0.12;
+      ry += (ty - ry) * 0.12;
+      el.style.transform = `perspective(1000px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(${py.toFixed(1)}px)`;
+      if (Math.abs(tx - rx) > 0.02 || Math.abs(ty - ry) > 0.02) raf = requestAnimationFrame(paint);
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      const r = el.getBoundingClientRect();
+      const nx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
+      const ny = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
+      ty = Math.max(-1, Math.min(1, nx * 2)) * 7;
+      tx = Math.max(-1, Math.min(1, ny * 2)) * -5;
+      schedule();
+    };
+    const onScroll = () => {
+      py = Math.min(window.scrollY, 700) * -0.07;
+      schedule();
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div className="relative mx-auto lg:ml-auto lg:mr-0" style={{ maxWidth: "24rem" }}>
+      {/* Behind the photo: colour aura and orbit rings */}
+      <div className="portrait-aura" aria-hidden />
+      <div className="orbit w-[135%]" aria-hidden>
+        <i />
+      </div>
+      <div className="orbit orbit-2 w-[170%]" aria-hidden>
+        <i />
+      </div>
+
+      <div ref={stage} className="relative will-change-transform">
+        <div className="portrait-feather relative aspect-[4/5]">
+          <Image
+            src="/images/israel-hero.jpg"
+            alt={alt}
+            fill
+            sizes="24rem"
+            className="object-cover object-top"
+            priority={priority}
+          />
+        </div>
+
+        {showChips &&
+          chips.map(({ icon: Icon, label, pos, delay }) => (
+            <span
+              key={label}
+              className={`float-chip ${pos}`}
+              style={{ "--d": delay } as React.CSSProperties}
+              aria-hidden
+            >
+              <span className="chip-ic">
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+              {label}
+            </span>
+          ))}
+      </div>
+    </div>
+  );
+}

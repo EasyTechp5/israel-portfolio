@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, Bot, Users, Zap, TrendingUp, CheckCircle2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Services | Israel Afolabi",
@@ -86,6 +87,7 @@ export default function ServicesPage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "4rem" }}>
+        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", left: "10%", width: "30rem", height: "24rem", background: "var(--primary)" }} aria-hidden />
 

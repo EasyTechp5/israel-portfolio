@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AuditTool from "@/components/AuditTool";
+import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Free Automation Audit: Is This Process Worth Automating?",
@@ -19,6 +20,7 @@ export default function AutomationAuditPage() {
   return (
     <>
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "2.5rem" }}>
+        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div
           className="glow"
