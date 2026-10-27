@@ -122,7 +122,7 @@ export default async function BlogPost({
             </span>
           </div>
 
-          <h1 className="mb-5" style={{ fontSize: "clamp(2rem, 4.2vw, 3.1rem)", fontWeight: 800 }}>
+          <h1 className="mb-5" style={{ fontSize: "clamp(2rem, 4.2vw, 3.1rem)" }}>
             {post.h1}
           </h1>
 

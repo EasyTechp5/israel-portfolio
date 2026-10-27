@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, MessageCircle, Calendar, ArrowUpRight } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import LagosClock from "./LagosClock";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
@@ -15,6 +16,14 @@ const nav = [
   { href: "/resume", label: "Resume" },
   { href: "/automation-audit", label: "Free audit" },
   { href: "/contact", label: "Contact" },
+];
+
+// Direct links to the sections of the home page.
+const onPage = [
+  { href: "/#services", label: "Services" },
+  { href: "/#method", label: "The method" },
+  { href: "/#work", label: "Worked examples" },
+  { href: "/#questions", label: "Questions" },
 ];
 
 const expertise = [
@@ -43,7 +52,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer style={{ backgroundColor: "var(--footer-bg)", color: "#93a2b8" }}>
+    <footer style={{ backgroundColor: "var(--footer-bg)", color: "#a8a69e" }}>
       <div className="container-wide">
 
         {/* Top */}
@@ -93,7 +102,7 @@ export default function Footer() {
                   style={{
                     backgroundColor: "rgba(255,255,255,0.06)",
                     border: "1px solid rgba(255,255,255,0.12)",
-                    color: "#c8d3e3",
+                    color: "#d9d5ca",
                   }}
                 >
                   <svg
@@ -112,7 +121,7 @@ export default function Footer() {
 
           {/* Navigate */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.12em] mb-4" style={{ color: "#fff" }}>
+            <h4 className="mono-label mb-4" style={{ color: "#fff" }}>
               Navigate
             </h4>
             <ul className="space-y-2.5">
@@ -124,11 +133,24 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+
+            <h4 className="mono-label mt-8 mb-4" style={{ color: "#fff" }}>
+              On the home page
+            </h4>
+            <ul className="space-y-2.5">
+              {onPage.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-white">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Expertise */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.12em] mb-4" style={{ color: "#fff" }}>
+            <h4 className="mono-label mb-4" style={{ color: "#fff" }}>
               Expertise
             </h4>
             <ul className="space-y-2.5">
@@ -140,24 +162,24 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="md:col-span-3">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.12em] mb-4" style={{ color: "#fff" }}>
+            <h4 className="mono-label mb-4" style={{ color: "#fff" }}>
               Get in touch
             </h4>
             <ul className="space-y-3.5">
               <li>
                 <a href={WA} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 text-sm transition-colors hover:text-white">
-                  <MessageCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#2b7bff" }} />
+                  <MessageCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#7aaaff" }} />
                   <span>+234 813 946 4398<br /><span className="text-xs opacity-70">WhatsApp preferred</span></span>
                 </a>
               </li>
               <li>
                 <a href="mailto:afolabiisraelolajide@gmail.com" className="flex items-start gap-2.5 text-sm transition-colors hover:text-white break-all">
-                  <Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#2b7bff" }} />
+                  <Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#7aaaff" }} />
                   afolabiisraelolajide@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2.5 text-sm">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#2b7bff" }} />
+                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#7aaaff" }} />
                 <span>Lagos, Nigeria<br /><span className="text-xs opacity-70">Working with clients worldwide</span></span>
               </li>
             </ul>
@@ -174,6 +196,9 @@ export default function Footer() {
             <Link href="/privacy" className="underline-offset-2 hover:underline hover:text-white">
               Privacy Policy
             </Link>
+            <span className="mono-label" style={{ color: "#a8a69e" }}>
+              <LagosClock />
+            </span>
           </p>
           <div className="flex flex-shrink-0 items-center justify-center gap-4">
             <ThemeToggle variant="footer" />

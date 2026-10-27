@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Download, FileText, Calendar, MessageCircle, ArrowRight, ExternalLink } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Resume | Israel Afolabi",
@@ -16,14 +15,13 @@ export default function ResumePage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", left: "50%", transform: "translateX(-50%)", width: "30rem", height: "20rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative text-center">
           <div className="hero-in">
             <span className="eyebrow justify-center">Resume</span>
-            <h1 className="mb-4" style={{ fontWeight: 800 }}>Israel Afolabi</h1>
+            <h1 className="mb-4">Israel Afolabi</h1>
             <p className="text-base font-medium mb-5" style={{ color: "var(--primary-text)" }}>
               AI Engineer &nbsp;·&nbsp; AI Automation Specialist &nbsp;·&nbsp; Agentic AI Builder
             </p>

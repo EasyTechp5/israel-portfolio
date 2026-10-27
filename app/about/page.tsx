@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, CheckCircle2, Quote, ArrowUpRight } from "lucide-react";
 import Gallery, { type Shot } from "@/components/Gallery";
 import IntroVideoSection from "@/components/IntroVideo";
-import HeroBackdrop from "@/components/HeroBackdrop";
 import HeroPortrait from "@/components/HeroPortrait";
 import ScrollLine from "@/components/ScrollLine";
 import Reveal from "@/components/Reveal";
@@ -147,7 +146,6 @@ export default function AboutPage() {
         className="relative overflow-hidden"
         style={{ paddingTop: "7rem", paddingBottom: "5rem", background: "linear-gradient(135deg, var(--bg) 0%, var(--primary-soft) 60%, var(--bg) 100%)" }}
       >
-        <HeroBackdrop />
         <div className="ambient-drift absolute top-20 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--primary-soft)" }} />
         <div className="ambient-drift absolute bottom-0 left-0 w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--accent-soft)" }} />
 
