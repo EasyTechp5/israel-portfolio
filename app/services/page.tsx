@@ -93,7 +93,7 @@ export default function ServicesPage() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Services</span>
             <h1 className="mb-6 mx-auto max-w-4xl">
-              Everything you need to <span style={{ color: "var(--primary-text)" }}>operate intelligently</span>
+              Everything you need to <em className="mark">operate intelligently</em>
             </h1>
             <p className="section-lead mx-auto mb-9 text-center">
               Whether you need a system built, a team trained, or a second opinion on your

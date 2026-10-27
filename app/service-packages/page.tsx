@@ -174,7 +174,7 @@ export default function PricingPage() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Pricing</span>
             <h1 className="mb-6 mx-auto max-w-3xl">
-              Fixed scope, fixed price, <span style={{ color: "var(--primary-text)" }}>fixed date</span>
+              Fixed scope, fixed price, <em className="mark">fixed date</em>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
               Three ways to work together, priced on outcome rather than hours. Every

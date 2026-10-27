@@ -157,7 +157,7 @@ export default function AboutPage() {
               <span className="badge badge-blue mb-5">About Israel</span>
 
               <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-3" style={{ color: "var(--text-primary)" }}>
-                Israel <span style={{ color: "var(--primary-text)" }}>Afolabi</span>
+                Israel <em className="mark">Afolabi</em>
               </h1>
 
               <div className="flex flex-wrap gap-2 mb-6">
@@ -167,7 +167,7 @@ export default function AboutPage() {
               </div>
 
               <div className="relative pl-5 mb-8" style={{ borderLeft: "3px solid var(--primary)" }}>
-                <p className="text-xl font-bold italic" style={{ color: "var(--text-primary)" }}>
+                <p className="italic" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)", fontSize: "1.65rem", lineHeight: 1.2, letterSpacing: "-0.015em" }}>
                   &ldquo;I didn&apos;t start my career in AI.&rdquo;
                 </p>
                 <p className="mt-2" style={{ color: "var(--text-muted)" }}>

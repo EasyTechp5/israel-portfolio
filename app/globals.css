@@ -787,6 +787,16 @@ body::before {
 }
 .dark body::before { opacity: 0.035; }
 
+/* Marker-pen highlight, static (page headlines) */
+.mark {
+  font-style: italic;
+  padding-inline: 0.06em;
+  background-image: linear-gradient(var(--highlight), var(--highlight));
+  background-repeat: no-repeat;
+  background-position: 0 90%;
+  background-size: 100% 38%;
+}
+
 /* Marker-pen highlight that draws itself behind a phrase */
 @keyframes mark-draw { to { background-size: 100% 38%; } }
 .mark-swipe {

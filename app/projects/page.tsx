@@ -117,7 +117,7 @@ export default function ProjectsPage() {
             <span className="eyebrow justify-center">Selected work</span>
             <h1 className="mb-6 mx-auto max-w-3xl">
               Automation and AI built around{" "}
-              <span style={{ color: "var(--primary-text)" }}>the work that slows you down</span>
+              <em className="mark">the work that slows you down</em>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
               Workflows and AI agents, grouped by the kind of problem they

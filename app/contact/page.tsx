@@ -59,7 +59,7 @@ export default function ContactPage() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Contact</span>
             <h1 className="mb-6 mx-auto max-w-3xl">
-              Let&apos;s talk about <span style={{ color: "var(--primary-text)" }}>your business</span>
+              Let&apos;s talk about <em className="mark">your business</em>
             </h1>
             <p className="section-lead mx-auto text-center">
               Pick whichever way suits you. The first conversation is always free, and

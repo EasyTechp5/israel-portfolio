@@ -45,7 +45,7 @@ export default function BlogIndex() {
           <div className="hero-in">
             <span className="eyebrow justify-center">Blog</span>
             <h1 className="mb-6 mx-auto max-w-3xl">
-              Practical guides on <span style={{ color: "var(--primary-text)" }}>AI automation</span>
+              Practical guides on <em className="mark">AI automation</em>
             </h1>
             <p className="section-lead mx-auto text-center">
               No hype and no theory for its own sake — just what I have learned building
