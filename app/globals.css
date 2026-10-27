@@ -559,7 +559,9 @@ p { text-wrap: pretty; }
 .glow, .ambient-drift { animation: drift 20s ease-in-out infinite alternate; }
 .glow:nth-of-type(2n) { animation-duration: 27s; animation-direction: alternate-reverse; }
 
-.page-in { animation: page-in 0.45s ease both; }
+/* No fill-mode on purpose: after the fade this wrapper must stop being a stacking
+   context, otherwise fixed overlays (lightbox, project pop-up) end up below the header. */
+.page-in { animation: page-in 0.45s ease; }
 
 /* Headline words rising in, one after another */
 .word-in {
