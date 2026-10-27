@@ -9,6 +9,7 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import { Analytics } from "@vercel/analytics/next";
 import ScrollProgress from "@/components/ScrollProgress";
 import CardSpotlight from "@/components/CardSpotlight";
+import ChromeGate from "@/components/ChromeGate";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -128,13 +129,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <ScrollProgress />
           <CardSpotlight />
-          <Navbar />
+          <ChromeGate>
+            <ScrollProgress />
+            <Navbar />
+          </ChromeGate>
           <main>{children}</main>
-          <Footer />
-          <WhatsAppFAB />
-          <NewsletterPopup />
+          <ChromeGate>
+            <Footer />
+            <WhatsAppFAB />
+            <NewsletterPopup />
+          </ChromeGate>
         </ThemeProvider>
         {/* Privacy-friendly visitor analytics (page views, referrers, top pages).
             Requires Web Analytics to be enabled in the Vercel project settings. */}

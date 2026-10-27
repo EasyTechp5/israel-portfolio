@@ -18,12 +18,12 @@ const nav = [
   { href: "/contact", label: "Contact" },
 ];
 
-// Direct links to the sections of the home page.
+// Direct links to the sections of the overview page.
 const onPage = [
-  { href: "/#services", label: "Services" },
-  { href: "/#method", label: "The method" },
-  { href: "/#work", label: "Worked examples" },
-  { href: "/#questions", label: "Questions" },
+  { href: "/overview#services", label: "Services" },
+  { href: "/overview#method", label: "The method" },
+  { href: "/overview#work", label: "Worked examples" },
+  { href: "/overview#questions", label: "Questions" },
 ];
 
 const expertise = [
@@ -135,7 +135,7 @@ export default function Footer() {
             </ul>
 
             <h4 className="mono-label mt-8 mb-4" style={{ color: "#fff" }}>
-              On the home page
+              On the overview page
             </h4>
             <ul className="space-y-2.5">
               {onPage.map((l) => (
