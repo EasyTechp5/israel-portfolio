@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Faq from "@/components/Faq";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Pricing | Israel Afolabi",
@@ -168,15 +167,14 @@ export default function PricingPage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", left: "50%", transform: "translateX(-50%)", width: "32rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative text-center">
           <div className="hero-in">
             <span className="eyebrow justify-center">Pricing</span>
-            <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
-              Fixed scope, fixed price, <span style={{ color: "var(--primary-text)" }}>fixed date</span>
+            <h1 className="mb-6 mx-auto max-w-3xl">
+              Fixed scope, fixed price, <em className="mark">fixed date</em>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
               Three ways to work together, priced on outcome rather than hours. Every

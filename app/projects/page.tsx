@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   Calendar, MessageCircle, ArrowRight, ArrowUpRight,
-  X, ChevronLeft, ChevronRight, Check,
+  X, ChevronLeft, ChevronRight, Check, Link2,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { categories, byCategory, type Project } from "@/lib/projects";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20saw%20your%20work%20and%20I%20am%20interested%20in%20your%20AI%20automation%20services";
@@ -36,9 +35,6 @@ export default function ProjectsPage() {
 
   const filtered = useMemo(() => byCategory(active), [active]);
   const blurb = categories.find((c) => c.name === active)?.blurb ?? "";
-
-  // Reset the lightbox when the filter changes so the index can't dangle
-  useEffect(() => setOpen(null), [active]);
 
   const close = useCallback(() => setOpen(null), []);
   const prev = useCallback(
@@ -67,20 +63,61 @@ export default function ProjectsPage() {
 
   const current: Project | null = open === null ? null : filtered[open];
 
+  // Deep link: /projects?project=<slug> opens that project straight away.
+  // The slug is read synchronously; opening happens on a timer so the
+  // effect never sets state directly.
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("project");
+    if (!slug) return;
+    const t = window.setTimeout(() => {
+      const all = byCategory("All");
+      const i = all.findIndex((p) => p.slug === slug);
+      if (i >= 0) {
+        setActive("All");
+        setOpen(i);
+      }
+    }, 0);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // Keep the address bar pointing at the project on screen, so it can be shared.
+  // Skipped until a project has been opened once, so it never wipes an incoming link.
+  const urlTouched = useRef(false);
+  useEffect(() => {
+    if (!urlTouched.current) {
+      if (!current) return;
+      urlTouched.current = true;
+    }
+    const url = new URL(window.location.href);
+    if (current) url.searchParams.set("project", current.slug);
+    else url.searchParams.delete("project");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [current]);
+
+  const [copied, setCopied] = useState(false);
+  const copyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked: the address bar already has the link */
+    }
+  }, []);
+
   return (
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", right: "5%", width: "28rem", height: "22rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative text-center">
           <div className="hero-in">
             <span className="eyebrow justify-center">Selected work</span>
-            <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
+            <h1 className="mb-6 mx-auto max-w-3xl">
               Automation and AI built around{" "}
-              <span style={{ color: "var(--primary-text)" }}>the work that slows you down</span>
+              <em className="mark">the work that slows you down</em>
             </h1>
             <p className="section-lead mx-auto text-center mb-9">
               Workflows and AI agents, grouped by the kind of problem they
@@ -104,7 +141,7 @@ export default function ProjectsPage() {
 
           <Reveal>
             <div
-              className="flex flex-wrap justify-center gap-2 mb-5"
+              className="flex flex-wrap justify-center gap-y-1 mb-6"
               role="tablist"
               aria-label="Filter projects by category"
             >
@@ -115,13 +152,8 @@ export default function ProjectsPage() {
                     key={c.name}
                     role="tab"
                     aria-selected={on}
-                    onClick={() => setActive(c.name)}
-                    className="px-3.5 py-2 rounded-lg text-sm font-medium transition-all"
-                    style={
-                      on
-                        ? { backgroundColor: "var(--primary-fill)", color: "#fff", boxShadow: "var(--shadow-brand)" }
-                        : { backgroundColor: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }
-                    }
+                    onClick={() => { setActive(c.name); setOpen(null); }}  /* a new filter closes any open project */
+                    className="tab-link"
                   >
                     {c.name}
                   </button>
@@ -142,10 +174,18 @@ export default function ProjectsPage() {
                   aria-label={`View details: ${p.title}`}
                   className="card card-hover h-full w-full flex flex-col overflow-hidden text-left"
                 >
+                  <div className="p-6 pb-5">
+                    <span className="mono-label">{p.category}</span>
+                    <h2 className="mt-3 mb-2.5" style={{ fontSize: "clamp(1.4rem, 2vw, 1.75rem)", lineHeight: 1.15 }}>
+                      {p.outcome}
+                    </h2>
+                    <p className="mono-label" style={{ letterSpacing: "0.08em" }}>{p.title}</p>
+                  </div>
+
                   {/* Screenshot */}
                   <div
-                    className="relative w-full flex-shrink-0"
-                    style={{ aspectRatio: "16 / 10", backgroundColor: "var(--bg-inset)" }}
+                    className="relative mt-auto w-full flex-shrink-0"
+                    style={{ aspectRatio: "16 / 10", backgroundColor: "var(--bg-inset)", borderTop: "1px solid var(--border)" }}
                   >
                     <Image
                       src={p.image}
@@ -156,27 +196,15 @@ export default function ProjectsPage() {
                     />
                   </div>
 
-                  <div className="p-6 flex flex-col flex-1">
-                    <span className="badge badge-blue mb-3 self-start">{p.category}</span>
-
-                    <h2 className="mb-2.5" style={{ fontSize: "1.05rem", lineHeight: 1.35 }}>
-                      {p.title}
-                    </h2>
-
-                    <p className="text-sm leading-relaxed mb-4 flex-1" style={{ color: "var(--text-muted)" }}>
-                      {p.desc}
-                    </p>
-
-                    <div className="flex flex-wrap gap-1.5">
-                      {p.tools.slice(0, 3).map((t) => (
-                        <span key={t} className="chip text-xs" style={{ padding: "0.2rem 0.5rem" }}>{t}</span>
-                      ))}
-                      {p.tools.length > 3 && (
-                        <span className="chip text-xs" style={{ padding: "0.2rem 0.5rem" }}>
-                          +{p.tools.length - 3}
-                        </span>
-                      )}
-                    </div>
+                  <div className="flex flex-wrap gap-1.5 p-5">
+                    {p.tools.slice(0, 3).map((t) => (
+                      <span key={t} className="chip" style={{ padding: "0.2rem 0.5rem", fontSize: "0.7rem" }}>{t}</span>
+                    ))}
+                    {p.tools.length > 3 && (
+                      <span className="chip" style={{ padding: "0.2rem 0.5rem", fontSize: "0.7rem" }}>
+                        +{p.tools.length - 3}
+                      </span>
+                    )}
                   </div>
                 </button>
               </Reveal>
@@ -314,7 +342,7 @@ export default function ProjectsPage() {
             )}
 
             <article
-              className="relative w-full max-w-4xl rounded-2xl overflow-hidden my-8"
+              className="relative w-full max-w-4xl rounded-xl overflow-hidden my-8"
               style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -330,10 +358,11 @@ export default function ProjectsPage() {
               </div>
 
               <div className="p-7 sm:p-9">
-                <span className="badge badge-blue mb-4">{current.category}</span>
-                <h2 className="mb-4" style={{ fontSize: "clamp(1.35rem, 2.4vw, 1.85rem)" }}>
-                  {current.title}
+                <span className="mono-label">{current.category}</span>
+                <h2 className="mt-3 mb-2" style={{ fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)" }}>
+                  {current.outcome}
                 </h2>
+                <p className="mono-label mb-6" style={{ letterSpacing: "0.08em" }}>{current.title}</p>
 
                 <p className="leading-relaxed mb-6" style={{ color: "var(--text-muted)" }}>
                   {current.desc}
@@ -371,6 +400,10 @@ export default function ProjectsPage() {
                   <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-secondary">
                     <Calendar className="w-4 h-4" /> Book a call
                   </a>
+                  <button type="button" onClick={copyLink} className="btn-ghost">
+                    {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+                    {copied ? "Link copied" : "Copy link to this project"}
+                  </button>
                 </div>
 
                 <p className="text-xs mt-6 text-center" style={{ color: "var(--text-subtle)" }}>

@@ -11,6 +11,8 @@ import HeroPortrait from "@/components/HeroPortrait";
 import Typewriter from "@/components/Typewriter";
 import CountUp from "@/components/CountUp";
 import AnimatedWords from "@/components/AnimatedWords";
+import IssueBar from "@/components/IssueBar";
+import FeaturedWork from "@/components/FeaturedWork";
 
 const CAL = "https://calendar.app.google/8Pfj98atpuSk14RH9";
 const WA = "https://wa.me/2348139464398?text=Hi%20Israel%2C%20I%20will%20love%20to%20have%20conversations%20with%20you";
@@ -109,19 +111,23 @@ export default function HomePage() {
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "8rem", paddingBottom: "5rem" }}>
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
-        <HeroBackdrop />
+        <HeroBackdrop opacity={0.35} />
         <div className="glow" style={{ top: "-6rem", left: "-8rem", width: "34rem", height: "34rem", background: "var(--primary)" }} aria-hidden />
         <div className="glow" style={{ bottom: "-10rem", right: "-6rem", width: "28rem", height: "28rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative">
+          <div className="hero-in">
+            <IssueBar />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
             {/* Copy */}
             <div className="lg:col-span-7">
-              <h1 className="mb-6" style={{ fontWeight: 800 }}>
+              <h1 className="mb-6">
                 <AnimatedWords text="I build AI systems that make your business" />{" "}
-                <span className="word-in underline-accent shimmer-text" style={{ "--w": 8 } as React.CSSProperties}>
-                  run itself
+                <span className="word-in" style={{ "--w": 8 } as React.CSSProperties}>
+                  <span className="mark-swipe">run itself</span>
                 </span>
               </h1>
 
@@ -144,19 +150,25 @@ export default function HomePage() {
 
           {/* Stats strip */}
           <div className="hero-in" style={{ "--in-delay": "340ms" } as React.CSSProperties}>
-            <div
-              className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden"
-              style={{ backgroundColor: "var(--border)", border: "1px solid var(--border)" }}
+            <dl
+              className="mt-20 grid grid-cols-2 lg:grid-cols-4"
+              style={{ borderBlock: "1px solid var(--border-strong)" }}
             >
-              {stats.map((s) => (
-                <div key={s.label} className="px-6 py-7 text-center" style={{ backgroundColor: "var(--bg)" }}>
-                  <p className="text-[1.65rem] sm:text-4xl font-bold mb-1" style={{ color: "var(--primary-text)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}>
+              {stats.map((s, i) => (
+                <div
+                  key={s.label}
+                  className={`flex flex-col-reverse justify-end px-5 py-8 ${i % 2 === 1 ? "border-l" : ""} ${i > 0 ? "lg:border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""}`}
+                >
+                  <dt className="mono-label" style={{ letterSpacing: "0.1em" }}>{s.label}</dt>
+                  <dd
+                    className="mb-1.5 text-[1.9rem] sm:text-5xl"
+                    style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)", letterSpacing: "-0.03em", lineHeight: 1.05 }}
+                  >
                     <CountUp value={s.value} />
-                  </p>
-                  <p className="text-sm" style={{ color: "var(--text-muted)" }}>{s.label}</p>
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
         </div>
       </section>
@@ -167,7 +179,7 @@ export default function HomePage() {
       {/* ══════════════ TOOL MARQUEE ══════════════ */}
       <section className="py-12 section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.14em] mb-8" style={{ color: "var(--text-subtle)" }}>
+          <p className="mono-label text-center mb-8">
             Built with the tools that power modern business
           </p>
         </div>
@@ -181,7 +193,7 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════ SERVICES ══════════════ */}
-      <section className="section-padding">
+      <section id="services" className="section-padding">
         <div className="container-wide">
           <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
@@ -242,11 +254,11 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════ PROCESS ══════════════ */}
-      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+      <section id="method" className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
           <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
-              <span className="eyebrow">How it works</span>
+              <span className="eyebrow">The method</span>
               <h2 className="mb-4">A clear path from problem to working system</h2>
               <p className="section-lead">
                 No jargon, no surprises. You know what is happening at every stage,
@@ -293,8 +305,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ══════════════ WORKED EXAMPLES ══════════════ */}
+      <FeaturedWork />
+
       {/* ══════════════ TESTIMONIALS ══════════════ */}
-      <section className="section-padding">
+      <section id="results" className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
         <div className="container-wide">
           <Reveal variant="blur">
             <div className="max-w-2xl mb-14">
@@ -327,7 +342,7 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════ FAQ ══════════════ */}
-      <section className="section-padding section-alt" style={{ borderBlock: "1px solid var(--border)" }}>
+      <section id="questions" className="section-padding">
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <Reveal className="lg:col-span-5" variant="left">
@@ -350,7 +365,7 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════ CTA ══════════════ */}
-      <section className="section-padding relative overflow-hidden">
+      <section id="contact" className="section-padding relative overflow-hidden">
         <div className="glow" style={{ top: "-8rem", left: "50%", transform: "translateX(-50%)", width: "36rem", height: "26rem", background: "var(--primary)" }} aria-hidden />
         <div className="container-wide relative">
           <Reveal variant="scale">
@@ -360,10 +375,10 @@ export default function HomePage() {
             >
               <span className="cta-orb" style={{ width: "16rem", height: "16rem", top: "-6rem", left: "-4rem" }} aria-hidden />
               <span className="cta-orb" style={{ width: "13rem", height: "13rem", bottom: "-5rem", right: "-3rem", animationDelay: "-6s" }} aria-hidden />
-              <h2 className="relative mb-4" style={{ color: "#fff" }}>Ready to automate your business?</h2>
+              <h2 className="relative mb-4" style={{ color: "#fff" }}>Bring me the problem. <em>I will show my working.</em></h2>
               <p className="relative text-lg mb-9 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.82)" }}>
-                Book a free 20-minute call. No pitch, no obligation — just honest advice
-                on what automation can realistically do for you.
+                Book a free 20-minute call and walk me through the task that eats your week.
+                No pitch, no obligation: just an honest answer on whether automation is worth it.
               </p>
               <div className="relative flex flex-col sm:flex-row gap-3 justify-center">
                 <a

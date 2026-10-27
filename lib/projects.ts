@@ -3,6 +3,7 @@ export type Project = {
   title: string;
   category: Category;
   desc: string;      // what it does
+  outcome: string;   // the answer in one line, written for the buyer
   helps: string;     // what it does for the client
   tools: string[];
   image: string;
@@ -32,6 +33,7 @@ export const projects: Project[] = [
     slug: "agent-voice-lead-qualification",
     title: "AI Voice Lead Qualification System",
     category: "AI Agents",
+    outcome: "Only speak to the leads worth speaking to.",
     desc: "A voice agent that calls leads, holds a natural conversation, extracts the useful detail from the transcript and files it into a vector database for retrieval.",
     helps: "Qualifies inbound leads by phone around the clock, so your team only speaks to people worth speaking to.",
     tools: ["n8n", "OpenRouter", "Milvus", "OpenAI Embeddings"],
@@ -41,6 +43,7 @@ export const projects: Project[] = [
     slug: "agent-knowledge-base-chatbot",
     title: "Knowledge Base Customer Chatbot",
     category: "AI Agents",
+    outcome: "Repeat questions answered, hard ones escalated.",
     desc: "A chat agent with persistent memory that answers from your own documentation, remembers the conversation, and emails a human when it cannot resolve something.",
     helps: "Answers the repeat questions that eat your support hours, and escalates cleanly instead of guessing.",
     tools: ["n8n", "Google Gemini", "Postgres", "Gmail"],
@@ -50,6 +53,7 @@ export const projects: Project[] = [
     slug: "agent-website-assistant",
     title: "Website AI Assistant",
     category: "AI Agents",
+    outcome: "Website visitors become conversations.",
     desc: "An embedded assistant on the EasyTech Academy site that answers visitor questions about programmes and guides them toward enrolling.",
     helps: "Turns passive website traffic into conversations, and captures interest that would otherwise bounce.",
     tools: ["AI Agent", "Web Widget", "Knowledge Base"],
@@ -59,6 +63,7 @@ export const projects: Project[] = [
     slug: "agent-whatsapp-chatbot",
     title: "WhatsApp Business Chatbot",
     category: "AI Agents",
+    outcome: "Customers reach you where they already message.",
     desc: "A WhatsApp agent that handles enquiries in the channel your customers already use, with routing to a human for anything sensitive.",
     helps: "Meets customers where they actually message you, instead of expecting them to use a web form.",
     tools: ["n8n", "WhatsApp API", "LLM"],
@@ -68,6 +73,7 @@ export const projects: Project[] = [
     slug: "agent-customer-support",
     title: "AI Customer Support Agent",
     category: "AI Agents",
+    outcome: "First replies in seconds, not hours.",
     desc: "A support workflow that classifies each incoming message, drafts a grounded reply, and routes anything it should not handle to a person.",
     helps: "Cuts first-response time from hours to seconds without letting the AI answer things it should not.",
     tools: ["n8n", "LLM", "Email", "Routing Logic"],
@@ -79,6 +85,7 @@ export const projects: Project[] = [
     slug: "sales-lead-generation-agent",
     title: "AI Lead Generation Agent",
     category: "Sales & Lead Gen",
+    outcome: "A full funnel without the morning research.",
     desc: "An agent that sources prospects matching your ideal customer profile, enriches each record and pushes qualified leads into your pipeline.",
     helps: "Keeps the top of your funnel filled without anyone spending mornings on manual research.",
     tools: ["n8n", "LLM", "Enrichment APIs", "CRM"],
@@ -88,6 +95,7 @@ export const projects: Project[] = [
     slug: "sales-prospecting-pipeline",
     title: "Automated Prospecting Pipeline",
     category: "Sales & Lead Gen",
+    outcome: "The copy-paste loop between tools, gone.",
     desc: "A Lusha-powered pipeline that finds contact data, verifies it, and feeds a sequenced outreach campaign automatically.",
     helps: "Replaces the copy-paste loop between a data tool, a spreadsheet and your outreach platform.",
     tools: ["n8n", "Lusha", "CRM", "Email"],
@@ -97,6 +105,7 @@ export const projects: Project[] = [
     slug: "sales-real-estate-leads",
     title: "Real Estate Lead Generation",
     category: "Sales & Lead Gen",
+    outcome: "Serious buyers get a call within minutes.",
     desc: "Captures property enquiries, scores them against buying signals and routes hot leads to an agent while nurturing the rest.",
     helps: "Makes sure the serious buyer gets a call in minutes rather than sitting in an inbox.",
     tools: ["n8n", "LLM", "CRM", "Email"],
@@ -108,6 +117,7 @@ export const projects: Project[] = [
     slug: "cx-customer-feedback",
     title: "AI Customer Feedback Analysis",
     category: "Customer Experience",
+    outcome: "What customers keep complaining about, found.",
     desc: "Collects feedback from every channel, scores sentiment, groups recurring themes and flags anything negative straight away.",
     helps: "Tells you what customers actually keep complaining about, instead of leaving it buried in a spreadsheet.",
     tools: ["n8n", "LLM", "Sentiment Analysis", "Database"],
@@ -117,6 +127,7 @@ export const projects: Project[] = [
     slug: "cx-business-email-responses",
     title: "Automated Business Email Responses",
     category: "Customer Experience",
+    outcome: "The routine half of the inbox, cleared.",
     desc: "Reads incoming business email, works out intent, and drafts or sends a contextual reply based on rules you control.",
     helps: "Clears the routine half of your inbox so the messages that need judgement get proper attention.",
     tools: ["n8n", "Gmail", "LLM"],
@@ -126,6 +137,7 @@ export const projects: Project[] = [
     slug: "cx-automated-email-replies",
     title: "Automated Email Reply System",
     category: "Customer Experience",
+    outcome: "A personal reply to every enquiry, even in a spike.",
     desc: "A reply system that personalises each response from customer records rather than sending an obvious template.",
     helps: "Gives every enquirer a fast, personal answer even when volume spikes.",
     tools: ["n8n", "Email", "LLM", "Database"],
@@ -137,6 +149,7 @@ export const projects: Project[] = [
     slug: "ops-invoice-processing",
     title: "Automated Invoice Processing",
     category: "Finance & Admin",
+    outcome: "No more typing invoices in by hand.",
     desc: "Reads incoming invoices, extracts vendor, amount and date, validates the figures and writes them into your accounting system.",
     helps: "Removes manual data entry from accounts payable and the typing errors that come with it.",
     tools: ["n8n", "Document AI", "Accounting API"],
@@ -146,6 +159,7 @@ export const projects: Project[] = [
     slug: "ops-invoice-generation",
     title: "Invoice Generation & Delivery",
     category: "Finance & Admin",
+    outcome: "Invoices out the day the work finishes.",
     desc: "Generates the invoice on project completion, sends it, tracks payment status and chases on a schedule.",
     helps: "Gets invoices out the day work finishes and chases them without anyone feeling awkward.",
     tools: ["n8n", "PDF Generation", "Email", "Database"],
@@ -155,6 +169,7 @@ export const projects: Project[] = [
     slug: "ops-client-onboarding",
     title: "Automated Client Onboarding",
     category: "Finance & Admin",
+    outcome: "A three-hour checklist nobody has to remember.",
     desc: "One trigger fires the whole sequence: folders created, welcome email sent, kickoff call scheduled, intake form delivered, team notified.",
     helps: "Turns a three-hour onboarding checklist into something nobody has to remember.",
     tools: ["n8n", "Google Workspace", "Email", "Calendar"],
@@ -164,6 +179,7 @@ export const projects: Project[] = [
     slug: "ops-document-from-template",
     title: "Document Generation from Templates",
     category: "Finance & Admin",
+    outcome: "Documents made without copy, paste and hope.",
     desc: "Merges record data into a branded template and produces a finished contract, proposal or report ready to send.",
     helps: "Ends the copy-paste-and-hope-you-changed-the-name approach to producing documents.",
     tools: ["n8n", "Google Docs", "Templates"],
@@ -173,6 +189,7 @@ export const projects: Project[] = [
     slug: "ops-meeting-notes",
     title: "Meeting Notes & Action Items",
     category: "Finance & Admin",
+    outcome: "Decisions written down, in one shared version.",
     desc: "Turns a meeting into a structured Google Doc with decisions, owners and next steps, then distributes it.",
     helps: "Means the decisions actually get written down, and everyone sees the same version.",
     tools: ["n8n", "Google Docs", "LLM", "Calendar"],
@@ -182,6 +199,7 @@ export const projects: Project[] = [
     slug: "ops-adobe-commerce-sync",
     title: "Adobe Commerce Data Sync",
     category: "Finance & Admin",
+    outcome: "Store and back office always in agreement.",
     desc: "Moves product, order and customer data between Adobe Commerce and the other systems that need it, with validation on the way through.",
     helps: "Keeps your store and back office in agreement without a nightly manual export.",
     tools: ["n8n", "Adobe Commerce", "REST APIs"],
@@ -193,6 +211,7 @@ export const projects: Project[] = [
     slug: "industry-healthcare",
     title: "Healthcare Workflow Automation",
     category: "Industry Solutions",
+    outcome: "Fewer no-shows, less admin.",
     desc: "Automates patient scheduling, reminders and record updates, with a human checkpoint anywhere clinical judgement is involved.",
     helps: "Reduces no-shows and admin load while keeping people in the loop where it matters.",
     tools: ["n8n", "Calendar", "Notifications", "Database"],
@@ -202,6 +221,7 @@ export const projects: Project[] = [
     slug: "industry-hotel-booking",
     title: "AI-Powered Hotel Booking",
     category: "Industry Solutions",
+    outcome: "Bookings taken at 2am.",
     desc: "Handles booking enquiries, checks availability, confirms reservations and sends pre-arrival information automatically.",
     helps: "Captures bookings at 2am and stops enquiries going cold overnight.",
     tools: ["n8n", "LLM", "Booking API", "Email"],
@@ -211,6 +231,7 @@ export const projects: Project[] = [
     slug: "industry-real-estate",
     title: "AI-Powered Real Estate System",
     category: "Industry Solutions",
+    outcome: "Every enquiry moves toward a viewing.",
     desc: "An end-to-end property workflow covering listings, enquiry handling, viewing scheduling and follow-up.",
     helps: "Keeps every enquiry moving toward a viewing instead of relying on someone remembering to chase.",
     tools: ["n8n", "LLM", "CRM", "Calendar"],
@@ -220,6 +241,7 @@ export const projects: Project[] = [
     slug: "industry-recruitment",
     title: "AI Recruitment Automation",
     category: "Industry Solutions",
+    outcome: "A fast shortlist, and no candidate left waiting.",
     desc: "Screens applications against role criteria, ranks candidates, schedules interviews and keeps applicants informed.",
     helps: "Gets you to a shortlist quickly, and means no candidate is left without a reply.",
     tools: ["n8n", "LLM", "ATS", "Calendar"],
@@ -229,6 +251,7 @@ export const projects: Project[] = [
     slug: "industry-student-enrollment",
     title: "AI Student Enrollment System",
     category: "Industry Solutions",
+    outcome: "A bigger cohort without more admin staff.",
     desc: "Runs the enrolment pipeline: registration, unique student ID generation, payment confirmation, receipts and cohort communication.",
     helps: "Lets a training business take on a bigger cohort without adding admin staff.",
     tools: ["n8n", "Database", "Email", "Payments"],
@@ -238,6 +261,7 @@ export const projects: Project[] = [
     slug: "industry-sales-forecasting",
     title: "AI Sales Forecasting",
     category: "Industry Solutions",
+    outcome: "A revenue forecast without the monthly rebuild.",
     desc: "Pulls historical sales and pipeline data, generates forecasts and flags the trends worth acting on.",
     helps: "Gives you a forward view of revenue without rebuilding the same spreadsheet every month.",
     tools: ["n8n", "LLM", "Data Pipeline", "Dashboards"],
@@ -249,6 +273,7 @@ export const projects: Project[] = [
     slug: "content-ai-creation",
     title: "AI Content Creation Pipeline",
     category: "Content & Marketing",
+    outcome: "Publishing stays steady, even in busy weeks.",
     desc: "Generates on-brand content from a brief, routes it for approval, and publishes to the right channels on schedule.",
     helps: "Keeps publishing consistent even in the weeks when nobody has time to write.",
     tools: ["n8n", "LLM", "CMS", "Social APIs"],
@@ -262,4 +287,16 @@ export function byCategory(cat: string): Project[] {
 
 export function categoryCount(cat: string): number {
   return byCategory(cat).length;
+}
+
+/** Slugs shown in the "Worked examples" strip on the home page. */
+export const featuredSlugs = [
+  "agent-voice-lead-qualification",
+  "ops-invoice-processing",
+  "ops-client-onboarding",
+  "agent-whatsapp-chatbot",
+];
+
+export function bySlug(slug: string): Project | undefined {
+  return projects.find((p) => p.slug === slug);
 }

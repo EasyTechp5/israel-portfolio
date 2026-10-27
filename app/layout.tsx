@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Inter, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
@@ -16,10 +16,18 @@ const inter = Inter({
   display: "swap",
 });
 
-const sora = Sora({
+// Editorial serif for headlines, mono for the small labels (numbers, categories, tools).
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-sora",
-  weight: ["600", "700", "800"],
+  style: ["normal", "italic"],
+  variable: "--font-newsreader",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -106,7 +114,7 @@ const siteJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${newsreader.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -115,7 +123,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Scroll-reveal starts hidden only when scripting is available, so the
             page still renders fully if JS is disabled or fails to load. */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important;filter:none !important}.tw-ghost{opacity:1 !important}.tw-live{display:none !important}.word-in{opacity:1 !important;animation:none !important}.underline-accent::after{transform:none !important;animation:none !important}`}</style>
+          <style>{`.reveal{opacity:1 !important;transform:none !important;filter:none !important}.tw-ghost{opacity:1 !important}.tw-live{display:none !important}.word-in{opacity:1 !important;animation:none !important}.mark-swipe{background-size:100% 38% !important;animation:none !important}`}</style>
         </noscript>
       </head>
       <body>

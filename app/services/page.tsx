@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, Bot, Users, Zap, TrendingUp, CheckCircle2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Services | Israel Afolabi",
@@ -87,15 +86,14 @@ export default function ServicesPage() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "4rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="glow" style={{ top: "-6rem", left: "10%", width: "30rem", height: "24rem", background: "var(--primary)" }} aria-hidden />
 
         <div className="container-wide relative text-center">
           <div className="hero-in">
             <span className="eyebrow justify-center">Services</span>
-            <h1 className="mb-6 mx-auto max-w-4xl" style={{ fontWeight: 800 }}>
-              Everything you need to <span style={{ color: "var(--primary-text)" }}>operate intelligently</span>
+            <h1 className="mb-6 mx-auto max-w-4xl">
+              Everything you need to <em className="mark">operate intelligently</em>
             </h1>
             <p className="section-lead mx-auto mb-9 text-center">
               Whether you need a system built, a team trained, or a second opinion on your

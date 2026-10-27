@@ -12,7 +12,7 @@ type Packet = { a: number; b: number; t: number; speed: number };
  * events), pauses when off-screen or in a background tab, uses fewer nodes on
  * phones, and draws one still frame for visitors who prefer reduced motion.
  */
-export default function HeroBackdrop({ density = 1 }: { density?: number }) {
+export default function HeroBackdrop({ density = 1, opacity = 1 }: { density?: number; opacity?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -225,6 +225,7 @@ export default function HeroBackdrop({ density = 1 }: { density?: number }) {
       aria-hidden
       className="pointer-events-none absolute inset-0 h-full w-full"
       style={{
+        opacity,
         WebkitMaskImage: "radial-gradient(ellipse 95% 90% at 50% 38%, #000 35%, transparent 100%)",
         maskImage: "radial-gradient(ellipse 95% 90% at 50% 38%, #000 35%, transparent 100%)",
       }}

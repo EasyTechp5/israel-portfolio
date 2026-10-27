@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div className="container-narrow relative hero-in">
           <span className="eyebrow">Legal</span>
-          <h1 className="mb-4" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.2rem)", fontWeight: 800 }}>
+          <h1 className="mb-4" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.2rem)" }}>
             Privacy Policy
           </h1>
           <p style={{ color: "var(--text-muted)" }}>

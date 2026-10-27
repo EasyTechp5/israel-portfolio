@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight, Clock, MessageCircle, Calendar } from "lucide-react";
 import { allPosts, formatDate } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "AI Automation Blog | Israel Afolabi",
@@ -36,7 +35,6 @@ export default function BlogIndex() {
     <>
       {/* ══════════════ HERO ══════════════ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "3rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div
           className="glow"
@@ -46,8 +44,8 @@ export default function BlogIndex() {
         <div className="container-wide relative text-center">
           <div className="hero-in">
             <span className="eyebrow justify-center">Blog</span>
-            <h1 className="mb-6 mx-auto max-w-3xl" style={{ fontWeight: 800 }}>
-              Practical guides on <span style={{ color: "var(--primary-text)" }}>AI automation</span>
+            <h1 className="mb-6 mx-auto max-w-3xl">
+              Practical guides on <em className="mark">AI automation</em>
             </h1>
             <p className="section-lead mx-auto text-center">
               No hype and no theory for its own sake — just what I have learned building

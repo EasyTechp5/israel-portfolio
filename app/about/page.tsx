@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, CheckCircle2, Quote, ArrowUpRight } from "lucide-react";
 import Gallery, { type Shot } from "@/components/Gallery";
 import IntroVideoSection from "@/components/IntroVideo";
-import HeroBackdrop from "@/components/HeroBackdrop";
 import HeroPortrait from "@/components/HeroPortrait";
 import ScrollLine from "@/components/ScrollLine";
 import Reveal from "@/components/Reveal";
@@ -147,7 +146,6 @@ export default function AboutPage() {
         className="relative overflow-hidden"
         style={{ paddingTop: "7rem", paddingBottom: "5rem", background: "linear-gradient(135deg, var(--bg) 0%, var(--primary-soft) 60%, var(--bg) 100%)" }}
       >
-        <HeroBackdrop />
         <div className="ambient-drift absolute top-20 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--primary-soft)" }} />
         <div className="ambient-drift absolute bottom-0 left-0 w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "var(--accent-soft)" }} />
 
@@ -159,7 +157,7 @@ export default function AboutPage() {
               <span className="badge badge-blue mb-5">About Israel</span>
 
               <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-3" style={{ color: "var(--text-primary)" }}>
-                Israel <span style={{ color: "var(--primary-text)" }}>Afolabi</span>
+                Israel <em className="mark">Afolabi</em>
               </h1>
 
               <div className="flex flex-wrap gap-2 mb-6">
@@ -169,7 +167,7 @@ export default function AboutPage() {
               </div>
 
               <div className="relative pl-5 mb-8" style={{ borderLeft: "3px solid var(--primary)" }}>
-                <p className="text-xl font-bold italic" style={{ color: "var(--text-primary)" }}>
+                <p className="italic" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display)", fontSize: "1.65rem", lineHeight: 1.2, letterSpacing: "-0.015em" }}>
                   &ldquo;I didn&apos;t start my career in AI.&rdquo;
                 </p>
                 <p className="mt-2" style={{ color: "var(--text-muted)" }}>

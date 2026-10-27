@@ -138,16 +138,9 @@ export default function Navbar() {
 
           {/* Desktop nav: glass pill with a highlight that glides between links */}
           <nav
-            className="relative hidden lg:flex items-center gap-0.5 rounded-full p-1"
+            className="relative hidden lg:flex items-center gap-0.5"
             aria-label="Main"
             onMouseLeave={() => setHover(null)}
-            style={{
-              border: "1px solid var(--border)",
-              background: "color-mix(in srgb, var(--bg-card) 72%, transparent)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "var(--shadow-sm)",
-            }}
           >
             <span ref={pillRef} className="nav-pill" style={{ opacity: 0 }} aria-hidden />
             {links.map((l) => {
@@ -164,9 +157,9 @@ export default function Navbar() {
                   onMouseEnter={() => setHover(l.href)}
                   onFocus={() => setHover(l.href)}
                   onBlur={() => setHover(null)}
-                  className="relative z-10 rounded-full px-3.5 py-2 text-[0.875rem] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                  className="relative z-10 rounded-md px-3.5 py-2.5 text-[0.875rem] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
                   style={{
-                    color: lit ? "var(--primary-text)" : "var(--text-muted)",
+                    color: lit ? "var(--text-primary)" : "var(--text-muted)",
                     fontWeight: active ? 600 : 500,
                   }}
                 >
@@ -225,7 +218,7 @@ export default function Navbar() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className="flex-1 text-[1.65rem] font-bold leading-none tracking-tight"
+                    className="flex-1 text-[1.9rem] font-medium leading-none tracking-tight"
                     style={{ fontFamily: "var(--font-display)", color: active ? "var(--primary-text)" : "var(--text-primary)" }}
                   >
                     {l.label}

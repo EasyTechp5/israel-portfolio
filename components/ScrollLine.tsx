@@ -49,7 +49,7 @@ export default function ScrollLine({ className = "" }: { className?: string }) {
         ref={fill}
         className="absolute inset-0 origin-top"
         style={{
-          background: "linear-gradient(to bottom, var(--primary), #7c5cff)",
+          background: "var(--primary)",
           transform: "scaleY(0)",
         }}
       />

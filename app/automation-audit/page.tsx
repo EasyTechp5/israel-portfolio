@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AuditTool from "@/components/AuditTool";
-import HeroBackdrop from "@/components/HeroBackdrop";
 
 export const metadata: Metadata = {
   title: "Free Automation Audit: Is This Process Worth Automating?",
@@ -20,7 +19,6 @@ export default function AutomationAuditPage() {
   return (
     <>
       <section className="relative overflow-hidden" style={{ paddingTop: "9rem", paddingBottom: "2.5rem" }}>
-        <HeroBackdrop />
         <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden />
         <div
           className="glow"
@@ -29,7 +27,7 @@ export default function AutomationAuditPage() {
         />
         <div className="container-narrow relative text-center hero-in">
           <span className="eyebrow justify-center">Free tool</span>
-          <h1 className="mb-5 mx-auto" style={{ fontSize: "clamp(2.2rem, 4.8vw, 3.4rem)", fontWeight: 800 }}>
+          <h1 className="mb-5 mx-auto" style={{ fontSize: "clamp(2.2rem, 4.8vw, 3.4rem)" }}>
             Is this process <span style={{ color: "var(--primary-text)" }}>worth automating?</span>
           </h1>
           <p className="section-lead mx-auto text-center">
