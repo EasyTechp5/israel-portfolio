@@ -6,6 +6,7 @@ const SITE = "https://israel.easytech365.com";
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
     { path: "", priority: 1.0, freq: "weekly" as const },
+    { path: "/overview", priority: 0.8, freq: "monthly" as const },
     { path: "/about", priority: 0.8, freq: "monthly" as const },
     { path: "/services", priority: 0.9, freq: "monthly" as const },
     { path: "/service-packages", priority: 0.9, freq: "monthly" as const },
