@@ -1,195 +1,40 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { ArrowRight, Moon, Plus, Minus, Sun, X } from "lucide-react";
 import Typewriter from "@/components/Typewriter";
-import SceneArt from "./SceneArt";
 import SceneIntro from "./SceneIntro";
 import ScenePanel from "./ScenePanels";
-import { hotspots, isSceneId, lampSpot, type SceneId } from "@/lib/scene";
+import Stage2D from "./Stage2D";
+import type { StageApi } from "./stage";
+import { hotspots, isSceneId, type SceneId } from "@/lib/scene";
 
-const W = 1600;
-const H = 900;
+// The 3D room (three.js) is its own chunk: it loads only here, never on other pages.
+const Stage3D = dynamic(() => import("./Stage3D"), { ssr: false });
+
 const SEEN_KEY = "scene_intro_seen_v1";
 
-/* ── The real time in Lagos, for the wall clock ── */
-const lagos = new Intl.DateTimeFormat("en-GB", {
-  hour: "numeric",
-  minute: "numeric",
-  second: "numeric",
-  timeZone: "Africa/Lagos",
-  hourCycle: "h23",
-});
-const lagosKey = () => lagos.format(new Date());
-const subscribeSecond = (cb: () => void) => {
-  const id = window.setInterval(cb, 1000);
-  return () => window.clearInterval(id);
-};
-function useLagosClock() {
-  const key = useSyncExternalStore(subscribeSecond, lagosKey, () => "");
-  if (!key) return null;
-  const [h, m, s] = key.split(":").map(Number);
-  return { h, m, s };
-}
-
 /**
- * The home page: an illustrated room you can drag around, zoom and click.
- * Each object opens a panel (work, calendar, about, and so on). Deep links
- * (/?open=work) open a panel directly, and "Overview" is always one click away
- * for anyone who prefers a plain page.
+ * The home page shell: doors, contents menu, panels, controls. It hosts either
+ * the live 3D room or, when 3D can't run, the illustrated room. Deep links
+ * (/?open=work) open a panel directly; ?view=2d / ?view=3d force a stage.
  */
 export default function Scene({ children }: { children?: React.ReactNode }) {
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === "dark";
-  const clock = useLagosClock();
 
+  const [mode, setMode] = useState<"2d" | "3d" | null>(null);
+  const [stageReady, setStageReady] = useState(false);
   const [intro, setIntro] = useState(true);
   const [lamp, setLamp] = useState(false);
   const [open, setOpen] = useState<SceneId | null>(null);
   const [menu, setMenu] = useState(false);
+  const api = useRef<StageApi | null>(null);
 
-  const viewport = useRef<HTMLDivElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
-  const view = useRef({ s: 1, x: 0, y: 0 });
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const gesture = useRef({ moved: 0, dragging: false, pinch: 0, justDragged: false });
-  const userZoomed = useRef(false);
-
-  /* ── Pan and zoom ── */
-  const bounds = () => {
-    const vp = viewport.current!;
-    const cover = Math.max(vp.clientWidth / W, vp.clientHeight / H);
-    // On a tall phone "cover" shows only a sliver of the room, so allow zooming out further.
-    const portrait = vp.clientHeight > vp.clientWidth;
-    return { vw: vp.clientWidth, vh: vp.clientHeight, min: portrait ? cover * 0.6 : cover, max: cover * 3.2 };
-  };
-
-  const apply = useCallback((animate = false) => {
-    const el = stage.current;
-    if (!el) return;
-    const { vw, vh } = bounds();
-    const v = view.current;
-    // Pan within the room; if the room is smaller than the screen on an axis, centre it.
-    const axis = (pos: number, view: number, size: number) =>
-      size >= view ? Math.min(0, Math.max(view - size, pos)) : (view - size) / 2;
-    v.x = axis(v.x, vw, W * v.s);
-    v.y = axis(v.y, vh, H * v.s);
-    el.style.transition = animate ? "transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)" : "none";
-    el.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`;
-    el.style.setProperty("--inv", String(1 / v.s));
-  }, []);
-
-  const fit = useCallback(
-    (animate = false) => {
-      const { vw, vh, min } = bounds();
-      view.current = { s: min, x: (vw - W * min) / 2, y: (vh - H * min) / 2 };
-      userZoomed.current = false;
-      apply(animate);
-    },
-    [apply]
-  );
-
-  const zoomAt = useCallback(
-    (factor: number, cx: number, cy: number, animate = false) => {
-      const { min, max } = bounds();
-      const v = view.current;
-      const next = Math.min(max, Math.max(min, v.s * factor));
-      const k = next / v.s;
-      v.x = cx - (cx - v.x) * k;
-      v.y = cy - (cy - v.y) * k;
-      v.s = next;
-      userZoomed.current = next > min * 1.01;
-      apply(animate);
-    },
-    [apply]
-  );
-
-  const zoomBy = (factor: number) => {
-    const vp = viewport.current!;
-    zoomAt(factor, vp.clientWidth / 2, vp.clientHeight / 2, true);
-  };
-
-  useEffect(() => {
-    fit();
-    const onResize = () => (userZoomed.current ? apply() : fit());
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [fit, apply]);
-
-  useEffect(() => {
-    const vp = viewport.current;
-    if (!vp) return;
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const r = vp.getBoundingClientRect();
-      zoomAt(Math.exp(-e.deltaY * 0.0016), e.clientX - r.left, e.clientY - r.top);
-    };
-    vp.addEventListener("wheel", onWheel, { passive: false });
-    return () => vp.removeEventListener("wheel", onWheel);
-  }, [zoomAt]);
-
-  const onPointerDown = (e: React.PointerEvent) => {
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    gesture.current.moved = 0;
-    gesture.current.justDragged = false;
-    if (pointers.current.size === 2) {
-      const [a, b] = [...pointers.current.values()];
-      gesture.current.pinch = Math.hypot(a.x - b.x, a.y - b.y);
-    }
-  };
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    const prev = pointers.current.get(e.pointerId);
-    if (!prev) return;
-    const next = { x: e.clientX, y: e.clientY };
-    const g = gesture.current;
-
-    if (pointers.current.size === 2) {
-      pointers.current.set(e.pointerId, next);
-      const [a, b] = [...pointers.current.values()];
-      const dist = Math.hypot(a.x - b.x, a.y - b.y);
-      const r = viewport.current!.getBoundingClientRect();
-      if (g.pinch) zoomAt(dist / g.pinch, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
-      g.pinch = dist;
-      g.dragging = true;
-      return;
-    }
-
-    g.moved += Math.abs(next.x - prev.x) + Math.abs(next.y - prev.y);
-    if (!g.dragging && g.moved > 8) {
-      g.dragging = true;
-      viewport.current?.setPointerCapture(e.pointerId);
-    }
-    if (g.dragging) {
-      view.current.x += next.x - prev.x;
-      view.current.y += next.y - prev.y;
-      apply();
-    }
-    pointers.current.set(e.pointerId, next);
-  };
-
-  const onPointerUp = (e: React.PointerEvent) => {
-    pointers.current.delete(e.pointerId);
-    const g = gesture.current;
-    if (g.dragging) {
-      g.justDragged = true;
-      window.setTimeout(() => (g.justDragged = false), 80);
-    }
-    if (pointers.current.size < 2) g.pinch = 0;
-    if (pointers.current.size === 0) g.dragging = false;
-  };
-
-  // A drag that ends on a hotspot must not also click it.
-  const swallowClickAfterDrag = (e: React.MouseEvent) => {
-    if (gesture.current.justDragged) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
-  /* ── Panels, deep links and the intro ── */
+  /* ── Panels and deep links ── */
   const openPanel = useCallback((id: SceneId | null) => {
     setOpen(id);
     setMenu(false);
@@ -200,16 +45,32 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Decide, once, whether this visitor needs the doors.
-    const param = new URLSearchParams(window.location.search).get("open");
+    // Decide, once: which stage to run, and whether this visitor needs the doors.
+    const params = new URLSearchParams(window.location.search);
+    const param = params.get("open");
+    const force = params.get("view");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let webgl = false;
+    try {
+      const c = document.createElement("canvas");
+      webgl = !!(c.getContext("webgl2") || c.getContext("webgl"));
+    } catch {
+      webgl = false;
+    }
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const weak = (nav.deviceMemory ?? 8) < 3 || nav.connection?.saveData === true;
+    const next: "2d" | "3d" = force === "2d" ? "2d" : force === "3d" ? "3d" : webgl && !weak ? "3d" : "2d";
+
     let seen = false;
     try {
       seen = window.sessionStorage.getItem(SEEN_KEY) === "1";
     } catch {
       /* storage blocked: show the doors */
     }
+
     const t = window.setTimeout(() => {
+      setMode(next);
       if (isSceneId(param)) setOpen(param);
       if (isSceneId(param) || reduced || seen) setIntro(false);
     }, 0);
@@ -236,50 +97,17 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, menu, openPanel]);
 
+  const onReady = useCallback(() => setStageReady(true), []);
+  const onFail = useCallback(() => setMode("2d"), []);
+  const onLamp = useCallback(() => setLamp((v) => !v), []);
+
   const current = hotspots.find((h) => h.id === open) ?? null;
+  const stageProps = { lamp, dark, open, onOpen: openPanel, onLamp, onReady, onFail, apiRef: api };
 
   return (
     <div className={`scene ${lamp ? "lamp-on" : ""} ${menu ? "menu-open" : ""} ${open ? "panel-open" : ""}`}>
-      {/* ── The room ── */}
-      <div
-        ref={viewport}
-        className="scene-viewport"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onClickCapture={swallowClickAfterDrag}
-      >
-        <div ref={stage} className="scene-stage" style={{ width: W, height: H }}>
-          <SceneArt lamp={lamp} clock={clock} />
-
-          {hotspots.map((h) => (
-            <button
-              key={h.id}
-              type="button"
-              className="hotspot"
-              style={{ left: h.x, top: h.y }}
-              onClick={() => openPanel(h.id)}
-              aria-label={`${h.label}: ${h.object.toLowerCase()}`}
-            >
-              <span className="hotspot-dot" />
-              <span className="hotspot-label">{h.label}</span>
-            </button>
-          ))}
-
-          <button
-            type="button"
-            className="hotspot lamp-spot"
-            style={{ left: lampSpot.x, top: lampSpot.y }}
-            onClick={() => setLamp((v) => !v)}
-            aria-pressed={lamp}
-            aria-label="Switch the desk lamp"
-          >
-            <span className="hotspot-dot" />
-            <span className="hotspot-label">{lamp ? "Lamp off" : "Lamp on"}</span>
-          </button>
-        </div>
-      </div>
+      {mode === "3d" && <Stage3D {...stageProps} />}
+      {mode === "2d" && <Stage2D {...stageProps} />}
 
       {/* ── Controls laid over the room ── */}
       <header className="scene-top">
@@ -327,9 +155,9 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
       </section>
 
       <div className="scene-zoom" role="group" aria-label="Zoom">
-        <button type="button" className="scene-btn" onClick={() => zoomBy(1 / 1.35)} aria-label="Zoom out"><Minus className="h-4 w-4" /></button>
-        <button type="button" className="scene-btn scene-fit" onClick={() => fit(true)}>Fit</button>
-        <button type="button" className="scene-btn" onClick={() => zoomBy(1.35)} aria-label="Zoom in"><Plus className="h-4 w-4" /></button>
+        <button type="button" className="scene-btn" onClick={() => api.current?.zoomBy(1 / 1.35)} aria-label="Zoom out"><Minus className="h-4 w-4" /></button>
+        <button type="button" className="scene-btn scene-fit" onClick={() => api.current?.fit()}>Fit</button>
+        <button type="button" className="scene-btn" onClick={() => api.current?.zoomBy(1.35)} aria-label="Zoom in"><Plus className="h-4 w-4" /></button>
       </div>
 
       {/* ── Contents (the menu) ── */}
@@ -385,7 +213,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
         </div>
       )}
 
-      {intro && <SceneIntro onDone={finishIntro} />}
+      {intro && <SceneIntro onDone={finishIntro} ready={stageReady} />}
     </div>
   );
 }

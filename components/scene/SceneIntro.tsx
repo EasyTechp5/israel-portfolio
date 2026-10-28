@@ -8,9 +8,12 @@ import { ArrowRight } from "lucide-react";
  * "Come in" button that swings the doors open and moves through them into the room.
  * Skipped for returning visitors, deep links and reduced motion (see Scene).
  */
-export default function SceneIntro({ onDone }: { onDone: () => void }) {
+export default function SceneIntro({ onDone, ready = true }: { onDone: () => void; ready?: boolean }) {
   const [pct, setPct] = useState(0);
-  const [phase, setPhase] = useState<"loading" | "ready" | "opening">("loading");
+  const [counted, setCounted] = useState(false);
+  const [opening, setOpening] = useState(false);
+  // The door is offered once the counter has finished AND the room behind it is ready.
+  const phase: "loading" | "ready" | "opening" = opening ? "opening" : counted && ready ? "ready" : "loading";
   const button = useRef<HTMLButtonElement>(null);
 
   // Count up to 100 over about 1.7 seconds, then offer the door.
@@ -21,7 +24,7 @@ export default function SceneIntro({ onDone }: { onDone: () => void }) {
       const p = Math.min((now - t0) / 1700, 1);
       setPct(Math.round(p * 100));
       if (p < 1) raf = requestAnimationFrame(step);
-      else setPhase("ready");
+      else setCounted(true);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
@@ -33,7 +36,7 @@ export default function SceneIntro({ onDone }: { onDone: () => void }) {
 
   const enter = () => {
     if (phase !== "ready") return;
-    setPhase("opening");
+    setOpening(true);
     window.setTimeout(onDone, 1350);
   };
 
