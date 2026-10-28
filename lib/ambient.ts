@@ -26,6 +26,9 @@ let nextTime = 0;
 let step = 0;
 let noise: AudioBuffer | null = null;
 let wanted = false;
+let analyser: AnalyserNode | null = null;
+let bins: Uint8Array<ArrayBuffer> | null = null;
+let level = 0;
 
 function noiseBuffer(c: Ctx) {
   if (noise) return noise;
@@ -135,6 +138,11 @@ export function startAmbient() {
       master.gain.value = 0;
       const comp = ctx.createDynamicsCompressor();
       master.connect(comp).connect(ctx.destination);
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = 0.7;
+      comp.connect(analyser);
+      bins = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
     }
     void ctx.resume();
     if (!master) return;
@@ -168,4 +176,82 @@ export function stopAmbient() {
     }
     void c.suspend();
   }, 700);
+}
+
+/** How loud the low end is right now, 0 to 1. Lets the room move with the beat. */
+export function ambientLevel(): number {
+  if (!analyser || !bins || !wanted) {
+    level *= 0.9;
+    return level;
+  }
+  analyser.getByteFrequencyData(bins);
+  let sum = 0;
+  for (let i = 0; i < 5; i++) sum += bins[i];
+  const raw = Math.min(1, sum / (5 * 200));
+  level += (raw - level) * 0.35;
+  return level;
+}
+
+export type Sfx = "tick" | "pop" | "whoosh" | "chime" | "clink" | "open";
+
+/** Tiny interface sounds, made on the spot. Silent when the music is off. */
+export function sfx(kind: Sfx) {
+  if (!ctx || !master || !wanted || ctx.state !== "running") return;
+  const c = ctx;
+  const t = c.currentTime;
+  const out = c.createGain();
+  out.gain.value = 0.5;
+  out.connect(c.destination);
+  const blip = (freq: number, len: number, vol: number, type: OscillatorType = "sine", glideTo?: number, at = 0) => {
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t + at);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t + at + len);
+    g.gain.setValueAtTime(0.0001, t + at);
+    g.gain.exponentialRampToValueAtTime(vol, t + at + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + at + len);
+    o.connect(g).connect(out);
+    o.start(t + at);
+    o.stop(t + at + len + 0.02);
+  };
+  switch (kind) {
+    case "tick":
+      blip(1500, 0.05, 0.12, "triangle");
+      break;
+    case "pop":
+      blip(420, 0.12, 0.3, "sine", 900);
+      break;
+    case "open":
+      blip(330, 0.18, 0.22, "triangle", 660);
+      blip(660, 0.22, 0.16, "sine", 990, 0.06);
+      break;
+    case "whoosh": {
+      const s = c.createBufferSource();
+      s.buffer = noiseBuffer(c);
+      const f = c.createBiquadFilter();
+      f.type = "bandpass";
+      f.Q.value = 1.2;
+      f.frequency.setValueAtTime(400, t);
+      f.frequency.exponentialRampToValueAtTime(3200, t + 0.5);
+      f.frequency.exponentialRampToValueAtTime(500, t + 0.95);
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.35, t + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1);
+      s.connect(f).connect(g).connect(out);
+      s.start(t);
+      s.stop(t + 1.05);
+      break;
+    }
+    case "chime":
+      blip(880, 1.2, 0.2, "sine");
+      blip(1320, 1.0, 0.1, "sine", undefined, 0.02);
+      blip(1760, 0.8, 0.05, "sine", undefined, 0.04);
+      break;
+    case "clink":
+      blip(2400, 0.25, 0.18, "sine");
+      blip(3600, 0.18, 0.08, "sine", undefined, 0.01);
+      break;
+  }
 }

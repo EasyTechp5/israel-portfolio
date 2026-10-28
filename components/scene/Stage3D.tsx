@@ -7,6 +7,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { hotspots, type SceneId } from "@/lib/scene";
 import type { StageProps } from "./stage";
+import { ambientLevel, sfx } from "@/lib/ambient";
 
 /**
  * The live 3D room. Everything is built from code (boxes, cylinders, canvas
@@ -20,7 +21,7 @@ import type { StageProps } from "./stage";
  */
 
 type Anchor = [number, number, number];
-const ANCHORS: Record<SceneId | "lamp", Anchor> = {
+const ANCHORS: Record<SceneId | "lamp" | "music", Anchor> = {
   work: [0.2, 0.93, -1.86],
   call: [0.2, 1.74, -2.36],
   about: [-0.75, 1.78, -2.36],
@@ -30,7 +31,10 @@ const ANCHORS: Record<SceneId | "lamp", Anchor> = {
   resume: [1.9, 0.5, -1.72],
   contact: [0.95, 0.88, -1.7],
   lamp: [-0.05, 1.2, -2.0],
+  music: [1.9, 0.92, -2.0],
 };
+// how close (in metres) a click or hover must land to an anchor to count as that object
+const PICK_R: Record<string, number> = { work: 0.34, call: 0.34, about: 0.46, services: 0.66, record: 0.3, resume: 0.4, contact: 0.14, lamp: 0.28, music: 0.3 };
 const FOCUS: Record<SceneId, number> = { work: 1.5, call: 1.7, about: 1.8, services: 2.2, record: 1.6, writing: 2.5, resume: 1.9, contact: 1.4 };
 
 const HOME_TARGET = new THREE.Vector3(0.35, 1.34, -1.8);
@@ -60,17 +64,23 @@ function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: n
 
 type CanvasTex = { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; tex: THREE.CanvasTexture; draw: () => void };
 
-export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onFail, apiRef }: StageProps) {
+export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = false, onMusic, onReady, onFail, apiRef }: StageProps) {
   const host = useRef<HTMLDivElement>(null);
   const dotsHost = useRef<HTMLDivElement>(null);
   const live = useRef<{
     setDark: (d: boolean) => void;
     setLamp: (l: boolean) => void;
     focus: (id: SceneId | null) => void;
+    setMusic: (m: boolean) => void;
   } | null>(null);
+  // Latest handlers for the long-lived scene closure.
+  const handlers = useRef({ onOpen, onLamp, onMusic });
+  useEffect(() => {
+    handlers.current = { onOpen, onLamp, onMusic };
+  });
 
   // Latest props for use inside the long-lived scene closure.
-  const initial = useRef({ lamp, dark, open });
+  const initial = useRef({ lamp, dark, open, music });
 
   useEffect(() => {
     const container = host.current;
@@ -791,6 +801,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     });
     const clockG = new THREE.Group();
     clockG.position.set(2.15, 2.28, DECOR_Z);
+    clockG.userData.egg = "clock";
     {
       const caseM = mat(0x14161b, 0.35, 0.5);
       const caseMesh = mesh(new THREE.CylinderGeometry(0.225, 0.225, 0.05, 48), caseM, 0, 0, 0.025);
@@ -1027,10 +1038,15 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     });
     const steam: { s: THREE.Sprite; phase: number }[] = [];
     let sidePlant: THREE.Group | null = null;
+    let chairG: THREE.Group | null = null;
+    let vinyl: THREE.Group | null = null;
+    let tonearm: THREE.Group | null = null;
+    let vinylLabel: THREE.Mesh | null = null;
     let moteUpdate: ((t: number) => void) | null = null;
     {
       const g = new THREE.Group();
       g.position.set(1.04, TOP, -1.96);
+      g.userData.egg = "mug";
       g.add(mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.09, 28), mat(0xfffdf7, 0.35), 0, 0.045, 0));
       g.add(mesh(new THREE.CylinderGeometry(0.0415, 0.0365, 0.022, 28), mat(RED, 0.4), 0, 0.05, 0));
       const h = mesh(new THREE.TorusGeometry(0.026, 0.0065, 10, 20, Math.PI * 1.15), mat(0xfffdf7, 0.35), 0.043, 0.048, 0);
@@ -1085,6 +1101,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     };
     const deskPlant = makePlant(1.1, 7, 5);
     deskPlant.g.position.set(0.66, TOP, -2.02);
+    deskPlant.g.userData.egg = "plant";
     room.add(deskPlant.g);
 
     // desk lamp (toggles the light)
@@ -1123,6 +1140,8 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       const g = new THREE.Group();
       g.position.set(-0.7, 0, -1.05);
       g.rotation.y = 0.55;
+      g.userData.egg = "chair";
+      chairG = g;
       const upholstery = track(new THREE.MeshPhysicalMaterial({ color: RED, roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.5 }));
       const quilt = makeCanvas(256, 256, (c, w, h) => {
         c.fillStyle = "#d7262e";
@@ -1223,9 +1242,66 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         g.add(handle);
         if (i === 0) g.add(flat(0.2, 0.075, label.tex, 0, y - 0.06, 0.267));
       });
-      g.add(box(0.26, 0.04, 0.2, mat(0xfffdf7, 0.8), -0.2, 0.72, 0));
-      g.add(box(0.24, 0.02, 0.18, mat(0xffffff, 0.8), -0.2, 0.75, 0));
-      g.add(box(0.14, 0.08, 0.1, mat(RED, 0.5), 0.2, 0.74, 0.05, 0.01));
+      // turntable (Now playing): spins and swings its arm when the music is on
+      {
+        const tt = new THREE.Group();
+        tt.position.set(0, 0.7, 0);
+        tt.add(box(0.5, 0.05, 0.38, mat(0x5a3a22, 0.45, 0.1), 0, 0.025, 0, 0.008));
+        tt.add(box(0.48, 0.01, 0.36, mat(INK, 0.4, 0.35), 0, 0.055, 0, 0.003));
+        tt.add(mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.014, 48), mat(0xcfd3da, 0.25, 0.9), -0.02, 0.066, 0, false));
+        const groove = makeCanvas(256, 256, (c, w, h) => {
+          c.fillStyle = "#0c0d11";
+          c.fillRect(0, 0, w, h);
+          for (let rad = 40; rad < 126; rad += 3) {
+            c.strokeStyle = `rgba(255,255,255,${0.03 + ((rad * 7) % 5) * 0.012})`;
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(w / 2, h / 2, rad, 0, Math.PI * 2);
+            c.stroke();
+          }
+          const sh = c.createLinearGradient(0, 0, w, h);
+          sh.addColorStop(0.3, "rgba(255,255,255,0)");
+          sh.addColorStop(0.5, "rgba(255,255,255,0.16)");
+          sh.addColorStop(0.7, "rgba(255,255,255,0)");
+          c.fillStyle = sh;
+          c.fillRect(0, 0, w, h);
+        });
+        const v = new THREE.Group();
+        v.position.set(-0.02, 0.078, 0);
+        const disc = new THREE.Mesh(track(new THREE.CylinderGeometry(0.125, 0.125, 0.004, 64)), track(new THREE.MeshStandardMaterial({ map: groove.tex, roughness: 0.35, metalness: 0.3 })));
+        disc.castShadow = true;
+        v.add(disc);
+        const labelTex = makeCanvas(128, 128, (c, w, h) => {
+          c.fillStyle = "#d7262e";
+          c.fillRect(0, 0, w, h);
+          c.fillStyle = "#f8f6f0";
+          c.fillRect(w / 2 - 4, 14, 8, 36);
+          c.beginPath();
+          c.arc(w / 2, h / 2, 6, 0, Math.PI * 2);
+          c.fill();
+        });
+        const label = new THREE.Mesh(track(new THREE.CircleGeometry(0.042, 32)), track(new THREE.MeshStandardMaterial({ map: labelTex.tex, roughness: 0.6 })));
+        label.rotation.x = -Math.PI / 2;
+        label.position.y = 0.0026;
+        v.add(label);
+        vinylLabel = label;
+        tt.add(v);
+        vinyl = v;
+        tt.add(mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.02, 8), mat(0xcfd3da, 0.2, 0.9), -0.02, 0.09, 0, false));
+        // tonearm on a pivot at the back-right corner
+        const arm = new THREE.Group();
+        arm.position.set(0.19, 0.075, -0.13);
+        arm.add(mesh(new THREE.CylinderGeometry(0.022, 0.026, 0.03, 20), mat(0xcfd3da, 0.25, 0.9), 0, 0, 0));
+        arm.add(box(0.007, 0.007, 0.24, mat(0xd5d9e0, 0.2, 0.95), 0, 0.02, 0.11));
+        arm.add(box(0.016, 0.01, 0.04, mat(INK, 0.4), 0, 0.02, 0.235));
+        arm.add(box(0.012, 0.012, 0.05, mat(0xd5d9e0, 0.2, 0.95), 0, 0.02, -0.03));
+        arm.rotation.y = 0.22;
+        tt.add(arm);
+        tonearm = arm;
+        // a small red power light
+        tt.add(mesh(new THREE.SphereGeometry(0.005, 8, 6), track(new THREE.MeshStandardMaterial({ color: RED, emissive: RED, emissiveIntensity: 2 })), -0.2, 0.063, 0.15, false));
+        g.add(tt);
+      }
       room.add(g);
     }
 
@@ -1457,6 +1533,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     {
       const g = new THREE.Group();
       g.position.set(-2.05, 0, -1.45);
+      g.userData.egg = "armchair";
       g.rotation.y = 1.7;
       const fabric = mat(RED, 0.88);
       g.add(box(0.66, 0.16, 0.62, fabric, 0, 0.3, 0, 0.05));
@@ -1477,6 +1554,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       t.add(mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.02, 24), mat(INK, 0.4, 0.5), 0, 0.01, 0));
       const side = makePlant(1.3, 8, 13);
       side.g.position.set(0, 0.515, 0);
+      side.g.userData.egg = "plant";
       t.add(side.g);
       room.add(t);
       sidePlant = side.sway;
@@ -1661,6 +1739,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
 
     let isDark = initial.current.dark;
     let isLamp = initial.current.lamp;
+    let isMusic = initial.current.music;
     const bg = new THREE.Color();
     const applyLight = () => {
       const on = isLamp;
@@ -1707,10 +1786,12 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     const home = { pos: new THREE.Vector3(), target: HOME_TARGET.clone(), dist: 6 };
     let w = 1;
     let h = 1;
+    let baseFov = 42;
     const computeHome = () => {
       const aspect = w / h;
       camera.aspect = aspect;
       camera.fov = aspect < 1 ? 62 : 42;
+      baseFov = camera.fov;
       camera.updateProjectionMatrix();
       const wantWidth = aspect >= 1.2 ? 5.4 : aspect >= 0.8 ? 4.4 : 3.2;
       const dist = wantWidth / (2 * Math.tan((camera.fov * Math.PI) / 360) * aspect);
@@ -1794,6 +1875,9 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         applyLight();
       },
       focus,
+      setMusic: (m) => {
+        isMusic = m;
+      },
     };
     apiRef.current = { zoomBy, fit: fitHome };
 
@@ -1814,16 +1898,149 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       });
     };
 
+    /* ── picking: click or hover any object, not just the dots ── */
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    type Pick = { kind: "anchor"; id: string } | { kind: "egg"; obj: THREE.Object3D; name: string };
+    const pickAt = (cx: number, cy: number): Pick | null => {
+      const rect = canvas.getBoundingClientRect();
+      ndc.set(((cx - rect.left) / rect.width) * 2 - 1, -((cy - rect.top) / rect.height) * 2 + 1);
+      raycaster.setFromCamera(ndc, camera);
+      const hits = raycaster.intersectObjects(room.children, true);
+      for (const hit of hits) {
+        const m = (hit.object as THREE.Mesh).material as THREE.Material | undefined;
+        if (!m || (m as THREE.MeshBasicMaterial).blending === THREE.AdditiveBlending) continue;
+        // an easter-egg object?
+        let o: THREE.Object3D | null = hit.object;
+        while (o) {
+          if (o.userData.egg) return { kind: "egg", obj: o, name: o.userData.egg as string };
+          o = o.parent;
+        }
+        const p = hit.point;
+        if (p.x > 2.3 && p.z < -1.9 && p.y > 0.03) return { kind: "anchor", id: "writing" };
+        let best: string | null = null;
+        let bestK = 1;
+        (Object.keys(PICK_R) as string[]).forEach((id) => {
+          const a = ANCHORS[id as keyof typeof ANCHORS];
+          const k = Math.hypot(p.x - a[0], p.y - a[1], p.z - a[2]) / PICK_R[id];
+          if (k < bestK) {
+            bestK = k;
+            best = id;
+          }
+        });
+        return best ? { kind: "anchor", id: best } : null;
+      }
+      return null;
+    };
+    const pops: { o: THREE.Object3D; t0: number; base: number }[] = [];
+    let spin: { t0: number; from: number } | null = null;
+    let steamBurst = 0;
+    let shake = 0;
+    let hoverId: string | null = null;
+    const setHover = (id: string | null, cursor: boolean) => {
+      if (id !== hoverId) {
+        if (hoverId) dotEls.get(hoverId)?.classList.remove("is-hover");
+        if (id) dotEls.get(id)?.classList.add("is-hover");
+        if (id && id !== hoverId) sfx("tick");
+        hoverId = id;
+      }
+      canvas.style.cursor = cursor ? "pointer" : "";
+    };
+    let downX = 0;
+    let downY = 0;
+    let downT = 0;
+    const onDown = (e: PointerEvent) => {
+      downX = e.clientX;
+      downY = e.clientY;
+      downT = performance.now();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!controls.enabled) return;
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 6 || performance.now() - downT > 600) return;
+      const pk = pickAt(e.clientX, e.clientY);
+      if (!pk) return;
+      if (pk.kind === "anchor") {
+        if (pk.id === "lamp") {
+          sfx("pop");
+          handlers.current.onLamp();
+        } else if (pk.id === "music") {
+          sfx("pop");
+          handlers.current.onMusic?.();
+        } else {
+          sfx("open");
+          handlers.current.onOpen(pk.id as SceneId);
+        }
+        return;
+      }
+      const now2 = performance.now();
+      switch (pk.name) {
+        case "chair":
+          if (chairG && !spin) {
+            spin = { t0: now2, from: chairG.rotation.y };
+            sfx("whoosh");
+          }
+          break;
+        case "mug":
+          steamBurst = 1;
+          sfx("clink");
+          break;
+        case "clock":
+          sfx("chime");
+          pops.push({ o: pk.obj, t0: now2, base: 1 });
+          break;
+        case "plant":
+          shake = 1;
+          sfx("tick");
+          break;
+        default:
+          pops.push({ o: pk.obj, t0: now2, base: 1 });
+          sfx("pop");
+      }
+    };
+    let lastMove = 0;
+    const onMove = (e: PointerEvent) => {
+      // gentle camera parallax follows the pointer
+      tx = (e.clientX / window.innerWidth) * 2 - 1;
+      ty = (e.clientY / window.innerHeight) * 2 - 1;
+      const n = performance.now();
+      if (n - lastMove < 60 || e.buttons !== 0 || !controls.enabled) return;
+      lastMove = n;
+      const pk = pickAt(e.clientX, e.clientY);
+      setHover(pk && pk.kind === "anchor" ? pk.id : null, !!pk);
+    };
+    let tx = 0;
+    let ty = 0;
+    let px = 0;
+    let py = 0;
+    canvas.addEventListener("pointerdown", onDown);
+    canvas.addEventListener("pointerup", onUp);
+    window.addEventListener("pointermove", onMove, { passive: true });
+
     /* ── the loop ── */
     let raf = 0;
     let running = true;
     let lastTex = 0;
+    let lastNow = performance.now();
+    let frames = 0;
+    let dtSum = 0;
+    let spinV = 0;
     const clock = new THREE.Clock();
     const frame = () => {
       raf = requestAnimationFrame(frame);
       if (!running) return;
       const now = performance.now();
       const t = clock.getElapsedTime();
+      const dt = Math.min(0.1, Math.max(0.001, (now - lastNow) / 1000));
+      lastNow = now;
+      // adaptive quality: if the first seconds run slow, drop the resolution once
+      if (frames < 140) {
+        frames += 1;
+        if (frames > 30) dtSum += dt;
+        if (frames === 140 && dtSum / 110 > 0.026 && renderer.getPixelRatio() > 1) {
+          renderer.setPixelRatio(1);
+          renderer.setSize(w, h, false);
+        }
+      }
 
       if (tween) {
         const k = tween.dur === 0 ? 1 : Math.min(1, (now - tween.t0) / tween.dur);
@@ -1869,7 +2086,60 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       }
 
       if (!reduced && moteUpdate && beamGroup.visible) moteUpdate(t);
+
+      // the turntable: the record spins and the arm lowers while music plays
+      spinV += ((isMusic ? 3.4 : 0) - spinV) * Math.min(1, dt * 2.2);
+      if (vinyl) (vinyl as THREE.Group).rotation.y -= spinV * dt;
+      if (tonearm) {
+        const arm = tonearm as THREE.Group;
+        arm.rotation.y += ((isMusic ? -0.5 : 0.22) - arm.rotation.y) * Math.min(1, dt * 3);
+      }
+      // the room moves with the beat
+      const lv = reduced ? 0 : ambientLevel();
+      if (!reduced) {
+        const ml = vinylLabel as THREE.Mesh | null;
+        if (ml) ml.scale.setScalar(1 + lv * 0.08);
+        const ph = lampHalo.material as THREE.SpriteMaterial;
+        if (isLamp) ph.opacity = (isDark ? 0.9 : 0.5) + lv * 0.25;
+      }
+      // click reactions: chair spin, plant shake, mug steam, pops
+      if (spin && chairG) {
+        const k = Math.min(1, (now - spin.t0) / 1100);
+        const e = 1 - Math.pow(1 - k, 3);
+        (chairG as THREE.Group).rotation.y = spin.from + e * Math.PI * 2;
+        if (k >= 1) spin = null;
+      }
+      shake *= Math.pow(0.02, dt);
+      steamBurst *= Math.pow(0.12, dt);
+      for (let i = pops.length - 1; i >= 0; i--) {
+        const pp = pops[i];
+        const k = (now - pp.t0) / 420;
+        if (k >= 1) {
+          pp.o.scale.setScalar(pp.base);
+          pops.splice(i, 1);
+        } else pp.o.scale.setScalar(pp.base * (1 + Math.sin(k * Math.PI) * 0.09));
+      }
+      if (shake > 0.01) deskPlant.sway.rotation.z += Math.sin(t * 38) * 0.09 * shake;
+      steam.forEach((p2) => {
+        const mt = p2.s.material as THREE.SpriteMaterial;
+        mt.opacity = Math.min(0.9, mt.opacity * (1 + steamBurst * 3));
+      });
+
+      // pointer parallax and a tiny beat-driven push-in
+      px += (tx - px) * 0.05;
+      py += (ty - py) * 0.05;
+      const par = reduced || coarse || tween ? 0 : 1;
+      const ox = px * 0.07 * par;
+      const oy = -py * 0.035 * par;
+      camera.position.x += ox;
+      camera.position.y += oy;
+      if (lv > 0.01) {
+        camera.fov = baseFov - lv * 0.3;
+        camera.updateProjectionMatrix();
+      }
       renderer.render(scene, camera);
+      camera.position.x -= ox;
+      camera.position.y -= oy;
       placeDots();
     };
 
@@ -1907,6 +2177,9 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       canvas.removeEventListener("webglcontextlost", onLost);
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointermove", onMove);
       controls.dispose();
       disposables.forEach((d) => d.dispose());
       scene.traverse((o) => {
@@ -1931,6 +2204,9 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
   useEffect(() => {
     live.current?.focus(open);
   }, [open]);
+  useEffect(() => {
+    live.current?.setMusic(music);
+  }, [music]);
 
   return (
     <div ref={host} className="scene-viewport scene-3d">
@@ -1960,6 +2236,18 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         >
           <span className="hotspot-dot" />
           <span className="hotspot-label">{lamp ? "Lamp off" : "Lamp on"}</span>
+        </button>
+        <button
+          type="button"
+          data-id="music"
+          className="hotspot lamp-spot music-spot"
+          style={{ left: 0, top: 0 }}
+          onClick={() => onMusic?.()}
+          aria-pressed={music}
+          aria-label="Turntable: play or pause the music"
+        >
+          <span className="hotspot-dot" />
+          <span className="hotspot-label">{music ? "Now playing" : "Play music"}</span>
         </button>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
  * "Come in" button that swings the doors open and moves through them into the room.
  * Skipped for returning visitors, deep links and reduced motion (see Scene).
  */
-export default function SceneIntro({ onDone, ready = true }: { onDone: () => void; ready?: boolean }) {
+export default function SceneIntro({ onDone, ready = true, sound = true, onSound }: { onDone: () => void; ready?: boolean; sound?: boolean; onSound?: () => void }) {
   const [pct, setPct] = useState(0);
   const [counted, setCounted] = useState(false);
   const [opening, setOpening] = useState(false);
@@ -16,12 +16,12 @@ export default function SceneIntro({ onDone, ready = true }: { onDone: () => voi
   const phase: "loading" | "ready" | "opening" = opening ? "opening" : counted && ready ? "ready" : "loading";
   const button = useRef<HTMLButtonElement>(null);
 
-  // Count up to 100 over about 1.7 seconds, then offer the door.
+  // Count up to 100 over about a second, then offer the door.
   useEffect(() => {
     let raf = 0;
     const t0 = performance.now();
     const step = (now: number) => {
-      const p = Math.min((now - t0) / 1700, 1);
+      const p = Math.min((now - t0) / 900, 1);
       setPct(Math.round(p * 100));
       if (p < 1) raf = requestAnimationFrame(step);
       else setCounted(true);
@@ -65,6 +65,11 @@ export default function SceneIntro({ onDone, ready = true }: { onDone: () => voi
           <span className="intro-step" />
         </div>
       </div>
+
+      <button type="button" className="intro-sound" onClick={onSound} aria-pressed={sound}>
+        <span className="eq" data-on={sound} aria-hidden><i /><i /><i /><i /></span>
+        <span>Sound {sound ? "on" : "off"}</span>
+      </button>
 
       <div className="intro-ui">
         {phase === "loading" ? (

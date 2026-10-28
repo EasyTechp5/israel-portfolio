@@ -4,14 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { ArrowRight, Moon, Plus, Minus, Sun, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowRight, Calendar, Moon, Plus, Minus, Sun, X } from "lucide-react";
 import { startAmbient, stopAmbient } from "@/lib/ambient";
 import Typewriter from "@/components/Typewriter";
 import SceneIntro from "./SceneIntro";
 import ScenePanel from "./ScenePanels";
 import Stage2D from "./Stage2D";
 import type { StageApi } from "./stage";
-import { hotspots, isSceneId, type SceneId } from "@/lib/scene";
+import { hotspots, isSceneId, links, type SceneId } from "@/lib/scene";
 
 // The 3D room (three.js) is its own chunk: it loads only here, never on other pages.
 const Stage3D = dynamic(() => import("./Stage3D"), { ssr: false });
@@ -145,7 +145,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   const onLamp = useCallback(() => setLamp((v) => !v), []);
 
   const current = hotspots.find((h) => h.id === open) ?? null;
-  const stageProps = { lamp, dark, open, onOpen: openPanel, onLamp, onReady, onFail, apiRef: api };
+  const stageProps = { lamp, dark, open, onOpen: openPanel, onLamp, music: !muted, onMusic: toggleSound, onReady, onFail, apiRef: api };
 
   return (
     <div className={`scene ${lamp ? "lamp-on" : ""} ${menu ? "menu-open" : ""} ${open ? "panel-open" : ""}`}>
@@ -161,6 +161,9 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
           </button>
           <span className="scene-name">Israel Afolabi</span>
           <div className="flex items-center gap-2">
+            <a href={links.cal} target="_blank" rel="noopener noreferrer" className="scene-btn scene-cta">
+              <Calendar className="h-4 w-4" /> <span>Book a call</span>
+            </a>
             <Link href="/overview" className="scene-btn scene-link">Plain page</Link>
             <button
               type="button"
@@ -169,7 +172,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
               aria-pressed={!muted}
               aria-label={muted ? "Turn the music on" : "Turn the music off"}
             >
-              {muted ? <VolumeX className="h-[18px] w-[18px]" /> : <Volume2 className="h-[18px] w-[18px]" />}
+              <span className="eq" data-on={!muted} aria-hidden><i /><i /><i /><i /></span>
             </button>
             <button
               type="button"
@@ -265,7 +268,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
         </div>
       )}
 
-      {intro && <SceneIntro onDone={finishIntro} ready={stageReady} />}
+      {intro && <SceneIntro onDone={finishIntro} ready={stageReady} sound={!muted} onSound={toggleSound} />}
     </div>
   );
 }

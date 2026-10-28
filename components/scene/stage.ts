@@ -10,6 +10,9 @@ export type StageProps = {
   open: SceneId | null;
   onOpen: (id: SceneId) => void;
   onLamp: () => void;
+  /** Is the music playing, and a way to switch it (the turntable). */
+  music?: boolean;
+  onMusic?: () => void;
   onReady: () => void;
   /** The 3D stage calls this if it cannot start, so the shell can fall back to the drawing. */
   onFail?: () => void;
