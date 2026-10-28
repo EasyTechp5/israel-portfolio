@@ -946,6 +946,10 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .scene-viewport:active { cursor: grabbing; }
 .scene-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
 .scene-art { display: block; overflow: visible; }
+.scene-3d { cursor: grab; }
+.scene-3d:active { cursor: grabbing; }
+.scene-dots { position: absolute; inset: 0; z-index: 5; overflow: hidden; pointer-events: none; }
+.scene-dots .hotspot { transform: translate(-50%, -50%); transition: opacity 0.25s ease; }
 
 /* Light and life inside the drawing */
 .sc-night { opacity: 0; transition: opacity 0.7s ease; pointer-events: none; }
@@ -1117,7 +1121,7 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .intro.opening .intro-stage { transform: scale(6); }
 .intro-lintel { display: grid; justify-items: center; gap: 0.35rem; text-align: center; }
 .intro-name { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.01em; }
-.intro-frame { position: relative; width: min(58vw, 300px); aspect-ratio: 0.7; padding: 14px 14px 0; border-radius: 6px 6px 0 0; background: #f6efdc; box-shadow: 0 30px 60px rgba(2, 14, 46, 0.45); }
+.intro-frame { position: relative; height: min(52vh, 430px); aspect-ratio: 0.7; padding: 14px 14px 0; border-radius: 6px 6px 0 0; background: #f6efdc; box-shadow: 0 30px 60px rgba(2, 14, 46, 0.45); }
 .intro-light { position: absolute; inset: 14px 14px 0; background: radial-gradient(ellipse at 50% 70%, #fffbea 0%, #cfe3ff 70%, #9cc3ff 100%); }
 .door { position: absolute; top: 14px; bottom: 0; width: calc(50% - 14px); background: linear-gradient(160deg, #1a5fd6, #0a3b9c); border: 1px solid rgba(255, 255, 255, 0.2); transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1); backface-visibility: hidden; }
 .door::before, .door::after { content: ""; position: absolute; left: 14%; right: 14%; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 2px; }
