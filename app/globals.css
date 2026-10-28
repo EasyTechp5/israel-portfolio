@@ -1129,11 +1129,39 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .door::after  { top: 50%; height: 40%; }
 .door-l { left: 14px; transform-origin: left center; }
 .door-r { right: 14px; transform-origin: right center; }
-.intro.opening .door-l { transform: rotateY(108deg); }
-.intro.opening .door-r { transform: rotateY(-108deg); }
-.handle { position: absolute; top: 52%; width: 10px; height: 10px; border-radius: 50%; background: #e8c872; box-shadow: 0 0 0 3px rgba(232, 200, 114, 0.3); }
-.door-l .handle { right: 10px; }
-.door-r .handle { left: 10px; }
+.intro.opening .door-l { transform: rotateY(108deg) !important; }
+.intro.opening .door-r { transform: rotateY(-108deg) !important; }
+.door { overflow: visible; box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.05), inset 0 -40px 60px rgba(2, 14, 46, 0.25); }
+.intro-frame.is-ready { cursor: pointer; }
+.intro-frame.is-ready .door-l { transform: rotateY(9deg); }
+.intro-frame.is-ready .door-r { transform: rotateY(-9deg); }
+.intro-frame.is-ready .intro-light { filter: brightness(1.08); }
+.intro-step { position: absolute; left: -10px; right: -10px; bottom: -8px; height: 8px; border-radius: 2px; background: #d9ccb0; box-shadow: 0 6px 14px rgba(2, 14, 46, 0.3); }
+.hinge { position: absolute; width: 7px; height: 26px; border-radius: 2px; background: linear-gradient(90deg, #b88f3c, #f1d78a 50%, #b88f3c); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.door-l .hinge { left: -3px; }
+.door-r .hinge { right: -3px; }
+.hinge.h1 { top: 9%; }
+.hinge.h2 { top: 47%; }
+.hinge.h3 { bottom: 9%; }
+.handle { position: absolute; top: 49%; width: 30px; height: 74px; transform: translateY(-50%); }
+.door-l .handle { right: 11px; }
+.door-r .handle { left: 11px; }
+.handle b { position: absolute; display: block; }
+.handle .plate { inset: 0; border-radius: 15px; background: linear-gradient(180deg, #f6e3a1, #c79c45 55%, #8f6a1f); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+.handle .keyhole { left: 50%; bottom: 10px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #3b2a08; box-shadow: 0 5px 0 -1px #3b2a08; }
+.handle .lever { top: 14px; width: 46px; height: 9px; border-radius: 5px; background: linear-gradient(180deg, #fff1bd, #d9ae57 55%, #9a7226); box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45); transition: transform 0.4s cubic-bezier(0.3, 0, 0.2, 1); }
+.door-l .handle .lever { right: 3px; transform-origin: right center; }
+.door-r .handle .lever { left: 3px; transform-origin: left center; }
+.intro-frame.is-ready .handle .lever { animation: lever-nudge 2.4s ease-in-out infinite; }
+.door-l .handle .lever::after, .door-r .handle .lever::after { content: ""; position: absolute; top: -2px; width: 9px; height: 13px; border-radius: 50%; background: #e9c776; }
+.door-l .handle .lever::after { left: -2px; }
+.door-r .handle .lever::after { right: -2px; }
+.intro.opening .door-l .handle .lever { animation: none; transform: rotate(calc(24deg * var(--d, 1))); }
+.intro.opening .door-r .handle .lever { animation: none; transform: rotate(calc(24deg * var(--d, 1))); }
+@keyframes lever-nudge { 0%, 70%, 100% { transform: rotate(0); } 82% { transform: rotate(calc(10deg * var(--d, 1))); } }
+.door-l .handle .lever { --d: 1; }
+.door-r .handle .lever { --d: -1; }
+@media (max-width: 480px) { .handle { transform: translateY(-50%) scale(0.8); } }
 .intro-ui { position: absolute; left: 0; right: 0; bottom: 9vh; display: grid; justify-items: center; gap: 0.5rem; color: #0a2d73; }
 .intro-count { font-family: var(--font-display); font-size: clamp(3rem, 9vw, 5rem); line-height: 1; letter-spacing: -0.03em; }
 .intro-count small { font-size: 0.45em; margin-left: 0.15em; opacity: 0.8; }

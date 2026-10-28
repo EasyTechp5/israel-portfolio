@@ -49,10 +49,20 @@ export default function SceneIntro({ onDone, ready = true }: { onDone: () => voi
           <span className="intro-name">Israel Afolabi</span>
           <span className="mono-label" style={{ color: "rgba(255,255,255,0.78)" }}>AI engineer · automation</span>
         </div>
-        <div className="intro-frame">
+        <div
+          className={`intro-frame ${phase === "ready" ? "is-ready" : ""}`}
+          onClick={enter}
+        >
           <div className="intro-light" />
-          <div className="door door-l"><i className="handle" /></div>
-          <div className="door door-r"><i className="handle" /></div>
+          <div className="door door-l">
+            <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
+            <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+          </div>
+          <div className="door door-r">
+            <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
+            <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+          </div>
+          <span className="intro-step" />
         </div>
       </div>
 
