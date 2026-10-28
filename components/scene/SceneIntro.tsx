@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
  * "Come in" button that swings the doors open and moves through them into the room.
  * Skipped for returning visitors, deep links and reduced motion (see Scene).
  */
-export default function SceneIntro({ onDone, ready = true, sound = true, onSound }: { onDone: () => void; ready?: boolean; sound?: boolean; onSound?: () => void }) {
+export default function SceneIntro({ onDone, onOpening, ready = true, sound = true, onSound }: { onDone: () => void; onOpening?: () => void; ready?: boolean; sound?: boolean; onSound?: () => void }) {
   const [pct, setPct] = useState(0);
   const [counted, setCounted] = useState(false);
   const [opening, setOpening] = useState(false);
@@ -37,6 +37,7 @@ export default function SceneIntro({ onDone, ready = true, sound = true, onSound
   const enter = () => {
     if (phase !== "ready") return;
     setOpening(true);
+    onOpening?.();
     window.setTimeout(onDone, 1350);
   };
 

@@ -192,7 +192,7 @@ export function ambientLevel(): number {
   return level;
 }
 
-export type Sfx = "tick" | "pop" | "whoosh" | "chime" | "clink" | "open";
+export type Sfx = "tick" | "pop" | "whoosh" | "chime" | "clink" | "open" | "door" | "step";
 
 /** Tiny interface sounds, made on the spot. Silent when the music is off. */
 export function sfx(kind: Sfx) {
@@ -248,6 +248,16 @@ export function sfx(kind: Sfx) {
       blip(880, 1.2, 0.2, "sine");
       blip(1320, 1.0, 0.1, "sine", undefined, 0.02);
       blip(1760, 0.8, 0.05, "sine", undefined, 0.04);
+      break;
+    case "door":
+      blip(190, 0.05, 0.3, "square", 120);
+      blip(95, 0.08, 0.3, "square", undefined, 0.05);
+      blip(170, 0.9, 0.07, "sawtooth", 105, 0.14);
+      blip(70, 0.3, 0.3, "sine", 40, 0.95);
+      break;
+    case "step":
+      blip(115, 0.16, 0.4, "sine", 50);
+      blip(900, 0.03, 0.05, "triangle", 300);
       break;
     case "clink":
       blip(2400, 0.25, 0.18, "sine");

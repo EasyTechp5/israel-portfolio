@@ -64,7 +64,7 @@ function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: n
 
 type CanvasTex = { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; tex: THREE.CanvasTexture; draw: () => void };
 
-export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = false, onMusic, onReady, onFail, apiRef }: StageProps) {
+export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp, music = false, onMusic, onReady, onFail, apiRef }: StageProps) {
   const host = useRef<HTMLDivElement>(null);
   const dotsHost = useRef<HTMLDivElement>(null);
   const live = useRef<{
@@ -80,7 +80,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
   });
 
   // Latest props for use inside the long-lived scene closure.
-  const initial = useRef({ lamp, dark, open, music });
+  const initial = useRef({ lamp, dark, open, music, intro });
 
   useEffect(() => {
     const container = host.current;
@@ -1737,6 +1737,8 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
     lampHalo.position.copy(lampSpotLight.position).add(new THREE.Vector3(0.02, -0.01, 0.02));
     scene.add(lampHalo);
 
+    let baseExposure = 0.92;
+    let expK = 0.3; // the room fades up from dim as you walk in
     let isDark = initial.current.dark;
     let isLamp = initial.current.lamp;
     let isMusic = initial.current.music;
@@ -1750,7 +1752,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
         sun.color.set(0x7e9cff);
         fill.intensity = 0.1;
         scene.environmentIntensity = 0.12;
-        renderer.toneMappingExposure = 0.95;
+        baseExposure = 0.95;
         lampSpotLight.intensity = on ? 55 : 0;
         lampGlow.intensity = on ? 7 : 0;
       } else {
@@ -1760,7 +1762,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
         sun.color.set(0xfff1d6);
         fill.intensity = 0.55;
         scene.environmentIntensity = 0.38;
-        renderer.toneMappingExposure = 0.92;
+        baseExposure = 0.92;
         lampSpotLight.intensity = on ? 14 : 0;
         lampGlow.intensity = on ? 1.6 : 0;
       }
@@ -1808,7 +1810,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
       const had = userMoved;
       computeHome();
       if (!had) {
-        camera.position.copy(home.pos);
+        camera.position.copy(entered ? home.pos : entryPos());
         controls.target.copy(home.target);
       }
     };
@@ -1819,9 +1821,12 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
     });
 
     /* ── tweening the camera (focus on an object, return home) ── */
-    let tween: null | { fp: THREE.Vector3; ft: THREE.Vector3; tp: THREE.Vector3; tt: THREE.Vector3; t0: number; dur: number } = null;
+    let tween: null | { fp: THREE.Vector3; ft: THREE.Vector3; tp: THREE.Vector3; tt: THREE.Vector3; t0: number; dur: number; out: boolean } = null;
+    let entered = false;
+    let expAnim: { t0: number; dur: number } | null = null;
+    const entryPos = () => home.pos.clone().add(new THREE.Vector3(-0.45, -0.5, home.dist * 0.42));
     let saved: { pos: THREE.Vector3; target: THREE.Vector3 } | null = null;
-    const flyTo = (pos: THREE.Vector3, target: THREE.Vector3, dur = 1100) => {
+    const flyTo = (pos: THREE.Vector3, target: THREE.Vector3, dur = 1100, out = false) => {
       tween = {
         fp: camera.position.clone(),
         ft: controls.target.clone(),
@@ -1829,7 +1834,17 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
         tt: target.clone(),
         t0: performance.now(),
         dur: reduced ? 0 : dur,
+        out,
       };
+    };
+    // walk in through the doorway: a long glide forward while the light comes up
+    const enterNow = (dur = 2600) => {
+      if (entered) return;
+      entered = true;
+      camera.position.copy(entryPos());
+      controls.target.copy(home.target);
+      flyTo(home.pos, home.target, dur, true);
+      expAnim = { t0: performance.now(), dur: reduced ? 0 : dur * 0.8 };
     };
 
     const focus = (id: SceneId | null) => {
@@ -1879,7 +1894,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
         isMusic = m;
       },
     };
-    apiRef.current = { zoomBy, fit: fitHome };
+    apiRef.current = { zoomBy, fit: fitHome, enter: () => enterNow(2600) };
 
     /* ── hotspots, projected from 3D into the page ── */
     const dotEls = new Map<string, HTMLButtonElement>();
@@ -2044,11 +2059,17 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
 
       if (tween) {
         const k = tween.dur === 0 ? 1 : Math.min(1, (now - tween.t0) / tween.dur);
-        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+        const e = tween.out ? 1 - Math.pow(1 - k, 3) : k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
         camera.position.lerpVectors(tween.fp, tween.tp, e);
         controls.target.lerpVectors(tween.ft, tween.tt, e);
         if (k >= 1) tween = null;
       }
+      if (expAnim) {
+        const kk = expAnim.dur === 0 ? 1 : Math.min(1, (now - expAnim.t0) / expAnim.dur);
+        expK = 0.3 + 0.7 * (1 - Math.pow(1 - kk, 2));
+        if (kk >= 1) expAnim = null;
+      }
+      renderer.toneMappingExposure = baseExposure * expK;
       controls.update();
       // keep the look-at point inside the room
       controls.target.x = Math.min(2.2, Math.max(-1.6, controls.target.x));
@@ -2146,10 +2167,18 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, music = fals
     const ro = new ResizeObserver(resize);
     ro.observe(container);
     resize();
-    camera.position.copy(home.pos);
+    if (initial.current.open) {
+      entered = true;
+      expK = 1;
+      camera.position.copy(home.pos);
+    } else {
+      camera.position.copy(entryPos());
+    }
     controls.target.copy(home.target);
     controls.update();
     if (initial.current.open) focus(initial.current.open);
+    // no doors for this visitor: glide in as soon as the room is up
+    else if (!initial.current.intro) window.setTimeout(() => enterNow(1800), 120);
 
     const onVis = () => {
       running = !document.hidden;

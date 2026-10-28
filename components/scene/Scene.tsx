@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { ArrowRight, Calendar, Moon, Plus, Minus, Sun, X } from "lucide-react";
-import { startAmbient, stopAmbient } from "@/lib/ambient";
+import { sfx, startAmbient, stopAmbient } from "@/lib/ambient";
 import Typewriter from "@/components/Typewriter";
 import SceneIntro from "./SceneIntro";
 import ScenePanel from "./ScenePanels";
@@ -31,6 +31,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   const [mode, setMode] = useState<"2d" | "3d" | null>(null);
   const [stageReady, setStageReady] = useState(false);
   const [intro, setIntro] = useState(true);
+  const [entered, setEntered] = useState(false);
   const [lamp, setLamp] = useState(false);
   const [open, setOpen] = useState<SceneId | null>(null);
   const [menu, setMenu] = useState(false);
@@ -115,7 +116,10 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     const t = window.setTimeout(() => {
       setMode(next);
       if (isSceneId(param)) setOpen(param);
-      if (isSceneId(param) || reduced || seen) setIntro(false);
+      if (isSceneId(param) || reduced || seen) {
+        setIntro(false);
+        setEntered(true);
+      }
     }, 0);
     return () => window.clearTimeout(t);
   }, []);
@@ -141,14 +145,21 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   }, [open, menu, openPanel]);
 
   const onReady = useCallback(() => setStageReady(true), []);
+  // The doors begin to open: the latch, the creak, a few footsteps, and the camera walks in.
+  const onOpening = useCallback(() => {
+    setEntered(true);
+    api.current?.enter?.();
+    window.setTimeout(() => sfx("door"), 160);
+    [900, 1400, 1900, 2400].forEach((ms) => window.setTimeout(() => sfx("step"), ms));
+  }, []);
   const onFail = useCallback(() => setMode("2d"), []);
   const onLamp = useCallback(() => setLamp((v) => !v), []);
 
   const current = hotspots.find((h) => h.id === open) ?? null;
-  const stageProps = { lamp, dark, open, onOpen: openPanel, onLamp, music: !muted, onMusic: toggleSound, onReady, onFail, apiRef: api };
+  const stageProps = { lamp, dark, open, intro, onOpen: openPanel, onLamp, music: !muted, onMusic: toggleSound, onReady, onFail, apiRef: api };
 
   return (
-    <div className={`scene ${lamp ? "lamp-on" : ""} ${menu ? "menu-open" : ""} ${open ? "panel-open" : ""}`}>
+    <div className={`scene ${entered ? "entered" : ""} ${lamp ? "lamp-on" : ""} ${menu ? "menu-open" : ""} ${open ? "panel-open" : ""}`}>
       {mode === "3d" && <Stage3D {...stageProps} />}
       {mode === "2d" && <Stage2D {...stageProps} />}
 
@@ -268,7 +279,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
         </div>
       )}
 
-      {intro && <SceneIntro onDone={finishIntro} ready={stageReady} sound={!muted} onSound={toggleSound} />}
+      {intro && <SceneIntro onDone={finishIntro} onOpening={onOpening} ready={stageReady} sound={!muted} onSound={toggleSound} />}
     </div>
   );
 }
