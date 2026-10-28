@@ -1352,3 +1352,56 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
   .card { box-shadow: none !important; break-inside: avoid; }
   section { padding-block: 1rem !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Room UI polish: blue-led, with red, black and white accents
+   ═══════════════════════════════════════════════════════════ */
+.scene { --red: #d7262e; --ink: #0b0d12; }
+.scene::before { background: linear-gradient(to bottom, rgba(5, 10, 30, 0.62), transparent); }
+.scene::after  { background: linear-gradient(to top, rgba(5, 10, 30, 0.82), transparent); }
+
+/* top bar: a name tag on the left, black glass controls on the right */
+.scene-name { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.3rem 0.95rem 0.3rem 0.5rem; border-radius: 999px; background: rgba(8, 12, 28, 0.5); border: 1px solid rgba(255, 255, 255, 0.18); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); font-size: 1.15rem; }
+.scene-name::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px rgba(215, 38, 46, 0.3); flex-shrink: 0; }
+.scene-btn { background: rgba(8, 12, 28, 0.5); border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 6px 18px rgba(2, 8, 28, 0.25); }
+.scene-btn:hover { background: #fff; color: var(--ink); border-color: #fff; transform: translateY(-1px); }
+.scene-btn:active { transform: translateY(0) scale(0.97); }
+.scene.menu-open .scene-name { background: transparent; border-color: var(--border-strong); }
+
+/* headline with a red marker bar above it */
+.scene-title::before { content: ""; display: block; width: 64px; height: 6px; margin-bottom: 1.1rem; border-radius: 3px; background: var(--red); box-shadow: 0 6px 18px rgba(215, 38, 46, 0.45); }
+.scene-hint { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.8rem; border-radius: 999px; background: rgba(8, 12, 28, 0.5); border: 1px solid rgba(255, 255, 255, 0.16); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #fff; }
+.scene-hint::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--red); animation: hot-ping 2.2s ease-out infinite; }
+
+/* hotspots: white ring, blue core; the call is the one red dot */
+.hotspot-dot { box-shadow: 0 6px 18px rgba(2, 8, 28, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.1); }
+.hotspot[data-id="call"] .hotspot-dot { background: var(--red); }
+.hotspot[data-id="call"] .hotspot-dot::after { border-color: var(--red); }
+.hotspot-label { background: var(--ink); color: #fff; border-radius: 999px; padding: 0.4rem 0.8rem; box-shadow: 0 8px 22px rgba(2, 8, 28, 0.45); border: 1px solid rgba(255, 255, 255, 0.14); }
+.hotspot[data-id="call"] .hotspot-label { background: var(--red); border-color: transparent; }
+.lamp-spot .hotspot-dot { background: #fff; }
+
+/* zoom cluster */
+.scene-zoom { padding: 5px; border-radius: 999px; background: rgba(8, 12, 28, 0.5); border: 1px solid rgba(255, 255, 255, 0.16); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); gap: 4px; }
+.scene-zoom .scene-btn { background: transparent; border-color: transparent; box-shadow: none; }
+.scene-zoom .scene-btn:hover { background: #fff; color: var(--ink); }
+
+/* the contents menu */
+.menu-num { color: var(--accent-text); }
+.menu-title { position: relative; background-image: linear-gradient(var(--primary), var(--primary)); background-repeat: no-repeat; background-position: 0 92%; background-size: 0 3px; transition: background-size 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.menu-item:hover .menu-title { background-size: 100% 3px; }
+
+/* the sliding panel: black scrim, blue top edge, red tab */
+.scene-sheet-wrap { background: rgba(4, 7, 20, 0.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.scene-sheet { position: relative; border-top: 4px solid var(--primary); box-shadow: 0 -30px 80px rgba(2, 8, 28, 0.5); }
+.scene-sheet::before { content: ""; position: absolute; top: -4px; left: clamp(20px, 4vw, 48px); width: 72px; height: 4px; background: var(--red); }
+.scene-sheet-grip { background: var(--border-strong); }
+.sheet-close { padding: 0.5rem 0.9rem; border: 1px solid var(--border-strong); border-radius: 999px; transition: background-color 0.2s ease, color 0.2s ease; }
+.sheet-close:hover { background: var(--text-primary); color: var(--bg); }
+
+/* doors: white frame, a red doormat, black kick plates */
+.intro-frame::after { content: ""; position: absolute; left: 14%; right: 14%; bottom: -26px; height: 13px; border-radius: 3px; background: repeating-linear-gradient(90deg, #d7262e 0 6px, #b81f27 6px 8px); box-shadow: 0 5px 10px rgba(2, 14, 46, 0.35); }
+.door::after { border-color: rgba(255, 255, 255, 0.28); }
+.intro-enter { border-bottom-color: #d7262e; }
+.intro-enter svg { color: #d7262e; }
+.intro-name::after { content: ""; display: block; width: 44px; height: 4px; margin: 0.55rem auto 0; border-radius: 2px; background: #d7262e; }

@@ -154,6 +154,8 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     const CREAM = 0xf6efdc;
     const OAK = 0xd7ae72;
     const INK = 0x14161b;
+    const RED = 0xd7262e;
+    const WHITE = 0xf8f6f0;
 
     /* ───────── Room shell ───────── */
     const room = new THREE.Group();
@@ -181,12 +183,23 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       }
     });
     planks.tex.wrapS = planks.tex.wrapT = THREE.RepeatWrapping;
-    const floor = mesh(new THREE.PlaneGeometry(6.4, 4.8), track(new THREE.MeshStandardMaterial({ map: planks.tex, roughness: 0.62 })), 0, 0, 0, false);
+    const floor = mesh(new THREE.PlaneGeometry(6.4, 4.8), track(new THREE.MeshPhysicalMaterial({ map: planks.tex, roughness: 0.55, clearcoat: 0.28, clearcoatRoughness: 0.4 })), 0, 0, 0, false);
     floor.rotation.x = -Math.PI / 2;
     room.add(floor);
 
-    const wallMat = mat(BLUE, 0.92);
-    const trimMat = mat(CREAM, 0.6);
+    // subtle paint mottling so the blue reads as a painted wall, not a flat colour
+    const paint = makeCanvas(512, 512, (c, w, h) => {
+      c.fillStyle = "#fff";
+      c.fillRect(0, 0, w, h);
+      const r = rand(21);
+      for (let i = 0; i < 2600; i++) {
+        c.fillStyle = `rgba(${r() > 0.5 ? "255,255,255" : "0,30,110"},${0.008 + r() * 0.016})`;
+        const s = 6 + r() * 38;
+        c.fillRect(r() * w, r() * h, s, s);
+      }
+    });
+    const wallMat = track(new THREE.MeshStandardMaterial({ color: BLUE, map: paint.tex, roughness: 0.9 }));
+    const trimMat = mat(WHITE, 0.5);
 
     // back wall with a window opening
     const WALL_Z = -2.5;
@@ -209,6 +222,39 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     room.add(box(6.4, 0.12, 0.03, trimMat, 0, 0.06, -2.385));
     room.add(box(0.03, 0.12, 4.8, trimMat, -3.185, 0.06, 0));
     room.add(box(0.03, 0.12, 4.8, trimMat, 3.185, 0.06, 0));
+
+    // white shaker panelling along the lower wall, with a rail on top
+    const panelTex = makeCanvas(2048, 256, (c, w, h) => {
+      c.fillStyle = "#faf8f3";
+      c.fillRect(0, 0, w, h);
+      const n = 10;
+      const pw = w / n;
+      for (let i = 0; i < n; i++) {
+        const x = i * pw + 26;
+        c.strokeStyle = "rgba(60,50,30,0.28)";
+        c.lineWidth = 5;
+        c.strokeRect(x, 40, pw - 52, h - 90);
+        c.strokeStyle = "rgba(255,255,255,0.9)";
+        c.lineWidth = 3;
+        c.strokeRect(x + 5, 45, pw - 62, h - 100);
+      }
+    });
+    const panelMat = track(new THREE.MeshStandardMaterial({ map: panelTex.tex, roughness: 0.55 }));
+    const wainBack = new THREE.Mesh(track(new THREE.PlaneGeometry(6.4, 0.9)), panelMat);
+    wainBack.position.set(0, 0.45, -2.388);
+    wainBack.receiveShadow = true;
+    const wainL = new THREE.Mesh(track(new THREE.PlaneGeometry(4.8, 0.9)), panelMat);
+    wainL.position.set(-3.188, 0.45, 0);
+    wainL.rotation.y = Math.PI / 2;
+    wainL.receiveShadow = true;
+    const wainR = new THREE.Mesh(track(new THREE.PlaneGeometry(4.8, 0.9)), panelMat);
+    wainR.position.set(3.188, 0.45, 0);
+    wainR.rotation.y = -Math.PI / 2;
+    wainR.receiveShadow = true;
+    room.add(wainBack, wainL, wainR);
+    room.add(box(6.4, 0.035, 0.05, trimMat, 0, 0.905, -2.375));
+    room.add(box(0.05, 0.035, 4.8, trimMat, -3.175, 0.905, 0));
+    room.add(box(0.05, 0.035, 4.8, trimMat, 3.175, 0.905, 0));
 
     // window frame, mullions and sill
     room.add(box(0.05, 1.4, 0.06, trimMat, -2.5, 1.65, -2.4));
@@ -271,6 +317,28 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     skyPlane.position.set(-1.8, 1.6, -4.2);
     scene.add(skyPlane);
 
+    // curtains: white linen on a black rod, held back with red ties
+    const linen = makeCanvas(256, 512, (c, w, h) => {
+      for (let x = 0; x < w; x += 8) {
+        const k = 0.5 + 0.5 * Math.sin((x / w) * Math.PI * 8);
+        c.fillStyle = `rgb(${236 + k * 16},${238 + k * 14},${244 + k * 10})`;
+        c.fillRect(x, 0, 8, h);
+      }
+    });
+    const linenMat = track(new THREE.MeshStandardMaterial({ map: linen.tex, roughness: 0.95 }));
+    {
+      const rod = mesh(new THREE.CylinderGeometry(0.014, 0.014, 2.1, 12), mat(INK, 0.35, 0.6), -1.8, 2.52, -2.27);
+      rod.rotation.z = Math.PI / 2;
+      room.add(rod);
+      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -2.85, 2.52, -2.27));
+      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -0.75, 2.52, -2.27));
+      [[-2.62, 0.3], [-0.98, 0.3]].forEach(([x, w]) => {
+        const cur = box(w, 2.0, 0.07, linenMat, x, 1.5, -2.27);
+        room.add(cur);
+        room.add(box(w + 0.015, 0.045, 0.085, mat(RED, 0.6), x, 1.2, -2.27));
+      });
+    }
+
     // rug
     const rug = makeCanvas(1024, 700, (c, w, h) => {
       c.fillStyle = "#f6efdc";
@@ -280,8 +348,13 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       c.lineWidth = 26;
       rr(c, 26, 26, w - 52, h - 52, 48);
       c.stroke();
-      c.lineWidth = 4;
+      c.strokeStyle = "#d7262e";
+      c.lineWidth = 7;
       rr(c, 74, 74, w - 148, h - 148, 30);
+      c.stroke();
+      c.strokeStyle = "#14161b";
+      c.lineWidth = 3;
+      rr(c, 96, 96, w - 192, h - 192, 22);
       c.stroke();
     });
     const rugMesh = new THREE.Mesh(track(new THREE.PlaneGeometry(2.8, 1.9)), track(new THREE.MeshStandardMaterial({ map: rug.tex, transparent: true, roughness: 1 })));
@@ -306,7 +379,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     // portrait (About)
     {
       const g = new THREE.Group();
-      g.add(box(0.56, 0.68, 0.04, frameMat, 0, 0, 0, 0.01));
+      g.add(box(0.56, 0.68, 0.04, mat(INK, 0.35), 0, 0, 0, 0.01));
       const photoTex = track(new THREE.TextureLoader().load("/images/israel-logo.jpg"));
       photoTex.colorSpace = THREE.SRGBColorSpace;
       g.add(box(0.46, 0.58, 0.012, mat(0xfffdf6, 0.9), 0, 0, 0.022));
@@ -413,7 +486,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     });
     {
       const g = new THREE.Group();
-      g.add(box(1.16, 0.74, 0.04, frameMat, 0, 0, 0, 0.012));
+      g.add(box(1.16, 0.74, 0.04, mat(INK, 0.35), 0, 0, 0, 0.012));
       g.add(flat(1.08, 0.675, board.tex, 0, 0.005, 0.021));
       g.add(box(1.0, 0.03, 0.06, mat(0xe6dcc2, 0.6), 0, -0.375, 0.04));
       g.position.set(1.25, 1.78, DECOR_Z + 0.02);
@@ -587,11 +660,13 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       c.fillRect(0, 0, w, h);
     });
     const steam: { s: THREE.Sprite; phase: number }[] = [];
+    let sidePlant: THREE.Group | null = null;
+    let moteUpdate: ((t: number) => void) | null = null;
     {
       const g = new THREE.Group();
       g.position.set(1.04, TOP, -1.96);
       g.add(mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.09, 28), mat(0xfffdf7, 0.35), 0, 0.045, 0));
-      g.add(mesh(new THREE.CylinderGeometry(0.0415, 0.0365, 0.022, 28), mat(0x1763e8, 0.4), 0, 0.05, 0));
+      g.add(mesh(new THREE.CylinderGeometry(0.0415, 0.0365, 0.022, 28), mat(RED, 0.4), 0, 0.05, 0));
       const h = mesh(new THREE.TorusGeometry(0.026, 0.0065, 10, 20, Math.PI * 1.15), mat(0xfffdf7, 0.35), 0.043, 0.048, 0);
       h.rotation.z = -Math.PI * 0.575;
       g.add(h);
@@ -682,10 +757,10 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       const g = new THREE.Group();
       g.position.set(-0.7, 0, -1.05);
       g.rotation.y = 0.18;
-      const seatMat = mat(0x134fc2, 0.75);
+      const seatMat = mat(RED, 0.7);
       g.add(box(0.5, 0.08, 0.5, seatMat, 0, 0.47, 0, 0.03));
-      g.add(box(0.46, 0.5, 0.07, mat(0x0b3a8f, 0.75), 0, 0.82, 0.23, 0.03));
-      g.add(box(0.3, 0.12, 0.06, mat(CREAM, 0.6), 0, 1.16, 0.24, 0.03));
+      g.add(box(0.46, 0.5, 0.07, mat(INK, 0.6), 0, 0.82, 0.23, 0.03));
+      g.add(box(0.3, 0.12, 0.06, mat(WHITE, 0.6), 0, 1.16, 0.24, 0.03));
       g.add(mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.34, 12), mat(INK, 0.4, 0.6), 0, 0.26, 0));
       for (let i = 0; i < 5; i++) {
         const a = (i / 5) * Math.PI * 2;
@@ -715,14 +790,14 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       });
       [0.52, 0.18].forEach((y, i) => {
         g.add(box(0.72, 0.28, 0.02, mat(0xfffdf7, 0.5), 0, y, 0.255, 0.008));
-        const handle = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.2, 12), mat(0x0055da, 0.35, 0.4), 0, y + 0.03, 0.285);
+        const handle = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.2, 12), mat(INK, 0.3, 0.6), 0, y + 0.03, 0.285);
         handle.rotation.z = Math.PI / 2;
         g.add(handle);
         if (i === 0) g.add(flat(0.2, 0.075, label.tex, 0, y - 0.06, 0.267));
       });
       g.add(box(0.26, 0.04, 0.2, mat(0xfffdf7, 0.8), -0.2, 0.72, 0));
       g.add(box(0.24, 0.02, 0.18, mat(0xffffff, 0.8), -0.2, 0.75, 0));
-      g.add(box(0.14, 0.08, 0.1, mat(0x0055da, 0.5), 0.2, 0.74, 0.05, 0.01));
+      g.add(box(0.14, 0.08, 0.1, mat(RED, 0.5), 0.2, 0.74, 0.05, 0.01));
       room.add(g);
     }
 
@@ -738,7 +813,7 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       g.add(box(0.7, H, 0.02, mat(0x0c3688, 0.8), 0, H / 2, -0.16));
       const shelves = [0.04, 0.5, 0.95, 1.38];
       shelves.forEach((y) => g.add(box(0.68, 0.04, 0.34, frame, 0, y, 0)));
-      const colors = [0xf6efdc, 0xf3dc72, 0x9cc3ff, 0xffb3c4, 0x2b7bff, 0xffffff, 0xe24d4d, 0x37c27a];
+      const colors = [0xf8f6f0, INK, 0x9cc3ff, RED, 0x2b7bff, 0xffffff, INK, RED, 0x0f52d2];
       const r = rand(11);
       shelves.slice(0, 3).forEach((y, si) => {
         let x = -0.3;
@@ -761,6 +836,209 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       (g.userData as { sway?: THREE.Group }).sway = plant.sway;
       deskPlant.sway.userData.other = plant.sway;
     }
+
+    /* ───────── More to look at ───────── */
+    // black desk mat, headphones, a stack of books and a pencil pot
+    room.add(box(0.62, 0.004, 0.36, mat(0x1b1e25, 0.9), 0.2, TOP + 0.002, -1.74, 0.002));
+    {
+      const g = new THREE.Group();
+      g.position.set(0.66, TOP, -1.56);
+      g.rotation.y = -0.5;
+      const band = new THREE.Mesh(track(new THREE.TorusGeometry(0.07, 0.008, 10, 28, Math.PI)), mat(INK, 0.4, 0.3));
+      band.position.y = 0.04;
+      band.castShadow = true;
+      g.add(band);
+      [-1, 1].forEach((sd) => {
+        const cup = mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.026, 24), mat(INK, 0.35, 0.3), sd * 0.07, 0.04, 0);
+        cup.rotation.z = Math.PI / 2;
+        g.add(cup);
+        const ring = mesh(new THREE.TorusGeometry(0.03, 0.004, 8, 24), mat(RED, 0.4), sd * 0.0845, 0.04, 0, false);
+        ring.rotation.y = Math.PI / 2;
+        g.add(ring);
+      });
+      g.rotation.x = 0;
+      room.add(g);
+    }
+    {
+      const stackBooks: [number, number, number, number][] = [[INK, 0.2, 0.026, 0.14], [RED, 0.18, 0.022, 0.13], [WHITE, 0.19, 0.02, 0.14], [BLUE, 0.17, 0.018, 0.12]] as unknown as [number, number, number, number][];
+      let y = TOP;
+      stackBooks.forEach(([c, w, hh, d], i) => {
+        const b = box(w, hh, d, mat(c, 0.65), -0.2 + (i % 2) * 0.01, y + hh / 2, -2.06, 0.004);
+        b.rotation.y = (i - 1.5) * 0.12;
+        room.add(b);
+        y += hh;
+      });
+      const pot = mesh(new THREE.CylinderGeometry(0.03, 0.026, 0.07, 18), mat(INK, 0.5), 0.45, TOP + 0.035, -2.1);
+      room.add(pot);
+      [[RED, 0.012, 0.3], [BLUE, -0.008, -0.2], [0xf3dc72, 0.004, 0.05]].forEach(([c, dx, tilt], i) => {
+        const pen2 = mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.11, 8), mat(c, 0.4), 0.45 + dx, TOP + 0.09, -2.1 + (i - 1) * 0.006);
+        pen2.rotation.z = tilt;
+        room.add(pen2);
+      });
+    }
+
+    // red armchair and a small black side table with a plant
+    {
+      const g = new THREE.Group();
+      g.position.set(-2.05, 0, -1.45);
+      g.rotation.y = 1.7;
+      const fabric = mat(RED, 0.88);
+      g.add(box(0.66, 0.16, 0.62, fabric, 0, 0.3, 0, 0.05));
+      g.add(box(0.66, 0.54, 0.14, fabric, 0, 0.62, -0.26, 0.05));
+      g.add(box(0.12, 0.28, 0.62, fabric, -0.33, 0.44, 0, 0.04));
+      g.add(box(0.12, 0.28, 0.62, fabric, 0.33, 0.44, 0, 0.04));
+      g.add(box(0.5, 0.07, 0.44, mat(0xb81f27, 0.9), 0, 0.41, 0.04, 0.03));
+      g.add(box(0.28, 0.2, 0.08, mat(WHITE, 0.9), 0.05, 0.58, -0.17, 0.035));
+      [[-0.27, -0.22], [0.27, -0.22], [-0.27, 0.22], [0.27, 0.22]].forEach(([x, z]) => {
+        const leg = mesh(new THREE.CylinderGeometry(0.018, 0.012, 0.2, 10), mat(INK, 0.4, 0.4), x, 0.1, z);
+        g.add(leg);
+      });
+      room.add(g);
+      const t = new THREE.Group();
+      t.position.set(-2.78, 0, -2.0);
+      t.add(mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.03, 32), mat(INK, 0.35, 0.2), 0, 0.5, 0));
+      t.add(mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.49, 12), mat(INK, 0.4, 0.5), 0, 0.25, 0));
+      t.add(mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.02, 24), mat(INK, 0.4, 0.5), 0, 0.01, 0));
+      const side = makePlant(1.3, 8, 13);
+      side.g.position.set(0, 0.515, 0);
+      t.add(side.g);
+      room.add(t);
+      sidePlant = side.sway;
+    }
+
+    // three black-framed prints on the side wall
+    {
+      const art = (draw: (c: CanvasRenderingContext2D, w: number, h: number) => void, z: number, y: number, w2: number, h2: number) => {
+        const tex = makeCanvas(256, Math.round((256 * h2) / w2), draw);
+        const g = new THREE.Group();
+        g.add(box(0.03, h2 + 0.06, w2 + 0.06, mat(INK, 0.35), 0, 0, 0));
+        g.add(box(0.012, h2 + 0.01, w2 + 0.01, mat(WHITE, 0.9), 0.012, 0, 0));
+        const pl = flat(w2 - 0.06, h2 - 0.06, tex.tex, 0.02, 0, 0);
+        pl.rotation.y = Math.PI / 2;
+        g.add(pl);
+        g.position.set(-3.18, y, z);
+        room.add(g);
+      };
+      art((c, w, h) => {
+        c.fillStyle = "#f8f6f0";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#0f52d2";
+        c.beginPath();
+        c.arc(w / 2, h * 0.42, w * 0.3, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = "#d7262e";
+        c.fillRect(w * 0.18, h * 0.78, w * 0.64, 14);
+      }, -1.55, 1.75, 0.34, 0.44);
+      art((c, w, h) => {
+        c.fillStyle = "#14161b";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#f8f6f0";
+        c.fillRect(w * 0.16, h * 0.14, w * 0.68, h * 0.5);
+        c.fillStyle = "#d7262e";
+        c.fillRect(w * 0.16, h * 0.7, w * 0.3, h * 0.14);
+      }, -1.1, 1.75, 0.34, 0.34);
+      art((c, w, h) => {
+        c.fillStyle = "#f8f6f0";
+        c.fillRect(0, 0, w, h);
+        for (let i = 0; i < 6; i++) {
+          c.fillStyle = i % 3 === 0 ? "#0f52d2" : i % 3 === 1 ? "#14161b" : "#d7262e";
+          c.fillRect(24 + i * 34, 28, 22, h - 56);
+        }
+      }, -0.65, 1.75, 0.3, 0.42);
+    }
+
+    // soft contact shadows so nothing seems to float
+    const blobTex = makeCanvas(128, 128, (c, w, h) => {
+      const g = c.createRadialGradient(w / 2, h / 2, 4, w / 2, h / 2, w / 2);
+      g.addColorStop(0, "rgba(10,15,40,0.55)");
+      g.addColorStop(0.6, "rgba(10,15,40,0.2)");
+      g.addColorStop(1, "rgba(10,15,40,0)");
+      c.fillStyle = g;
+      c.fillRect(0, 0, w, h);
+    });
+    const blobMat = track(new THREE.MeshBasicMaterial({ map: blobTex.tex, transparent: true, depthWrite: false }));
+    const blob = (x: number, z: number, bw: number, bd: number, o = 1) => {
+      const m = new THREE.Mesh(track(new THREE.PlaneGeometry(bw, bd)), o === 1 ? blobMat : track(new THREE.MeshBasicMaterial({ map: blobTex.tex, transparent: true, depthWrite: false, opacity: o })));
+      m.rotation.x = -Math.PI / 2;
+      m.position.set(x, 0.009, z);
+      m.renderOrder = 1;
+      room.add(m);
+    };
+    blob(0.2, -1.82, 2.6, 1.4, 0.7);
+    blob(-0.7, -1.05, 0.95, 0.95);
+    blob(1.9, -2.0, 1.2, 0.85);
+    blob(2.72, -2.1, 1.0, 0.7);
+    blob(-2.05, -1.45, 1.0, 1.0);
+    blob(-2.78, -2.0, 0.6, 0.6);
+
+    // sunbeam from the window, with dust drifting through it
+    const beamTex = makeCanvas(8, 128, (c, w, h) => {
+      const g = c.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "rgba(255,244,214,0.9)");
+      g.addColorStop(0.6, "rgba(255,240,200,0.35)");
+      g.addColorStop(1, "rgba(255,240,200,0)");
+      c.fillStyle = g;
+      c.fillRect(0, 0, w, h);
+    });
+    const sunDir = new THREE.Vector3(3.2, -3.4, 6.1).normalize();
+    const beamGroup = new THREE.Group();
+    {
+      const tl = new THREE.Vector3(-2.46, 2.3, -2.38);
+      const tr = new THREE.Vector3(-1.14, 2.3, -2.38);
+      const bl = new THREE.Vector3(-2.46, 1.0, -2.38);
+      const br = new THREE.Vector3(-1.14, 1.0, -2.38);
+      const proj = (v: THREE.Vector3) => v.clone().add(sunDir.clone().multiplyScalar(v.y / -sunDir.y));
+      const top = [tl, tr, br, bl];
+      const bottom = top.map(proj);
+      const pos: number[] = [];
+      const uv: number[] = [];
+      const idx: number[] = [];
+      for (let i = 0; i < 4; i++) {
+        const j = (i + 1) % 4;
+        const base = pos.length / 3;
+        [top[i], top[j], bottom[j], bottom[i]].forEach((v, k) => {
+          pos.push(v.x, v.y, v.z);
+          uv.push(k === 0 || k === 3 ? 0 : 1, k < 2 ? 0 : 1);
+        });
+        idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
+      }
+      const geo = track(new THREE.BufferGeometry());
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+      geo.setIndex(idx);
+      const beam = new THREE.Mesh(geo, track(new THREE.MeshBasicMaterial({ map: beamTex.tex, color: 0xfff1cc, transparent: true, opacity: 0.075, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false })));
+      beam.renderOrder = 2;
+      beamGroup.add(beam);
+      const N = 70;
+      const dp = new Float32Array(N * 3);
+      const seeds = rand(77);
+      const seed: number[] = [];
+      for (let i = 0; i < N; i++) {
+        seed.push(seeds(), seeds(), seeds());
+        dp[i * 3] = dp[i * 3 + 1] = dp[i * 3 + 2] = 0;
+      }
+      const dg = track(new THREE.BufferGeometry());
+      dg.setAttribute("position", new THREE.BufferAttribute(dp, 3));
+      const motes = new THREE.Points(dg, track(new THREE.PointsMaterial({ map: steamTex.tex, size: 0.035, color: 0xfff3d0, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })));
+      motes.frustumCulled = false;
+      beamGroup.add(motes);
+      moteUpdate = (t: number) => {
+        for (let i = 0; i < N; i++) {
+          const u = seed[i * 3];
+          const v = seed[i * 3 + 1];
+          const k = (t * 0.015 + seed[i * 3 + 2]) % 1;
+          // a point on the window, carried along the sun's direction
+          const x = -2.46 + 1.32 * u + Math.sin(t * 0.4 + i) * 0.03;
+          const y = 1.0 + 1.3 * v;
+          const base = new THREE.Vector3(x, y, -2.38).add(sunDir.clone().multiplyScalar(((y / -sunDir.y) * k)));
+          dp[i * 3] = base.x;
+          dp[i * 3 + 1] = base.y + Math.sin(t * 0.6 + i * 1.7) * 0.02;
+          dp[i * 3 + 2] = base.z;
+        }
+        dg.attributes.position.needsUpdate = true;
+      };
+    }
+    scene.add(beamGroup);
 
     /* ───────── Light ───────── */
     const hemi = new THREE.HemisphereLight(0xcfe3ff, 0xd9c7a0, 0.42);
@@ -792,6 +1070,19 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     lampGlow.position.copy(lampSpotLight.position);
     scene.add(lampGlow);
 
+    const glowTex = makeCanvas(128, 128, (c, w, h) => {
+      const g = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+      g.addColorStop(0, "rgba(255,226,160,1)");
+      g.addColorStop(0.25, "rgba(255,200,110,0.5)");
+      g.addColorStop(1, "rgba(255,190,90,0)");
+      c.fillStyle = g;
+      c.fillRect(0, 0, w, h);
+    });
+    const lampHalo = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: glowTex.tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0 })));
+    lampHalo.scale.setScalar(0.5);
+    lampHalo.position.copy(lampSpotLight.position).add(new THREE.Vector3(0.02, -0.01, 0.02));
+    scene.add(lampHalo);
+
     let isDark = initial.current.dark;
     let isLamp = initial.current.lamp;
     const bg = new THREE.Color();
@@ -819,6 +1110,8 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         lampGlow.intensity = on ? 1.6 : 0;
       }
       (lampBulb.material as THREE.MeshStandardMaterial).emissiveIntensity = on ? 3 : 0;
+      (lampHalo.material as THREE.SpriteMaterial).opacity = on ? (isDark ? 0.95 : 0.55) : 0;
+      beamGroup.visible = !isDark;
     };
     applyLight();
 
@@ -994,10 +1287,12 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         });
         const sw = Math.sin(t * 0.9) * 0.035;
         deskPlant.sway.rotation.z = sw;
+        if (sidePlant) sidePlant.rotation.z = sw * 0.7;
         const other = deskPlant.sway.userData.other as THREE.Group | undefined;
         if (other) other.rotation.z = -sw * 0.8;
       }
 
+      if (!reduced && moteUpdate && beamGroup.visible) moteUpdate(t);
       renderer.render(scene, camera);
       placeDots();
     };
