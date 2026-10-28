@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { ArrowRight, Moon, Plus, Minus, Sun, X } from "lucide-react";
+import { ArrowRight, Moon, Plus, Minus, Sun, Volume2, VolumeX, X } from "lucide-react";
+import { startAmbient, stopAmbient } from "@/lib/ambient";
 import Typewriter from "@/components/Typewriter";
 import SceneIntro from "./SceneIntro";
 import ScenePanel from "./ScenePanels";
@@ -16,6 +17,7 @@ import { hotspots, isSceneId, type SceneId } from "@/lib/scene";
 const Stage3D = dynamic(() => import("./Stage3D"), { ssr: false });
 
 const SEEN_KEY = "scene_intro_seen_v1";
+const MUTE_KEY = "scene_muted_v1";
 
 /**
  * The home page shell: doors, contents menu, panels, controls. It hosts either
@@ -33,6 +35,47 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   const [open, setOpen] = useState<SceneId | null>(null);
   const [menu, setMenu] = useState(false);
   const api = useRef<StageApi | null>(null);
+  const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
+
+  // Sound: browsers need a gesture first, so the beat starts on the visitor's first
+  // click or key (the "Come in" button, usually). The choice to mute is remembered.
+  useEffect(() => {
+    let saved = false;
+    try {
+      saved = window.localStorage.getItem(MUTE_KEY) === "1";
+    } catch {
+      /* ignore */
+    }
+    mutedRef.current = saved;
+    const t = window.setTimeout(() => setMuted(saved), 0);
+    const kick = () => {
+      if (!mutedRef.current) startAmbient();
+      window.removeEventListener("pointerdown", kick);
+      window.removeEventListener("keydown", kick);
+    };
+    window.addEventListener("pointerdown", kick);
+    window.addEventListener("keydown", kick);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("pointerdown", kick);
+      window.removeEventListener("keydown", kick);
+      stopAmbient();
+    };
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    const next = !mutedRef.current;
+    mutedRef.current = next;
+    setMuted(next);
+    try {
+      window.localStorage.setItem(MUTE_KEY, next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+    if (next) stopAmbient();
+    else startAmbient();
+  }, []);
 
   /* ── Panels and deep links ── */
   const openPanel = useCallback((id: SceneId | null) => {
@@ -119,6 +162,15 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
           <span className="scene-name">Israel Afolabi</span>
           <div className="flex items-center gap-2">
             <Link href="/overview" className="scene-btn scene-link">Plain page</Link>
+            <button
+              type="button"
+              className="scene-btn"
+              onClick={toggleSound}
+              aria-pressed={!muted}
+              aria-label={muted ? "Turn the music on" : "Turn the music off"}
+            >
+              {muted ? <VolumeX className="h-[18px] w-[18px]" /> : <Volume2 className="h-[18px] w-[18px]" />}
+            </button>
             <button
               type="button"
               className="scene-btn"
