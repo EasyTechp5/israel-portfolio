@@ -205,10 +205,10 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     // back wall with a window opening
     const WALL_Z = -2.5;
     const T = 0.2;
-    room.add(box(0.7, 2.9, T, wallMat, -2.85, 1.45, WALL_Z));
-    room.add(box(4.3, 2.9, T, wallMat, 1.05, 1.45, WALL_Z));
-    room.add(box(1.4, 0.95, T, wallMat, -1.8, 0.475, WALL_Z));
-    room.add(box(1.4, 0.55, T, wallMat, -1.8, 2.625, WALL_Z));
+    room.add(box(0.63, 2.9, T, wallMat, -2.885, 1.45, WALL_Z));
+    room.add(box(4.87, 2.9, T, wallMat, 0.765, 1.45, WALL_Z));
+    room.add(box(0.9, 1.05, T, wallMat, -2.12, 0.525, WALL_Z));
+    room.add(box(0.9, 0.65, T, wallMat, -2.12, 2.575, WALL_Z));
     // walls keep going up so a tall phone view never sees past the room
     room.add(box(6.4, 6, T, wallMat, 0, 5.9, WALL_Z));
 
@@ -258,13 +258,13 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     room.add(box(0.05, 0.035, 4.8, trimMat, 3.175, 0.905, 0));
 
     // window frame, mullions and sill
-    room.add(box(0.05, 1.4, 0.06, trimMat, -2.5, 1.65, -2.4));
-    room.add(box(0.05, 1.4, 0.06, trimMat, -1.1, 1.65, -2.4));
-    room.add(box(1.45, 0.05, 0.06, trimMat, -1.8, 2.35, -2.4));
-    room.add(box(1.45, 0.05, 0.06, trimMat, -1.8, 0.95, -2.4));
-    room.add(box(0.035, 1.4, 0.04, trimMat, -1.8, 1.65, -2.4));
-    room.add(box(1.4, 0.035, 0.04, trimMat, -1.8, 1.65, -2.4));
-    room.add(box(1.6, 0.05, 0.2, trimMat, -1.8, 0.93, -2.33));
+    room.add(box(0.05, 1.2, 0.06, trimMat, -2.57, 1.65, -2.4));
+    room.add(box(0.05, 1.2, 0.06, trimMat, -1.67, 1.65, -2.4));
+    room.add(box(0.95, 0.05, 0.06, trimMat, -2.12, 2.25, -2.4));
+    room.add(box(0.95, 0.05, 0.06, trimMat, -2.12, 1.05, -2.4));
+    room.add(box(0.035, 1.2, 0.04, trimMat, -2.12, 1.65, -2.4));
+    room.add(box(0.9, 0.035, 0.04, trimMat, -2.12, 1.65, -2.4));
+    room.add(box(1.1, 0.05, 0.2, trimMat, -2.12, 1.03, -2.33));
 
     // what you see through the window: three layers (sky, skyline over the lagoon, palms)
     // that shift against each other as you orbit, and change for night
@@ -454,16 +454,16 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
           }
         }
       };
-      palm(430, h + 40, -0.5, 560, 5);
-      palm(1090, h + 40, 0.35, 420, 9);
+      palm(610, h + 40, -0.45, 520, 5);
+      palm(930, h + 40, 0.4, 380, 9);
     });
     const winLayers = [skyTex, cityTex, palmTex];
     const skyPlane = new THREE.Mesh(track(new THREE.PlaneGeometry(7, 5.1)), track(new THREE.MeshBasicMaterial({ map: skyTex.tex, toneMapped: false })));
-    skyPlane.position.set(-1.8, 1.55, -4.6);
+    skyPlane.position.set(-2.12, 1.55, -4.6);
     const cityPlane = new THREE.Mesh(track(new THREE.PlaneGeometry(4.6, 2.53)), track(new THREE.MeshBasicMaterial({ map: cityTex.tex, transparent: true, toneMapped: false })));
-    cityPlane.position.set(-1.8, 1.83, -3.3);
+    cityPlane.position.set(-2.12, 1.83, -3.3);
     const palmPlane = new THREE.Mesh(track(new THREE.PlaneGeometry(3.0, 2.0)), track(new THREE.MeshBasicMaterial({ map: palmTex.tex, transparent: true, toneMapped: false })));
-    palmPlane.position.set(-1.8, 1.5, -2.8);
+    palmPlane.position.set(-2.12, 1.5, -2.8);
     scene.add(cityPlane, palmPlane);
     const sky = { draw: () => winLayers.forEach((l) => l.draw()) };
     // glass: a faint diagonal reflection, plus a deep white casing and a sill with things on it
@@ -479,33 +479,33 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
         c.fillStyle = g;
         c.fillRect(0, 0, w, h);
       });
-      const glass = new THREE.Mesh(track(new THREE.PlaneGeometry(1.4, 1.4)), track(new THREE.MeshBasicMaterial({ map: streak.tex, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })));
-      glass.position.set(-1.8, 1.65, -2.45);
+      const glass = new THREE.Mesh(track(new THREE.PlaneGeometry(0.9, 1.2)), track(new THREE.MeshBasicMaterial({ map: streak.tex, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })));
+      glass.position.set(-2.12, 1.65, -2.45);
       glass.renderOrder = 3;
       room.add(glass);
       // reveals (the depth of the opening) and architrave on the room side
-      room.add(box(1.4, 0.04, 0.2, trimMat, -1.8, 0.97, -2.5));
-      room.add(box(1.4, 0.04, 0.2, trimMat, -1.8, 2.33, -2.5));
-      room.add(box(0.04, 1.4, 0.2, trimMat, -2.48, 1.65, -2.5));
-      room.add(box(0.04, 1.4, 0.2, trimMat, -1.12, 1.65, -2.5));
-      room.add(box(1.62, 0.08, 0.035, trimMat, -1.8, 2.42, -2.372, 0.008));
-      room.add(box(0.08, 1.56, 0.035, trimMat, -2.55, 1.65, -2.372, 0.008));
-      room.add(box(0.08, 1.56, 0.035, trimMat, -1.05, 1.65, -2.372, 0.008));
+      room.add(box(0.9, 0.04, 0.2, trimMat, -2.12, 1.07, -2.5));
+      room.add(box(0.9, 0.04, 0.2, trimMat, -2.12, 2.23, -2.5));
+      room.add(box(0.04, 1.2, 0.2, trimMat, -2.55, 1.65, -2.5));
+      room.add(box(0.04, 1.2, 0.2, trimMat, -1.69, 1.65, -2.5));
+      room.add(box(1.08, 0.08, 0.035, trimMat, -2.12, 2.31, -2.372, 0.008));
+      room.add(box(0.08, 1.36, 0.035, trimMat, -2.61, 1.65, -2.372, 0.008));
+      room.add(box(0.08, 1.36, 0.035, trimMat, -1.63, 1.65, -2.372, 0.008));
       // things on the sill: a succulent in a red pot, a small black frame
-      const pot = mesh(new THREE.CylinderGeometry(0.035, 0.028, 0.05, 18), mat(RED, 0.5), -2.25, 0.985 + 0.025, -2.33);
+      const pot = mesh(new THREE.CylinderGeometry(0.035, 0.028, 0.05, 18), mat(RED, 0.5), -2.4, 1.055 + 0.025, -2.33);
       room.add(pot);
       for (let i = 0; i < 7; i++) {
         const lf = new THREE.Mesh(track(new THREE.SphereGeometry(0.5, 10, 8)), leafMatShared);
         lf.scale.set(0.02, 0.07, 0.012);
         const ang = (i / 7) * Math.PI * 2;
-        lf.position.set(-2.25 + Math.cos(ang) * 0.018, 1.06, -2.33 + Math.sin(ang) * 0.018);
+        lf.position.set(-2.4 + Math.cos(ang) * 0.018, 1.135, -2.33 + Math.sin(ang) * 0.018);
         lf.rotation.z = Math.cos(ang) * 0.5;
         lf.rotation.x = Math.sin(ang) * 0.5;
         lf.castShadow = true;
         room.add(lf);
       }
-      room.add(box(0.12, 0.15, 0.012, mat(INK, 0.35), -1.35, 1.02, -2.31, 0.004));
-      room.add(box(0.1, 0.13, 0.006, mat(WHITE, 0.8), -1.35, 1.02, -2.303));
+      room.add(box(0.12, 0.15, 0.012, mat(INK, 0.35), -1.88, 1.1, -2.31, 0.004));
+      room.add(box(0.1, 0.13, 0.006, mat(WHITE, 0.8), -1.88, 1.1, -2.303));
     }
 
     // curtains: white linen on a black rod, held back with red ties
@@ -518,13 +518,13 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     });
     const linenMat = track(new THREE.MeshStandardMaterial({ map: linen.tex, roughness: 0.95 }));
     {
-      const rod = mesh(new THREE.CylinderGeometry(0.014, 0.014, 2.1, 12), mat(INK, 0.35, 0.6), -1.8, 2.52, -2.27);
+      const rod = mesh(new THREE.CylinderGeometry(0.014, 0.014, 1.5, 12), mat(INK, 0.35, 0.6), -2.12, 2.45, -2.27);
       rod.rotation.z = Math.PI / 2;
       room.add(rod);
-      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -2.85, 2.52, -2.27));
-      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -0.75, 2.52, -2.27));
-      [[-2.62, 0.3], [-0.98, 0.3]].forEach(([x, w]) => {
-        const cur = box(w, 2.0, 0.07, linenMat, x, 1.5, -2.27);
+      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -2.87, 2.45, -2.27));
+      room.add(mesh(new THREE.SphereGeometry(0.03, 12, 10), mat(RED, 0.4), -1.37, 2.45, -2.27));
+      [[-2.72, 0.26], [-1.52, 0.26]].forEach(([x, w]) => {
+        const cur = box(w, 1.9, 0.07, linenMat, x, 1.48, -2.27);
         room.add(cur);
         room.add(box(w + 0.015, 0.045, 0.085, mat(RED, 0.6), x, 1.2, -2.27));
       });
@@ -567,16 +567,55 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
       return m;
     };
 
-    // portrait (About)
+    // portrait (About): black frame, brass inner line, white mat, name plate and a picture light
     {
       const g = new THREE.Group();
-      g.add(box(0.56, 0.68, 0.04, mat(INK, 0.35), 0, 0, 0, 0.01));
+      const brass = mat(0xe2b95a, 0.28, 0.9);
+      g.add(box(0.72, 0.9, 0.05, mat(INK, 0.3, 0.2), 0, 0, 0, 0.012));
+      g.add(box(0.64, 0.82, 0.02, brass, 0, 0, 0.026, 0.004));
+      g.add(box(0.62, 0.8, 0.02, mat(INK, 0.35), 0, 0, 0.03, 0.004));
+      g.add(box(0.58, 0.76, 0.012, mat(0xfffdf6, 0.9), 0, 0, 0.038));
       const photoTex = track(new THREE.TextureLoader().load("/images/israel-logo.jpg"));
       photoTex.colorSpace = THREE.SRGBColorSpace;
-      g.add(box(0.46, 0.58, 0.012, mat(0xfffdf6, 0.9), 0, 0, 0.022));
-      g.add(flat(0.38, 0.38, photoTex, 0, 0.05, 0.03));
-      g.add(box(0.2, 0.05, 0.015, goldMat, 0, -0.22, 0.03));
-      g.position.set(-0.75, 1.78, DECOR_Z + 0.02);
+      photoTex.anisotropy = maxAniso;
+      g.add(flat(0.46, 0.46, photoTex, 0, 0.09, 0.046));
+      g.add(box(0.47, 0.012, 0.004, mat(INK, 0.5), 0, -0.145, 0.047));
+      const plate = makeCanvas(512, 128, (c, w, h) => {
+        const gr = c.createLinearGradient(0, 0, w, h);
+        gr.addColorStop(0, "#f1d98d");
+        gr.addColorStop(0.5, "#cfa13f");
+        gr.addColorStop(1, "#e8c874");
+        c.fillStyle = gr;
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#3b2a08";
+        c.textAlign = "center";
+        c.font = `500 44px ${serif}`;
+        c.fillText("ISRAEL AFOLABI", w / 2, 62);
+        c.font = `500 24px ${mono}`;
+        c.fillText("AI ENGINEER · LAGOS", w / 2, 100);
+      });
+      g.add(flat(0.3, 0.075, plate.tex, 0, -0.27, 0.046));
+      // glass reflection
+      const gl = makeCanvas(128, 128, (c, w, h) => {
+        const gr = c.createLinearGradient(0, 0, w, h);
+        gr.addColorStop(0.25, "rgba(255,255,255,0)");
+        gr.addColorStop(0.38, "rgba(255,255,255,0.5)");
+        gr.addColorStop(0.46, "rgba(255,255,255,0)");
+        c.fillStyle = gr;
+        c.fillRect(0, 0, w, h);
+      });
+      const glass2 = new THREE.Mesh(track(new THREE.PlaneGeometry(0.58, 0.76)), track(new THREE.MeshBasicMaterial({ map: gl.tex, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })));
+      glass2.position.z = 0.05;
+      glass2.renderOrder = 3;
+      g.add(glass2);
+      // picture light on a short arm
+      g.add(box(0.012, 0.012, 0.09, mat(INK, 0.35, 0.5), 0, 0.5, 0.05));
+      g.add(box(0.32, 0.024, 0.045, mat(INK, 0.35, 0.5), 0, 0.51, 0.095, 0.01));
+      g.add(box(0.28, 0.006, 0.02, track(new THREE.MeshStandardMaterial({ color: 0xffe7b0, emissive: 0xffd58a, emissiveIntensity: 2 })), 0, 0.497, 0.1));
+      const pl = new THREE.PointLight(0xffe0a8, 0.55, 1.4, 1.8);
+      pl.position.set(0, 0.45, 0.2);
+      g.add(pl);
+      g.position.set(-0.75, 1.76, DECOR_Z + 0.025);
       room.add(g);
     }
 
@@ -806,56 +845,142 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     room.add(box(1.8, 0.05, 0.04, legMat, 0.2, 0.62, -2.14));
     const TOP = DESK_Y + 0.0225;
 
-    // laptop with a screen that runs a workflow
-    const screen = makeCanvas(640, 420, (c, w, h) => {
-      const g = c.createLinearGradient(0, 0, w, h);
-      g.addColorStop(0, "#0d2a6e");
-      g.addColorStop(1, "#081a47");
-      c.fillStyle = g;
+    // MacBook-style laptop: silver aluminium, black bezel with a notch, a wallpaper, menu bar and dock
+    const screen = makeCanvas(1280, 800, (c, w, h) => {
+      const bg = c.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, "#0a2a8c");
+      bg.addColorStop(0.55, "#1b5be6");
+      bg.addColorStop(1, "#d7262e");
+      c.fillStyle = bg;
       c.fillRect(0, 0, w, h);
-      c.fillStyle = "rgba(156,195,255,0.7)";
-      rr(c, 40, 36, 170, 16, 8);
-      c.fill();
-      c.fillStyle = "rgba(156,195,255,0.32)";
-      rr(c, 40, 66, 280, 12, 6);
-      c.fill();
-      const nodes = [60, 190, 320, 450];
-      nodes.forEach((x, i) => {
-        c.fillStyle = i === 3 ? "#37c27a" : "#2b7bff";
-        rr(c, x, 170, 100, 70, 16);
+      // soft wallpaper waves
+      for (let i = 0; i < 5; i++) {
+        c.fillStyle = `rgba(255,255,255,${0.05 + i * 0.02})`;
+        c.beginPath();
+        c.moveTo(0, h * (0.5 + i * 0.1));
+        c.bezierCurveTo(w * 0.3, h * (0.3 + i * 0.1), w * 0.6, h * (0.85 + i * 0.05), w, h * (0.45 + i * 0.1));
+        c.lineTo(w, h);
+        c.lineTo(0, h);
         c.fill();
+      }
+      // menu bar
+      c.fillStyle = "rgba(255,255,255,0.22)";
+      c.fillRect(0, 0, w, 40);
+      c.fillStyle = "#fff";
+      c.beginPath();
+      c.arc(30, 20, 8, 0, Math.PI * 2);
+      c.fill();
+      c.font = `600 22px ${mono}`;
+      c.textAlign = "left";
+      ["Finder", "File", "Edit", "View"].forEach((t, i) => c.fillText(t, 64 + i * 86, 28));
+      c.textAlign = "right";
+      const d = new Date(Date.now() + 3600000);
+      c.fillText(`${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`, w - 24, 28);
+      c.textAlign = "left";
+      // a window running a workflow
+      const wx = 250;
+      const wy = 110;
+      const ww = 780;
+      const wh = 460;
+      c.save();
+      c.shadowColor = "rgba(0,0,0,0.4)";
+      c.shadowBlur = 40;
+      c.fillStyle = "rgba(250,251,255,0.96)";
+      rr(c, wx, wy, ww, wh, 22);
+      c.fill();
+      c.restore();
+      ["#ff5f57", "#febc2e", "#28c840"].forEach((col, i) => {
+        c.fillStyle = col;
+        c.beginPath();
+        c.arc(wx + 30 + i * 28, wy + 28, 9, 0, Math.PI * 2);
+        c.fill();
+      });
+      c.fillStyle = "#14161b";
+      c.font = `600 26px ${mono}`;
+      c.fillText("Invoice follow-up · live", wx + 140, wy + 36);
+      const labels = ["Trigger", "AI draft", "Send", "Paid"];
+      labels.forEach((l, i) => {
+        const x = wx + 50 + i * 180;
+        c.fillStyle = i === 3 ? "#16a34a" : i === 1 ? "#d7262e" : "#0055da";
+        rr(c, x, wy + 170, 140, 90, 18);
+        c.fill();
+        c.fillStyle = "#fff";
+        c.font = `600 26px ${mono}`;
+        c.textAlign = "center";
+        c.fillText(l, x + 70, wy + 224);
+        c.textAlign = "left";
         if (i < 3) {
-          c.strokeStyle = "#9cc3ff";
+          c.strokeStyle = "#9aa3b5";
           c.lineWidth = 5;
           c.beginPath();
-          c.moveTo(x + 100, 205);
-          c.lineTo(x + 130, 205);
+          c.moveTo(x + 140, wy + 215);
+          c.lineTo(x + 180, wy + 215);
           c.stroke();
         }
       });
-      const t = (performance.now() % 2600) / 2600;
-      c.fillStyle = "#fff";
+      const t = (performance.now() % 2800) / 2800;
+      c.fillStyle = "#14161b";
       c.beginPath();
-      c.arc(70 + t * 450, 205, 11, 0, Math.PI * 2);
+      c.arc(wx + 70 + t * 540, wy + 215, 12, 0, Math.PI * 2);
       c.fill();
-      c.fillStyle = "#37c27a";
-      rr(c, 40, 320, 110, 14, 7);
+      c.fillStyle = "#e7ebf3";
+      rr(c, wx + 50, wy + 330, 420, 16, 8);
       c.fill();
-      c.fillStyle = "rgba(156,195,255,0.3)";
-      rr(c, 40, 346, 220, 10, 5);
+      rr(c, wx + 50, wy + 366, 300, 14, 7);
       c.fill();
+      // dock
+      const icons = ["#0055da", "#ffffff", "#14161b", "#d7262e", "#2fbf71", "#f3dc72", "#9cc3ff"];
+      const dw = icons.length * 86 + 28;
+      c.fillStyle = "rgba(255,255,255,0.3)";
+      rr(c, (w - dw) / 2, h - 108, dw, 88, 26);
+      c.fill();
+      icons.forEach((col, i) => {
+        c.fillStyle = col;
+        rr(c, (w - dw) / 2 + 18 + i * 86, h - 96, 66, 66, 16);
+        c.fill();
+      });
     });
     {
       const g = new THREE.Group();
       g.position.set(0.2, TOP, -1.78);
-      g.add(box(0.34, 0.014, 0.23, mat(0xdfe3ea, 0.35, 0.6), 0, 0.007, 0.02, 0.005));
+      const alu = track(new THREE.MeshStandardMaterial({ color: 0xc8ccd3, roughness: 0.32, metalness: 0.92 }));
+      // base: thin unibody with a keyboard deck
+      g.add(box(0.34, 0.011, 0.235, alu, 0, 0.0055, 0.02, 0.004));
+      const deck = makeCanvas(640, 440, (c, w, h) => {
+        c.fillStyle = "#c8ccd3";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#16181d";
+        const rows = [14, 14, 14, 13, 11];
+        rows.forEach((n, ri) => {
+          const kw = (w - 60) / n;
+          for (let i = 0; i < n; i++) {
+            rr(c, 30 + i * kw + 2, 24 + ri * 52, kw - 4, 44, 6);
+            c.fill();
+          }
+        });
+        c.fillStyle = "rgba(120,126,138,0.55)";
+        rr(c, w / 2 - 110, 296, 220, 120, 10);
+        c.fill();
+        c.strokeStyle = "rgba(90,96,108,0.6)";
+        c.lineWidth = 2;
+        rr(c, w / 2 - 110, 296, 220, 120, 10);
+        c.stroke();
+      });
+      const kb = new THREE.Mesh(track(new THREE.PlaneGeometry(0.32, 0.22)), track(new THREE.MeshStandardMaterial({ map: deck.tex, roughness: 0.4, metalness: 0.5 })));
+      kb.rotation.x = -Math.PI / 2;
+      kb.position.set(0, 0.0112, 0.02);
+      g.add(kb);
+      // lid, with a black bezel, notch and glowing display
       const lid = new THREE.Group();
-      lid.position.set(0, 0.014, -0.095);
-      lid.rotation.x = -0.28;
-      lid.add(box(0.34, 0.225, 0.01, mat(INK, 0.4, 0.4), 0, 0.1125, 0, 0.004));
-      const scr = new THREE.Mesh(track(new THREE.PlaneGeometry(0.31, 0.2)), track(new THREE.MeshBasicMaterial({ map: screen.tex, toneMapped: false })));
-      scr.position.set(0, 0.112, 0.0055);
+      lid.position.set(0, 0.011, -0.095);
+      lid.rotation.x = -0.3;
+      lid.add(box(0.34, 0.226, 0.007, alu, 0, 0.113, 0, 0.004));
+      lid.add(box(0.332, 0.218, 0.002, mat(0x0a0b0e, 0.3), 0, 0.113, 0.0042));
+      const scr = new THREE.Mesh(track(new THREE.PlaneGeometry(0.316, 0.1975)), track(new THREE.MeshBasicMaterial({ map: screen.tex, toneMapped: false })));
+      scr.position.set(0, 0.1155, 0.0055);
       lid.add(scr);
+      const notch = box(0.034, 0.008, 0.0015, mat(0x0a0b0e, 0.3), 0, 0.2095, 0.0057);
+      lid.add(notch);
       g.add(lid);
       room.add(g);
     }
@@ -1434,10 +1559,10 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
     const sunDir = new THREE.Vector3(3.2, -3.4, 6.1).normalize();
     const beamGroup = new THREE.Group();
     {
-      const tl = new THREE.Vector3(-2.46, 2.3, -2.38);
-      const tr = new THREE.Vector3(-1.14, 2.3, -2.38);
-      const bl = new THREE.Vector3(-2.46, 1.0, -2.38);
-      const br = new THREE.Vector3(-1.14, 1.0, -2.38);
+      const tl = new THREE.Vector3(-2.53, 2.2, -2.38);
+      const tr = new THREE.Vector3(-1.71, 2.2, -2.38);
+      const bl = new THREE.Vector3(-2.53, 1.1, -2.38);
+      const br = new THREE.Vector3(-1.71, 1.1, -2.38);
       const proj = (v: THREE.Vector3) => v.clone().add(sunDir.clone().multiplyScalar(v.y / -sunDir.y));
       const top = [tl, tr, br, bl];
       const bottom = top.map(proj);
@@ -1479,8 +1604,8 @@ export default function Stage3D({ lamp, dark, open, onOpen, onLamp, onReady, onF
           const v = seed[i * 3 + 1];
           const k = (t * 0.015 + seed[i * 3 + 2]) % 1;
           // a point on the window, carried along the sun's direction
-          const x = -2.46 + 1.32 * u + Math.sin(t * 0.4 + i) * 0.03;
-          const y = 1.0 + 1.3 * v;
+          const x = -2.53 + 0.82 * u + Math.sin(t * 0.4 + i) * 0.03;
+          const y = 1.1 + 1.1 * v;
           const base = new THREE.Vector3(x, y, -2.38).add(sunDir.clone().multiplyScalar(((y / -sunDir.y) * k)));
           dp[i * 3] = base.x;
           dp[i * 3 + 1] = base.y + Math.sin(t * 0.6 + i * 1.7) * 0.02;
