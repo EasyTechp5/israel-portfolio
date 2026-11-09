@@ -1845,45 +1845,47 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       sidePlant = side.sway;
     }
 
-    // three black-framed prints on the side wall
+    // real photos from your events, framed on the side wall (loaded a moment after the room is up)
     {
-      const art = (draw: (c: CanvasRenderingContext2D, w: number, h: number) => void, z: number, y: number, w2: number, h2: number) => {
-        const tex = makeCanvas(256, Math.round((256 * h2) / w2), draw);
+      const shots: { src: string; caption: string; z: number; y: number }[] = [
+        { src: "/images/gallery/training-staff.jpg", caption: "Delivering the AI Mastery Program", z: -1.7, y: 1.8 },
+        { src: "/images/gallery/africa-tech-expo.jpg", caption: "Africa Technology Expo", z: -1.02, y: 1.8 },
+        { src: "/images/gallery/ai-summit.jpg", caption: "Data & AI Leadership Summit", z: -0.34, y: 1.8 },
+      ];
+      shots.forEach((sh) => {
         const g = new THREE.Group();
-        g.add(box(0.03, h2 + 0.06, w2 + 0.06, mat(INK, 0.35), 0, 0, 0));
-        g.add(box(0.012, h2 + 0.01, w2 + 0.01, mat(WHITE, 0.9), 0.012, 0, 0));
-        const pl = flat(w2 - 0.06, h2 - 0.06, tex.tex, 0.02, 0, 0);
-        pl.rotation.y = Math.PI / 2;
-        g.add(pl);
-        g.position.set(-3.18, y, z);
+        g.userData.egg = "photo";
+        g.add(box(0.03, 0.4, 0.5, mat(INK, 0.35), 0, 0, 0));
+        g.add(box(0.012, 0.37, 0.47, mat(WHITE, 0.9), 0.012, 0, 0));
+        const picMat = track(new THREE.MeshStandardMaterial({ color: 0xdfe3ea, roughness: 0.8 }));
+        const pic = new THREE.Mesh(track(new THREE.PlaneGeometry(0.42, 0.315)), picMat);
+        pic.position.set(0.02, 0.01, 0);
+        pic.rotation.y = Math.PI / 2;
+        g.add(pic);
+        const cap = makeCanvas(512, 64, (c, w, h) => {
+          c.fillStyle = "#f8f6f0";
+          c.fillRect(0, 0, w, h);
+          c.fillStyle = "#3b3f48";
+          c.textAlign = "center";
+          c.font = `500 26px ${mono}`;
+          c.fillText(sh.caption.toUpperCase().slice(0, 34), w / 2, 40);
+        });
+        const plate = flat(0.4, 0.05, cap.tex, 0.02, -0.165, 0);
+        plate.rotation.y = Math.PI / 2;
+        g.add(plate);
+        g.position.set(-3.18, sh.y, sh.z);
         room.add(g);
-      };
-      art((c, w, h) => {
-        c.fillStyle = "#f8f6f0";
-        c.fillRect(0, 0, w, h);
-        c.fillStyle = "#0f52d2";
-        c.beginPath();
-        c.arc(w / 2, h * 0.42, w * 0.3, 0, Math.PI * 2);
-        c.fill();
-        c.fillStyle = "#d7262e";
-        c.fillRect(w * 0.18, h * 0.78, w * 0.64, 14);
-      }, -1.55, 1.75, 0.34, 0.44);
-      art((c, w, h) => {
-        c.fillStyle = "#14161b";
-        c.fillRect(0, 0, w, h);
-        c.fillStyle = "#f8f6f0";
-        c.fillRect(w * 0.16, h * 0.14, w * 0.68, h * 0.5);
-        c.fillStyle = "#d7262e";
-        c.fillRect(w * 0.16, h * 0.7, w * 0.3, h * 0.14);
-      }, -1.1, 1.75, 0.34, 0.34);
-      art((c, w, h) => {
-        c.fillStyle = "#f8f6f0";
-        c.fillRect(0, 0, w, h);
-        for (let i = 0; i < 6; i++) {
-          c.fillStyle = i % 3 === 0 ? "#0f52d2" : i % 3 === 1 ? "#14161b" : "#d7262e";
-          c.fillRect(24 + i * 34, 28, 22, h - 56);
-        }
-      }, -0.65, 1.75, 0.3, 0.42);
+        window.setTimeout(() => {
+          new THREE.TextureLoader().load(sh.src, (tx) => {
+            tx.colorSpace = THREE.SRGBColorSpace;
+            tx.anisotropy = maxAniso;
+            picMat.map = tx;
+            picMat.color.set(0xffffff);
+            picMat.needsUpdate = true;
+            disposables.push(tx);
+          });
+        }, 2500);
+      });
     }
 
     // warm string lights along the top of the wall, and a red neon sign
@@ -2421,6 +2423,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       }
       const now2 = performance.now();
       switch (pk.name) {
+        case "photo":
+          sfx("open");
+          handlers.current.onOpen("about");
+          break;
         case "cat":
           sfx("meow");
           pops.push({ o: pk.obj, t0: now2, base: 1 });
