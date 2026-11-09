@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Download, FileText, Calendar, MessageCircle, ArrowRight, ExternalLink } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
+import { stats, services, links } from "@/lib/scene";
 
 export const metadata: Metadata = {
   title: "Resume | Israel Afolabi",
@@ -37,6 +39,37 @@ export default function ResumePage() {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════ AT A GLANCE ══════════════ */}
+      <section style={{ paddingTop: "1rem" }}>
+        <div className="container-wide">
+          <Reveal>
+            <div className="card p-6 sm:p-8">
+              <span className="mono-label" style={{ color: "var(--primary-text)" }}>At a glance</span>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mb-6">
+                {stats.map((st) => (
+                  <div key={st.label} className="rounded-xl p-4" style={{ background: "var(--bg-inset)", borderTop: "3px solid var(--primary-fill)" }}>
+                    <div className="font-bold" style={{ fontSize: "1.7rem", fontFamily: "var(--font-display)", color: "var(--text-primary)" }}>
+                      <CountUp value={st.value} />
+                    </div>
+                    <div className="text-sm" style={{ color: "var(--text-muted)" }}>{st.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2 mb-5">
+                {services.map((sv) => (
+                  <span key={sv.title} className="topic-chip" style={{ cursor: "default" }}>{sv.title}</span>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--primary-text)" }}>LinkedIn</a>
+                <a href={links.github} target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: "var(--primary-text)" }}>GitHub</a>
+                <a href={links.email} className="font-medium underline" style={{ color: "var(--primary-text)" }}>Email</a>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
