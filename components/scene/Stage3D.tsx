@@ -106,6 +106,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     container.appendChild(canvas);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
+    // Shadows are re-drawn about ten times a second (and every frame while something big moves): the room is mostly still.
+    renderer.shadowMap.autoUpdate = false;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
@@ -2423,6 +2425,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     /* ── the loop ── */
     let raf = 0;
     let running = true;
+    let shadowTick = 0;
     let lastTex = 0;
     let lastNow = performance.now();
     let frames = 0;
@@ -2433,6 +2436,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       raf = requestAnimationFrame(frame);
       if (!running) return;
       const now = performance.now();
+      shadowTick += 1;
+      if (shadowTick % 6 === 0 || spin || tween) renderer.shadowMap.needsUpdate = true;
       const t = (now - startT) / 1000;
       const dt = Math.min(0.1, Math.max(0.001, (now - lastNow) / 1000));
       lastNow = now;

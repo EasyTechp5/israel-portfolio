@@ -1519,3 +1519,4 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
   .scene-title h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
 }
 .weather-spot .hotspot-dot { background: #9cc3ff; border-color: #fff; }
+@media (max-width: 640px) { .scene-zoom { bottom: calc(clamp(18px, 4vh, 44px) + 150px); } .scene-sub { font-size: 1rem; } }
