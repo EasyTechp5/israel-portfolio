@@ -3,6 +3,7 @@ import ContactComposer from "@/components/ContactComposer";
 import LagosClock from "@/components/LagosClock";
 import { Calendar, MessageCircle, Mail, MapPin, Globe, Clock, Users, ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import Faq from "@/components/Faq";
 
 export const metadata: Metadata = {
   title: "Contact | Israel Afolabi",
@@ -47,6 +48,19 @@ const details = [
   { icon: Globe, label: "Working with", value: "Clients worldwide, remotely" },
   { icon: Clock, label: "Typical response", value: "Under 1 hour on WhatsApp" },
   { icon: Users, label: "Availability", value: "Open for new projects" },
+];
+
+const steps = [
+  { n: "1", t: "You reach out", d: "Book a call, message on WhatsApp or write below. Tell me what is slowing the business down." },
+  { n: "2", t: "A straight answer", d: "On the call we look at the process and I tell you honestly whether automation fits, and what it would take." },
+  { n: "3", t: "A clear scope", d: "If it fits, you get a written scope and price before anything starts. If not, you leave with free advice." },
+];
+
+const faqs = [
+  { q: "Is the first call really free?", a: "Yes. The 20-minute call is free, with no obligation. You will get an honest view on whether I can help." },
+  { q: "What should I prepare before we talk?", a: "Just a rough idea of the repetitive work that eats your team's time. A screenshot or a list of tools you use helps, but is not required." },
+  { q: "Do you work with businesses outside Nigeria?", a: "Yes. I work remotely with clients worldwide, and messages are read when I am next online." },
+  { q: "Which channel is fastest?", a: "WhatsApp. Email is better for detailed briefs and formal enquiries." },
 ];
 
 export default function ContactPage() {
@@ -117,6 +131,22 @@ export default function ContactPage() {
             </div>
           </Reveal>
 
+          {/* What happens next */}
+          <Reveal>
+            <div className="mb-16">
+              <h2 className="text-center mb-8" style={{ fontSize: "clamp(1.5rem,3vw,2rem)" }}>What happens next</h2>
+              <div className="grid gap-5 md:grid-cols-3">
+                {steps.map((st) => (
+                  <div key={st.n} className="card p-7" style={{ borderTop: "3px solid var(--primary-fill)" }}>
+                    <span className="mono-label" style={{ color: "var(--primary-text)" }}>Step {st.n}</span>
+                    <h3 className="my-2">{st.t}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{st.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
           {/* Details + community */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <Reveal>
@@ -172,6 +202,13 @@ export default function ContactPage() {
               </div>
             </Reveal>
           </div>
+
+          <Reveal>
+            <div className="mt-16 max-w-3xl mx-auto">
+              <h2 className="text-center mb-6" style={{ fontSize: "clamp(1.5rem,3vw,2rem)" }}>Quick answers</h2>
+              <Faq items={faqs} />
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
