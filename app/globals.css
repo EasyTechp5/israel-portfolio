@@ -1654,3 +1654,7 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .project-search input { flex: 1; min-width: 0; padding: 0.7rem 0; background: transparent; border: 0; outline: none; font: inherit; font-size: 0.92rem; color: var(--text-primary); }
 .project-search button { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: var(--text-subtle); }
 .project-search button:hover { background: var(--bg-inset); color: var(--text-primary); }
+
+.found-toast { position: absolute; z-index: 31; top: 96px; left: 50%; transform: translateX(-50%); padding: 0.6rem 1.1rem; border-radius: 999px; background: rgba(8, 12, 28, 0.82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.2); border-left: 3px solid #d7262e; color: #fff; font-size: 0.85rem; max-width: calc(100% - 32px); text-align: center; box-shadow: 0 14px 34px rgba(2, 8, 28, 0.4); animation: found-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+@keyframes found-in { from { opacity: 0; transform: translate(-50%, -10px) scale(0.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .found-toast { animation: none; } }

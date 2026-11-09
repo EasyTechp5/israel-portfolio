@@ -2487,6 +2487,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         } else if (pk.id === "weather") {
           sfx("pop");
           live.current?.toggleRain();
+          window.dispatchEvent(new CustomEvent("scene-found", { detail: "rain" }));
         } else if (pk.id === "music") {
           sfx("pop");
           handlers.current.onMusic?.();
@@ -2496,6 +2497,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         }
         return;
       }
+      window.dispatchEvent(new CustomEvent("scene-found", { detail: pk.name }));
       const now2 = performance.now();
       switch (pk.name) {
         case "photo":

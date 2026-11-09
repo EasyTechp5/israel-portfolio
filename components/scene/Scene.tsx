@@ -38,6 +38,11 @@ const MUTE_KEY = "scene_muted_v1";
  * the live 3D room or, when 3D can't run, the illustrated room. Deep links
  * (/?open=work) open a panel directly; ?view=2d / ?view=3d force a stage.
  */
+const SECRETS: Record<string, string> = {
+  plane: "the paper plane", cat: "the sleeping cat", robot: "the desk robot", chair: "the spinning chair",
+  mug: "the coffee mug", clock: "the wall clock", plant: "the plants", photo: "the wall photos", rain: "the rain",
+};
+
 export default function Scene({ children }: { children?: React.ReactNode }) {
   const { resolvedTheme, setTheme } = useTheme();
   // The theme is only known in the browser: render the neutral state on the server so hydration matches.
@@ -174,6 +179,35 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, menu, tour, openPanel]);
 
+  // Little secrets in the room (click the plane, the cat, the chair...). Found ones are remembered.
+  const [found, setFound] = useState<string[]>([]);
+  const [toast, setToast] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("scene_found_v1") || "[]");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (Array.isArray(saved)) setFound(saved.filter((x) => typeof x === "string"));
+    } catch {}
+  }, []);
+  useEffect(() => {
+    let t = 0;
+    const onFound = (e: Event) => {
+      const name = (e as CustomEvent<string>).detail;
+      if (!SECRETS[name]) return;
+      setFound((cur) => {
+        if (cur.includes(name)) return cur;
+        const next = [...cur, name];
+        try { localStorage.setItem("scene_found_v1", JSON.stringify(next)); } catch {}
+        setToast(next.length === Object.keys(SECRETS).length ? "You found every secret in the room. Thank you for looking so closely." : `Found: ${SECRETS[name]} · ${next.length} of ${Object.keys(SECRETS).length}`);
+        window.clearTimeout(t);
+        t = window.setTimeout(() => setToast(null), 3200);
+        return next;
+      });
+    };
+    window.addEventListener("scene-found", onFound);
+    return () => { window.removeEventListener("scene-found", onFound); window.clearTimeout(t); };
+  }, []);
+
   // Closing the menu without choosing sends the camera back from any preview.
   useEffect(() => {
     if (!menu && !open && tour === null) api.current?.peek?.(null);
@@ -263,7 +297,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
             className="scene-sub"
           />
         )}
-        <p className="scene-hint">Drag to look around · scroll to zoom · click anything</p>
+        <p className="scene-hint">Drag to look around · scroll to zoom · click anything{found.length > 0 && ` · secrets ${found.length}/${Object.keys(SECRETS).length}`}</p>
         <Link href="/overview" className="scene-plain">
           Prefer a plain page? <ArrowRight className="h-3.5 w-3.5" />
         </Link>
@@ -275,6 +309,8 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
         <button type="button" className="scene-btn scene-fit" onClick={() => api.current?.fit()}>Fit</button>
         <button type="button" className="scene-btn" onClick={() => api.current?.zoomBy(1.35)} aria-label="Zoom in"><Plus className="h-4 w-4" /></button>
       </div>
+
+      {toast && <div className="found-toast" role="status">{toast}</div>}
 
       {tour !== null && (
         <div className="tour-cap" role="status">
