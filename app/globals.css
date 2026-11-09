@@ -1510,3 +1510,12 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .scene:has(.tour-cap) .scene-zoom, .scene:has(.tour-cap) .scene-title { opacity: 0; pointer-events: none; }
 .scene-tour-btn { padding-inline: 0.9rem; background: #d7262e !important; border-color: transparent !important; }
 .scene-tour-btn:hover { background: #fff !important; color: #d7262e !important; }
+
+/* phones: dots only (tapping opens the panel), a calmer bottom bar */
+@media (hover: none) { .hotspot-label { opacity: 0; } .hotspot.is-hover .hotspot-label { opacity: 1; } }
+@media (max-width: 640px) {
+  .scene-hint { display: none; }
+  .scene-zoom .scene-btn[aria-label^="Zoom"] { display: none; }
+  .scene-title h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+}
+.weather-spot .hotspot-dot { background: #9cc3ff; border-color: #fff; }

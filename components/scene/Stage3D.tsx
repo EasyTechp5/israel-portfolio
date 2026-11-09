@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { hotspots, type SceneId } from "@/lib/scene";
 import type { StageProps } from "./stage";
-import { ambientLevel, sfx } from "@/lib/ambient";
+import { ambientLevel, setRainSound, sfx } from "@/lib/ambient";
 import { bySlug, featuredSlugs } from "@/lib/projects";
 
 /**
@@ -22,7 +22,7 @@ import { bySlug, featuredSlugs } from "@/lib/projects";
  */
 
 type Anchor = [number, number, number];
-const ANCHORS: Record<SceneId | "lamp" | "music", Anchor> = {
+const ANCHORS: Record<SceneId | "lamp" | "music" | "weather", Anchor> = {
   work: [0.2, 0.93, -1.86],
   call: [0.2, 1.74, -2.36],
   about: [-0.75, 1.78, -2.36],
@@ -33,9 +33,10 @@ const ANCHORS: Record<SceneId | "lamp" | "music", Anchor> = {
   contact: [0.95, 0.88, -1.7],
   lamp: [-0.05, 1.2, -2.0],
   music: [1.9, 0.92, -2.0],
+  weather: [-2.12, 1.65, -2.4],
 };
 // how close (in metres) a click or hover must land to an anchor to count as that object
-const PICK_R: Record<string, number> = { work: 0.34, call: 0.34, about: 0.46, services: 0.66, record: 0.3, resume: 0.4, contact: 0.14, lamp: 0.28, music: 0.3 };
+const PICK_R: Record<string, number> = { work: 0.34, call: 0.34, about: 0.46, services: 0.66, record: 0.3, resume: 0.4, contact: 0.14, lamp: 0.28, music: 0.3, weather: 0.5 };
 const FOCUS: Record<SceneId, number> = { work: 1.5, call: 1.7, about: 1.8, services: 2.2, record: 1.6, writing: 2.5, resume: 1.9, contact: 1.4 };
 
 const HOME_TARGET = new THREE.Vector3(0.35, 1.34, -1.8);
@@ -73,7 +74,9 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     setLamp: (l: boolean) => void;
     focus: (id: SceneId | null) => void;
     setMusic: (m: boolean) => void;
+    toggleRain: () => void;
   } | null>(null);
+  const [rainUi, setRainUi] = useState(false);
   // Latest handlers for the long-lived scene closure.
   const handlers = useRef({ onOpen, onLamp, onMusic });
   useEffect(() => {
@@ -279,6 +282,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
 
     // what you see through the window: three layers (sky, skyline over the lagoon, palms)
     // that shift against each other as you orbit, and change for night
+    let raining = false;
     const night = () => initial.current.dark;
     const skyTex = makeCanvas(1536, 1100, (c, w, h) => {
       const dk = night();
@@ -287,6 +291,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         g.addColorStop(0, "#020716");
         g.addColorStop(0.6, "#0a2260");
         g.addColorStop(1, "#1a4aa8");
+      } else if (raining) {
+        g.addColorStop(0, "#58667e");
+        g.addColorStop(0.55, "#8795ab");
+        g.addColorStop(1, "#b9c3d2");
       } else {
         g.addColorStop(0, "#3d8bf0");
         g.addColorStop(0.55, "#8fc2ff");
@@ -311,6 +319,16 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.beginPath();
         c.arc(1100, 260, 46, 0, Math.PI * 2);
         c.fill();
+      } else if (raining) {
+        c.save();
+        c.filter = "blur(14px)";
+        for (let i = 0; i < 26; i++) {
+          c.fillStyle = `rgba(${70 + r() * 30},${82 + r() * 30},${100 + r() * 30},${0.5 + r() * 0.35})`;
+          c.beginPath();
+          c.ellipse(r() * w, 60 + r() * 420, 90 + r() * 120, 30 + r() * 30, 0, 0, Math.PI * 2);
+          c.fill();
+        }
+        c.restore();
       } else {
         const sg = c.createRadialGradient(1180, 300, 10, 1180, 300, 420);
         sg.addColorStop(0, "rgba(255,250,225,1)");
@@ -419,6 +437,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       hz.addColorStop(1, dk ? "rgba(26,74,168,0.55)" : "rgba(228,241,255,0.65)");
       c.fillStyle = hz;
       c.fillRect(0, horizon - 200, w, 220);
+      if (raining) {
+        c.globalCompositeOperation = "source-atop";
+        c.fillStyle = "rgba(120,136,160,0.4)";
+        c.fillRect(0, 0, w, h);
+        c.globalCompositeOperation = "source-over";
+      }
     });
     const palmTex = makeCanvas(1536, 1024, (c, w, h) => {
       const dk = night();
@@ -478,6 +502,47 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     palmPlane.position.set(-2.12, 1.5, -2.8);
     scene.add(cityPlane, palmPlane);
     const sky = { draw: () => winLayers.forEach((l) => l.draw()) };
+    // rain: slow drops sliding down the glass, and fast streaks outside
+    type Drop = { x: number; y: number; v: number; len: number; r: number };
+    const glassDrops: Drop[] = Array.from({ length: 22 }, () => ({ x: Math.random() * 256, y: Math.random() * 340, v: 14 + Math.random() * 40, len: 18 + Math.random() * 40, r: 1.6 + Math.random() * 2.2 }));
+    const farDrops: Drop[] = Array.from({ length: 110 }, () => ({ x: Math.random() * 512, y: Math.random() * 340, v: 420 + Math.random() * 260, len: 18 + Math.random() * 18, r: 1 }));
+    const glassRain = makeCanvas(256, 340, (c) => {
+      glassDrops.forEach((d) => {
+        const g2 = c.createLinearGradient(0, d.y - d.len, 0, d.y);
+        g2.addColorStop(0, "rgba(255,255,255,0)");
+        g2.addColorStop(1, "rgba(255,255,255,0.45)");
+        c.strokeStyle = g2;
+        c.lineWidth = d.r * 0.8;
+        c.beginPath();
+        c.moveTo(d.x, d.y - d.len);
+        c.lineTo(d.x, d.y);
+        c.stroke();
+        c.fillStyle = "rgba(255,255,255,0.7)";
+        c.beginPath();
+        c.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        c.fill();
+      });
+    });
+    const farRain = makeCanvas(512, 340, (c) => {
+      c.strokeStyle = "rgba(225,235,250,0.42)";
+      c.lineWidth = 1.5;
+      farDrops.forEach((d) => {
+        c.beginPath();
+        c.moveTo(d.x, d.y);
+        c.lineTo(d.x - 5, d.y + d.len);
+        c.stroke();
+      });
+    });
+    const glassRainPlane = new THREE.Mesh(track(new THREE.PlaneGeometry(0.9, 1.2)), track(new THREE.MeshBasicMaterial({ map: glassRain.tex, transparent: true, depthWrite: false, toneMapped: false })));
+    glassRainPlane.position.set(-2.12, 1.65, -2.46);
+    glassRainPlane.renderOrder = 4;
+    const farRainPlane = new THREE.Mesh(track(new THREE.PlaneGeometry(3.4, 2.25)), track(new THREE.MeshBasicMaterial({ map: farRain.tex, transparent: true, depthWrite: false, toneMapped: false })));
+    farRainPlane.position.set(-2.12, 1.6, -3.1);
+    glassRainPlane.visible = false;
+    farRainPlane.visible = false;
+    scene.add(glassRainPlane, farRainPlane);
+    let flash = 0;
+    let nextThunder = 0;
     // glass: a faint diagonal reflection, plus a deep white casing and a sill with things on it
     {
       const streak = makeCanvas(128, 128, (c, w, h) => {
@@ -2045,7 +2110,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       } else {
         scene.background = bg.set(0x0a3b9c);
         hemi.intensity = 0.42;
-        sun.intensity = 3.4;
+        sun.intensity = raining ? 1.1 : 3.4;
         sun.color.set(0xfff1d6);
         fill.intensity = 0.55;
         scene.environmentIntensity = 0.38;
@@ -2055,8 +2120,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       }
       (lampBulb.material as THREE.MeshStandardMaterial).emissiveIntensity = on ? 3 : 0;
       (lampHalo.material as THREE.SpriteMaterial).opacity = on ? (isDark ? 0.95 : 0.55) : 0;
-      beamGroup.visible = !isDark;
-      stringK = isDark ? 1 : 0.45;
+      beamGroup.visible = !isDark && !raining;
+      stringK = isDark ? 1 : raining ? 0.85 : 0.45;
       neonLight.intensity = isDark ? 1.6 : 0.3;
     };
     applyLight();
@@ -2187,6 +2252,16 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       setMusic: (m) => {
         isMusic = m;
       },
+      toggleRain: () => {
+        raining = !raining;
+        setRainUi(raining);
+        sky.draw();
+        glassRainPlane.visible = raining;
+        farRainPlane.visible = raining;
+        applyLight();
+        setRainSound(raining);
+        if (raining) nextThunder = performance.now() + 4000 + Math.random() * 6000;
+      },
     };
     apiRef.current = { zoomBy, fit: fitHome, enter: () => enterNow(2600), peek: (id) => focus(id, true) };
 
@@ -2274,6 +2349,9 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         if (pk.id === "lamp") {
           sfx("pop");
           handlers.current.onLamp();
+        } else if (pk.id === "weather") {
+          sfx("pop");
+          live.current?.toggleRain();
         } else if (pk.id === "music") {
           sfx("pop");
           handlers.current.onMusic?.();
@@ -2380,7 +2458,13 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         expK = 0.3 + 0.7 * (1 - Math.pow(1 - kk, 2));
         if (kk >= 1) expAnim = null;
       }
-      renderer.toneMappingExposure = baseExposure * expK;
+      if (raining && now > nextThunder) {
+        flash = 1;
+        window.setTimeout(() => sfx("thunder"), 220);
+        nextThunder = now + 9000 + Math.random() * 15000;
+      }
+      flash *= Math.pow(0.004, dt);
+      renderer.toneMappingExposure = baseExposure * expK * (1 + flash * 0.7);
       controls.update();
       // keep the look-at point inside the room
       controls.target.x = Math.min(2.2, Math.max(-1.6, controls.target.x));
@@ -2392,6 +2476,28 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         lastTex = now;
         screen.draw();
         phoneScr.draw();
+        if (raining) {
+          const dts = 0.05;
+          glassDrops.forEach((d) => {
+            d.y += d.v * dts;
+            d.x += Math.sin(d.y * 0.05) * 0.2;
+            if (d.y - d.len > 340) {
+              d.y = -10;
+              d.x = Math.random() * 256;
+              d.v = 14 + Math.random() * 40;
+            }
+          });
+          farDrops.forEach((d) => {
+            d.y += d.v * dts;
+            d.x -= 6 * dts;
+            if (d.y > 340) {
+              d.y = -20;
+              d.x = Math.random() * 540;
+            }
+          });
+          glassRain.draw();
+          farRain.draw();
+        }
         if (robot.face) {
           eyes.x += (tx * 12 - eyes.x) * 0.35;
           eyes.y += (ty * 7 - eyes.y) * 0.35;
@@ -2460,7 +2566,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
           const k = (t * b.speed + b.phase) % 1;
           b.s.position.set(-2.95 + k * 1.7, b.y + Math.sin(t * 1.3 + b.phase * 9) * 0.04, -3.0);
           b.s.scale.set(0.085, 0.04 * (0.35 + 0.65 * Math.abs(Math.sin(t * 9 + b.phase * 20))), 1);
-          b.s.visible = !isDark;
+          b.s.visible = !isDark && !raining;
         });
         if (boat) {
           const bt = (boat as THREE.Sprite);
@@ -2619,6 +2725,18 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         >
           <span className="hotspot-dot" />
           <span className="hotspot-label">{lamp ? "Lamp off" : "Lamp on"}</span>
+        </button>
+        <button
+          type="button"
+          data-id="weather"
+          className="hotspot lamp-spot weather-spot"
+          style={{ left: 0, top: 0 }}
+          onClick={() => live.current?.toggleRain()}
+          aria-pressed={rainUi}
+          aria-label="Window: switch the weather"
+        >
+          <span className="hotspot-dot" />
+          <span className="hotspot-label">{rainUi ? "Clear skies" : "Make it rain"}</span>
         </button>
         <button
           type="button"

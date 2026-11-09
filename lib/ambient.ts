@@ -150,6 +150,7 @@ export function startAmbient() {
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(master.gain.value, now);
     master.gain.linearRampToValueAtTime(VOLUME, now + 2.5);
+    applyRain();
     if (timer === undefined) {
       nextTime = now + 0.1;
       step = 0;
@@ -162,6 +163,7 @@ export function startAmbient() {
 
 export function stopAmbient() {
   wanted = false;
+  applyRain();
   if (!ctx || !master) return;
   const now = ctx.currentTime;
   master.gain.cancelScheduledValues(now);
@@ -192,7 +194,7 @@ export function ambientLevel(): number {
   return level;
 }
 
-export type Sfx = "tick" | "pop" | "whoosh" | "chime" | "clink" | "open" | "door" | "step" | "meow" | "beep";
+export type Sfx = "thunder" | "tick" | "pop" | "whoosh" | "chime" | "clink" | "open" | "door" | "step" | "meow" | "beep";
 
 /** Tiny interface sounds, made on the spot. Silent when the music is off. */
 export function sfx(kind: Sfx) {
@@ -255,6 +257,22 @@ export function sfx(kind: Sfx) {
       blip(170, 0.9, 0.07, "sawtooth", 105, 0.14);
       blip(70, 0.3, 0.3, "sine", 40, 0.95);
       break;
+    case "thunder": {
+      const s = c.createBufferSource();
+      s.buffer = noiseBuffer(c);
+      const f = c.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.setValueAtTime(420, t);
+      f.frequency.exponentialRampToValueAtTime(90, t + 2.4);
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.9, t + 0.12);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+      s.connect(f).connect(g).connect(out);
+      s.start(t);
+      s.stop(t + 2.7);
+      break;
+    }
     case "meow":
       blip(520, 0.5, 0.14, "triangle", 880);
       blip(880, 0.35, 0.1, "triangle", 420, 0.18);
@@ -273,4 +291,51 @@ export function sfx(kind: Sfx) {
       blip(3600, 0.18, 0.08, "sine", undefined, 0.01);
       break;
   }
+}
+
+let rainNode: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+let rainOn = false;
+
+function applyRain() {
+  if (!ctx) return;
+  const want = rainOn && wanted;
+  if (want && !rainNode) {
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuffer(ctx);
+    src.loop = true;
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 700;
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 6500;
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    src.connect(hp).connect(lp).connect(gain).connect(ctx.destination);
+    src.start();
+    rainNode = { src, gain };
+  }
+  if (rainNode) {
+    const now = ctx.currentTime;
+    rainNode.gain.gain.cancelScheduledValues(now);
+    rainNode.gain.gain.setValueAtTime(rainNode.gain.gain.value, now);
+    rainNode.gain.gain.linearRampToValueAtTime(want ? 0.09 : 0, now + 1.2);
+    if (!want) {
+      const n = rainNode;
+      rainNode = null;
+      window.setTimeout(() => {
+        try {
+          n.src.stop();
+        } catch {
+          /* already stopped */
+        }
+      }, 1400);
+    }
+  }
+}
+
+/** Rain on the window: a soft hiss under everything, while the music is on. */
+export function setRainSound(on: boolean) {
+  rainOn = on;
+  applyRain();
 }
