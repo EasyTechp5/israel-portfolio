@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Calendar, MessageCircle, ArrowRight, ArrowUpRight,
-  X, ChevronLeft, ChevronRight, Check, Link2,
+  X, ChevronLeft, ChevronRight, Check, Link2, Search,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { categories, byCategory, type Project } from "@/lib/projects";
@@ -32,8 +32,14 @@ const boundaries = [
 export default function ProjectsPage() {
   const [active, setActive] = useState<string>("All");
   const [open, setOpen] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
 
-  const filtered = useMemo(() => byCategory(active), [active]);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = byCategory(active);
+    if (!q) return list;
+    return list.filter((p) => [p.title, p.outcome, p.category, ...p.tools].join(" ").toLowerCase().includes(q));
+  }, [active, query]);
   const blurb = categories.find((c) => c.name === active)?.blurb ?? "";
 
   const close = useCallback(() => setOpen(null), []);
@@ -161,11 +167,31 @@ export default function ProjectsPage() {
               })}
             </div>
 
-            <p className="text-center text-sm mb-12" style={{ color: "var(--text-subtle)" }}>
-              {blurb}
+            <div className="project-search">
+              <Search className="h-4 w-4" aria-hidden />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setOpen(null); }}
+                placeholder="Search by tool or problem: WhatsApp, invoices, n8n…"
+                aria-label="Search the work"
+              />
+              {query && (
+                <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X className="h-4 w-4" /></button>
+              )}
+            </div>
+
+            <p className="text-center text-sm mb-12" style={{ color: "var(--text-subtle)" }} aria-live="polite">
+              {query.trim() ? `${filtered.length} ${filtered.length === 1 ? "result" : "results"} for “${query.trim()}”` : blurb}
             </p>
           </Reveal>
 
+          {filtered.length === 0 && (
+            <div className="card p-10 text-center">
+              <p className="mono-label mb-2">Nothing matched</p>
+              <p style={{ color: "var(--text-muted)" }}>Try a tool name or a plain word like “invoices”, or clear the search to see everything.</p>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((p, i) => (
               <Reveal key={p.slug} delay={Math.min(i, 8) * 50}>

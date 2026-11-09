@@ -2342,7 +2342,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     dots.querySelectorAll<HTMLButtonElement>("button[data-id]").forEach((b) => dotEls.set(b.dataset.id!, b));
     const v3 = new THREE.Vector3();
     const bubbleEl = dots.querySelector<HTMLDivElement>(".robot-bubble");
+    const hourNow = (new Date().getUTCHours() + 1) % 24;
+    const greeting = hourNow < 12 ? "Good morning from Lagos!" : hourNow < 17 ? "Good afternoon from Lagos!" : hourNow < 22 ? "Good evening from Lagos!" : "Working late in Lagos?";
     const BUBBLE_MSGS = [
+      greeting,
       "Hi! Click me to book a free call.",
       "Try the turntable: it plays the music.",
       "Psst: click the window for rain.",

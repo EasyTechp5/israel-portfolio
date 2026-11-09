@@ -35,7 +35,7 @@ export default function ContactComposer() {
       <span className="composer-label" id="c-topic">What do you need?</span>
       <div className="chips" role="group" aria-labelledby="c-topic">
         {TOPICS.map((t) => (
-          <button key={t} type="button" className="chip" aria-pressed={topic === t} onClick={() => setTopic(t)}>
+          <button key={t} type="button" className="topic-chip" aria-pressed={topic === t} onClick={() => setTopic(t)}>
             {t}
           </button>
         ))}
