@@ -1453,3 +1453,8 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .intro.opening .intro-light { transform: scale(1.5); filter: brightness(1.35); transition: transform 1.2s ease, filter 1.2s ease; }
 .intro.opening .intro-lintel { opacity: 0; transition: opacity 0.5s ease; }
 .intro.opening .intro-sound, .intro.opening .intro-ui { opacity: 0; transition: opacity 0.3s ease; }
+
+/* short or wide windows: keep the headline from covering the desk */
+.scene-title h1 { font-size: clamp(2.2rem, min(8vw, 11vh), 6rem); }
+.scene-sub { font-size: clamp(1rem, min(2.4vw, 3.4vh), 1.6rem); }
+@media (max-height: 640px) { .scene-hint { display: none; } .scene-title::before { margin-bottom: 0.6rem; width: 48px; height: 5px; } }

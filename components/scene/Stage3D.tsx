@@ -333,6 +333,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.restore();
       }
     });
+    skyTex.tex.wrapS = THREE.RepeatWrapping;
     const cityTex = makeCanvas(2048, 1126, (c, w, h) => {
       const dk = night();
       const r = rand(31);
@@ -1038,6 +1039,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     });
     const steam: { s: THREE.Sprite; phase: number }[] = [];
     let sidePlant: THREE.Group | null = null;
+    // living things: a desk robot whose eyes follow the pointer, a sleeping cat, birds and a boat outside
+    const robot: { root: THREE.Group | null; face: CanvasTex | null; arm: THREE.Group | null; ball: THREE.MeshStandardMaterial | null } = { root: null, face: null, arm: null, ball: null };
+    const cat: { body: THREE.Group | null; tail: THREE.Group | null } = { body: null, tail: null };
+    const birds: { s: THREE.Sprite; speed: number; phase: number; y: number }[] = [];
+    let boat: THREE.Sprite | null = null;
+    const eyes = { x: 0, y: 0, blink: 0, happy: 0 };
     let chairG: THREE.Group | null = null;
     let vinyl: THREE.Group | null = null;
     let tonearm: THREE.Group | null = null;
@@ -1490,6 +1497,126 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     }
 
     /* ───────── More to look at ───────── */
+    // a little desk robot: LED eyes follow your pointer, it blinks, waves, and its antenna pulses with the beat
+    {
+      const g = new THREE.Group();
+      g.position.set(-0.04, TOP, -1.56);
+      g.rotation.y = 0.15;
+      g.userData.egg = "robot";
+      const white2 = track(new THREE.MeshPhysicalMaterial({ color: 0xf6f7fa, roughness: 0.3, clearcoat: 0.6 }));
+      const blue = mat(0x0f52d2, 0.4, 0.3);
+      g.add(mesh(new RoundedBoxGeometry(0.07, 0.016, 0.05, 3, 0.006), mat(INK, 0.4, 0.3), 0, 0.008, 0));
+      g.add(mesh(new RoundedBoxGeometry(0.06, 0.055, 0.045, 4, 0.014), white2, 0, 0.044, 0));
+      const chest = new THREE.Mesh(track(new THREE.CircleGeometry(0.008, 16)), track(new THREE.MeshStandardMaterial({ color: 0x4da3ff, emissive: 0x4da3ff, emissiveIntensity: 1.6 })));
+      chest.position.set(0, 0.046, 0.0235);
+      g.add(chest);
+      g.add(mesh(new THREE.CylinderGeometry(0.01, 0.012, 0.012, 12), blue, 0, 0.076, 0));
+      const head = new THREE.Group();
+      head.position.set(0, 0.112, 0);
+      head.add(mesh(new RoundedBoxGeometry(0.09, 0.062, 0.062, 4, 0.016), white2, 0, 0, 0));
+      const face = makeCanvas(256, 160, (c, w, h) => {
+        c.fillStyle = "#0b0d14";
+        rr(c, 0, 0, w, h, 34);
+        c.fill();
+        const ex = eyes.x;
+        const ey = eyes.y;
+        const open = 1 - eyes.blink;
+        c.fillStyle = "#58b4ff";
+        c.shadowColor = "#58b4ff";
+        c.shadowBlur = 18;
+        [64, 192].forEach((x) => {
+          c.beginPath();
+          if (eyes.happy > 0.5) {
+            c.lineWidth = 12;
+            c.strokeStyle = "#58b4ff";
+            c.arc(x + ex, 66 + ey, 24, Math.PI * 1.1, Math.PI * 1.9);
+            c.stroke();
+          } else {
+            c.ellipse(x + ex, 66 + ey, 22, Math.max(2, 28 * open), 0, 0, Math.PI * 2);
+            c.fill();
+          }
+        });
+        c.shadowBlur = 0;
+        c.strokeStyle = "#58b4ff";
+        c.lineWidth = 7;
+        c.lineCap = "round";
+        c.beginPath();
+        c.arc(w / 2 + ex * 0.5, 112 + ey * 0.5, 20, 0.2, Math.PI - 0.2);
+        c.stroke();
+      });
+      const visor = new THREE.Mesh(track(new THREE.PlaneGeometry(0.075, 0.047)), track(new THREE.MeshBasicMaterial({ map: face.tex, toneMapped: false })));
+      visor.position.z = 0.0315;
+      head.add(visor);
+      [-1, 1].forEach((sd) => head.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 14), blue, sd * 0.0495, 0, 0, false)).rotateZ?.(0));
+      head.children.slice(-2).forEach((m) => (m.rotation.z = Math.PI / 2));
+      head.add(mesh(new THREE.CylinderGeometry(0.0025, 0.0025, 0.026, 8), mat(INK, 0.4), 0, 0.044, 0, false));
+      const ballMat = track(new THREE.MeshStandardMaterial({ color: RED, emissive: RED, emissiveIntensity: 1.5 }));
+      head.add(mesh(new THREE.SphereGeometry(0.007, 12, 10), ballMat, 0, 0.061, 0, false));
+      g.add(head);
+      // arms: the right one waves
+      const armL = new THREE.Group();
+      armL.position.set(-0.036, 0.062, 0);
+      armL.add(mesh(new THREE.CapsuleGeometry(0.006, 0.026, 4, 8), white2, 0, -0.016, 0));
+      armL.rotation.z = 0.25;
+      g.add(armL);
+      const armR = new THREE.Group();
+      armR.position.set(0.036, 0.062, 0);
+      armR.add(mesh(new THREE.CapsuleGeometry(0.006, 0.026, 4, 8), white2, 0, -0.016, 0));
+      armR.rotation.z = -0.25;
+      g.add(armR);
+      room.add(g);
+      robot.root = g;
+      robot.face = face;
+      robot.arm = armR;
+      robot.ball = ballMat;
+    }
+
+    // birds and a boat out on the lagoon, seen through the window
+    {
+      const birdTex = makeCanvas(64, 32, (c, w, h) => {
+        c.strokeStyle = "#173a82";
+        c.lineWidth = 4;
+        c.lineCap = "round";
+        c.beginPath();
+        c.moveTo(4, 8);
+        c.quadraticCurveTo(w * 0.28, h * 0.8, w / 2, h * 0.55);
+        c.quadraticCurveTo(w * 0.72, h * 0.8, w - 4, 8);
+        c.stroke();
+      });
+      for (let i = 0; i < 4; i++) {
+        const sp = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: birdTex.tex, transparent: true, depthWrite: false })));
+        sp.position.z = -3.0;
+        scene.add(sp);
+        birds.push({ s: sp, speed: 0.03 + i * 0.006, phase: i * 0.27, y: 1.95 + (i % 3) * 0.12 });
+      }
+      const boatTex = makeCanvas(128, 96, (c, w, h) => {
+        c.fillStyle = "#14161b";
+        c.beginPath();
+        c.moveTo(14, 72);
+        c.lineTo(w - 14, 72);
+        c.lineTo(w - 28, 88);
+        c.lineTo(28, 88);
+        c.fill();
+        c.fillStyle = "#fbf9f3";
+        c.beginPath();
+        c.moveTo(w / 2 - 2, 10);
+        c.lineTo(w / 2 - 2, 66);
+        c.lineTo(22, 66);
+        c.fill();
+        c.fillStyle = "#d7262e";
+        c.beginPath();
+        c.moveTo(w / 2 + 4, 24);
+        c.lineTo(w / 2 + 4, 66);
+        c.lineTo(w - 24, 66);
+        c.fill();
+      });
+      const bs = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: boatTex.tex, transparent: true, depthWrite: false })));
+      bs.scale.set(0.12, 0.09, 1);
+      bs.position.set(-2.3, 1.3, -3.25);
+      scene.add(bs);
+      boat = bs;
+    }
+
     // black desk mat, headphones, a stack of books and a pencil pot
     room.add(box(0.62, 0.004, 0.36, mat(0x1b1e25, 0.9), 0.2, TOP + 0.002, -1.74, 0.002));
     {
@@ -1542,6 +1669,63 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       g.add(box(0.12, 0.28, 0.62, fabric, 0.33, 0.44, 0, 0.04));
       g.add(box(0.5, 0.07, 0.44, mat(0xb81f27, 0.9), 0, 0.41, 0.04, 0.03));
       g.add(box(0.28, 0.2, 0.08, mat(WHITE, 0.9), 0.05, 0.58, -0.17, 0.035));
+      // a sleeping cat curled on the seat
+      {
+        const c = new THREE.Group();
+        c.position.set(0, 0.445, 0.02);
+        c.rotation.y = 0.3;
+        c.userData.egg = "cat";
+        const fur = mat(0x20232b, 0.96);
+        const white = mat(0xf4f1ea, 0.95);
+        const body = new THREE.Group();
+        const torso = new THREE.Mesh(track(new THREE.CapsuleGeometry(0.06, 0.15, 8, 16)), fur);
+        torso.rotation.z = Math.PI / 2;
+        torso.scale.set(1, 1, 0.85);
+        torso.position.y = 0.055;
+        torso.castShadow = true;
+        body.add(torso);
+        const belly = new THREE.Mesh(track(new THREE.SphereGeometry(0.045, 12, 10)), white);
+        belly.scale.set(1.4, 0.7, 0.9);
+        belly.position.set(0.02, 0.03, 0.04);
+        body.add(belly);
+        const head = new THREE.Group();
+        head.position.set(0.15, 0.06, 0.03);
+        const skull = new THREE.Mesh(track(new THREE.SphereGeometry(0.048, 16, 12)), fur);
+        skull.castShadow = true;
+        head.add(skull);
+        [-1, 1].forEach((sd) => {
+          const ear = new THREE.Mesh(track(new THREE.ConeGeometry(0.019, 0.04, 4)), fur);
+          ear.position.set(-0.008, 0.045, sd * 0.03);
+          ear.rotation.x = sd * 0.35;
+          head.add(ear);
+          const eye = box(0.012, 0.0025, 0.014, mat(0x0a0b0e, 0.9), 0.04, 0.008, sd * 0.02);
+          head.add(eye);
+        });
+        const muzzle = new THREE.Mesh(track(new THREE.SphereGeometry(0.022, 10, 8)), white);
+        muzzle.position.set(0.035, -0.012, 0);
+        head.add(muzzle);
+        head.add(mesh(new THREE.SphereGeometry(0.006, 8, 6), mat(0xe58a98, 0.6), 0.055, -0.003, 0, false));
+        body.add(head);
+        // paws
+        [[0.1, 0.045], [0.1, -0.02]].forEach(([x, z]) => {
+          const paw = new THREE.Mesh(track(new THREE.SphereGeometry(0.02, 10, 8)), white);
+          paw.scale.set(1.5, 0.7, 0.9);
+          paw.position.set(x + 0.04, 0.012, z);
+          body.add(paw);
+        });
+        // tail curled round the front
+        const tail = new THREE.Group();
+        const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.14, 0.04, 0.02), new THREE.Vector3(-0.2, 0.03, 0.08), new THREE.Vector3(-0.08, 0.02, 0.12), new THREE.Vector3(0.06, 0.02, 0.1)]);
+        const tb = new THREE.Mesh(track(new THREE.TubeGeometry(curve, 24, 0.016, 8, false)), fur);
+        tb.castShadow = true;
+        tail.add(tb);
+        tail.add(mesh(new THREE.SphereGeometry(0.0165, 8, 6), white, 0.06, 0.02, 0.1, false));
+        body.add(tail);
+        c.add(body);
+        g.add(c);
+        cat.body = body;
+        cat.tail = tail;
+      }
       [[-0.27, -0.22], [0.27, -0.22], [-0.27, 0.22], [0.27, 0.22]].forEach(([x, z]) => {
         const leg = mesh(new THREE.CylinderGeometry(0.018, 0.012, 0.2, 10), mat(INK, 0.4, 0.4), x, 0.1, z);
         g.add(leg);
@@ -1952,6 +2136,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     let steamBurst = 0;
     let shake = 0;
     let hoverId: string | null = null;
+    let waveAt = -1e9;
+    let hoverRobot = false;
     const setHover = (id: string | null, cursor: boolean) => {
       if (id !== hoverId) {
         if (hoverId) dotEls.get(hoverId)?.classList.remove("is-hover");
@@ -1989,6 +2175,19 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       }
       const now2 = performance.now();
       switch (pk.name) {
+        case "cat":
+          sfx("meow");
+          pops.push({ o: pk.obj, t0: now2, base: 1 });
+          break;
+        case "robot":
+          sfx("beep");
+          waveAt = now2;
+          eyes.happy = 1;
+          window.setTimeout(() => {
+            eyes.happy = 0;
+          }, 1400);
+          window.setTimeout(() => handlers.current.onOpen("call"), 1100);
+          break;
         case "chair":
           if (chairG && !spin) {
             spin = { t0: now2, from: chairG.rotation.y };
@@ -2022,6 +2221,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       lastMove = n;
       const pk = pickAt(e.clientX, e.clientY);
       setHover(pk && pk.kind === "anchor" ? pk.id : null, !!pk);
+      hoverRobot = !!pk && pk.kind === "egg" && pk.name === "robot";
+      if (hoverRobot && performance.now() - waveAt > 1500) waveAt = performance.now();
     };
     let tx = 0;
     let ty = 0;
@@ -2080,6 +2281,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       if (now - lastTex > 50) {
         lastTex = now;
         screen.draw();
+        if (robot.face) {
+          eyes.x += (tx * 12 - eyes.x) * 0.35;
+          eyes.y += (ty * 7 - eyes.y) * 0.35;
+          eyes.blink = Math.sin(now / 1000 * 1.1) > 0.985 || (now % 4200) < 130 ? 1 : 0;
+          robot.face.draw();
+        }
         board.draw();
       }
 
@@ -2114,6 +2321,31 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       if (tonearm) {
         const arm = tonearm as THREE.Group;
         arm.rotation.y += ((isMusic ? -0.5 : 0.22) - arm.rotation.y) * Math.min(1, dt * 3);
+      }
+      // living things
+      if (!reduced) {
+        if (robot.root) (robot.root as THREE.Group).position.y = TOP + Math.sin(t * 2.2) * 0.0015;
+        if (robot.arm) {
+          const wv = (now - waveAt) / 1300;
+          (robot.arm as THREE.Group).rotation.z = wv >= 0 && wv < 1 ? -2.3 + Math.sin(wv * 28) * 0.45 : -0.25;
+        }
+        if (robot.ball) robot.ball.emissiveIntensity = 1.2 + Math.sin(t * 3) * 0.4 + ambientLevel() * 3;
+        if (cat.body) {
+          (cat.body as THREE.Group).scale.set(1, 1 + Math.sin(t * 1.7) * 0.03, 1 + Math.sin(t * 1.7) * 0.02);
+          if (cat.tail) (cat.tail as THREE.Group).rotation.y = Math.sin(t * 0.8) * 0.12;
+        }
+        birds.forEach((b) => {
+          const k = (t * b.speed + b.phase) % 1;
+          b.s.position.set(-2.95 + k * 1.7, b.y + Math.sin(t * 1.3 + b.phase * 9) * 0.04, -3.0);
+          b.s.scale.set(0.085, 0.04 * (0.35 + 0.65 * Math.abs(Math.sin(t * 9 + b.phase * 20))), 1);
+          b.s.visible = !isDark;
+        });
+        if (boat) {
+          const bt = (boat as THREE.Sprite);
+          bt.position.x = -2.5 + ((t * 0.012) % 1) * 0.85;
+          bt.position.y = 1.3 + Math.sin(t * 1.4) * 0.004;
+        }
+        skyTex.tex.offset.x = (t * 0.0006) % 1;
       }
       // the room moves with the beat
       const lv = reduced ? 0 : ambientLevel();
