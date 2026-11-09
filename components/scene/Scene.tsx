@@ -82,7 +82,6 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
       window.clearTimeout(t);
       window.removeEventListener("pointerdown", kick);
       window.removeEventListener("keydown", kick);
-      stopAmbient();
     };
   }, []);
 
@@ -95,6 +94,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     } catch {
       /* ignore */
     }
+    window.dispatchEvent(new Event("scene-muted"));
     if (next) stopAmbient();
     else startAmbient();
   }, []);

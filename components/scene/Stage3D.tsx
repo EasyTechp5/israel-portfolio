@@ -1117,6 +1117,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     });
     const steam: { s: THREE.Sprite; phase: number }[] = [];
     let sidePlant: THREE.Group | null = null;
+    let bigSway: THREE.Group | null = null;
     // living things: a desk robot whose eyes follow the pointer, a sleeping cat, birds and a boat outside
     const robot: { root: THREE.Group | null; face: CanvasTex | null; arm: THREE.Group | null; ball: THREE.MeshStandardMaterial | null } = { root: null, face: null, arm: null, ball: null };
     const cat: { body: THREE.Group | null; tail: THREE.Group | null } = { body: null, tail: null };
@@ -1845,6 +1846,15 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       sidePlant = side.sway;
     }
 
+    // a big leafy plant in the front-right corner
+    {
+      const big = makePlant(3.4, 15, 17);
+      big.g.position.set(2.85, 0, -0.95);
+      big.g.userData.egg = "plant";
+      room.add(big.g);
+      bigSway = big.sway;
+    }
+
     // real photos from your events, framed on the side wall (loaded a moment after the room is up)
     {
       const shots: { src: string; caption: string; z: number; y: number }[] = [
@@ -2011,6 +2021,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     blob(2.72, -2.1, 1.0, 0.7);
     blob(-2.05, -1.45, 1.0, 1.0);
     blob(-2.78, -2.0, 0.6, 0.6);
+    blob(2.85, -0.95, 0.9, 0.9);
 
     // sunbeam from the window, with dust drifting through it
     const beamTex = makeCanvas(8, 128, (c, w, h) => {
@@ -2612,6 +2623,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         const sw = Math.sin(t * 0.9) * 0.035;
         deskPlant.sway.rotation.z = sw;
         if (sidePlant) sidePlant.rotation.z = sw * 0.7;
+        if (bigSway) (bigSway as THREE.Group).rotation.z = sw * 0.5;
         const other = deskPlant.sway.userData.other as THREE.Group | undefined;
         if (other) other.rotation.z = -sw * 0.8;
       }

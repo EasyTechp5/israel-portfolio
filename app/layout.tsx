@@ -10,6 +10,9 @@ import { Analytics } from "@vercel/analytics/next";
 import ScrollProgress from "@/components/ScrollProgress";
 import CardSpotlight from "@/components/CardSpotlight";
 import ChromeGate from "@/components/ChromeGate";
+import MagneticButtons from "@/components/MagneticButtons";
+import MusicToggle from "@/components/MusicToggle";
+import RoomCta from "@/components/RoomCta";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -136,7 +139,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ChromeGate>
           <main>{children}</main>
           <ChromeGate>
+            <RoomCta />
             <Footer />
+            <MusicToggle />
+            <MagneticButtons />
             <WhatsAppFAB />
             <NewsletterPopup />
           </ChromeGate>

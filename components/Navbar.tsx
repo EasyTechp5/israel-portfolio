@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Calendar, ArrowRight, MessageCircle } from "lucide-react";
 
 const links = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "Room" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/service-packages", label: "Pricing" },

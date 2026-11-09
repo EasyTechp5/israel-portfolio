@@ -1605,3 +1605,22 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 @media (prefers-reduced-motion: reduce) { .lantern, .plant i, .intro-rays { animation: none; } .intro-tilt { transform: none; } }
 .intro.opening .intro-tilt { transform: none; }
 .intro-frame::after { bottom: -24px; }
+
+/* ═══ Inner pages: the same language as the room ═══ */
+.room-cta { background: linear-gradient(120deg, #0d46b4, #0a3b9c 60%, #082d78); color: #fff; border-top: 4px solid #d7262e; }
+.room-cta-inner { display: flex; align-items: center; gap: 1.5rem; padding-block: 2.4rem; flex-wrap: wrap; }
+.room-cta-title { margin: 0.25rem 0 0; color: #fff; font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.05; }
+.room-cta-btn { margin-left: auto; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.85rem 1.5rem; border-radius: 999px; background: #fff; color: #0a2d73; font-weight: 600; box-shadow: 0 10px 26px rgba(2, 8, 28, 0.35); transition: background-color 0.2s ease, color 0.2s ease; will-change: translate; }
+.room-cta-btn:hover { background: #d7262e; color: #fff; }
+@media (max-width: 640px) { .room-cta-btn { margin-left: 0; } }
+@keyframes door-open { 0%, 55%, 100% { transform: rotateY(0); } 70%, 85% { transform: rotateY(-62deg); } }
+.room-door { display: inline-flex; width: 46px; height: 62px; padding: 3px; border-radius: 22px 22px 0 0; background: #f6efdc; perspective: 200px; flex-shrink: 0; }
+.room-door i { flex: 1; background: linear-gradient(160deg, #2a72ec, #0a3b9c); transform-origin: left center; animation: door-open 4.5s ease-in-out infinite; }
+.room-door i + i { transform-origin: right center; animation-name: door-open-r; }
+@keyframes door-open-r { 0%, 55%, 100% { transform: rotateY(0); } 70%, 85% { transform: rotateY(62deg); } }
+.music-fab { position: fixed; z-index: 60; left: 18px; bottom: 18px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #0b0d12; color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 10px 26px rgba(2, 8, 28, 0.35); cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease; }
+.music-fab:hover { transform: translateY(-2px); background: #d7262e; }
+@media (prefers-reduced-motion: reduce) { .room-door i { animation: none; } }
+/* a red mark on the section numbers, like the room's marker bar */
+.eyebrow::before { color: #d7262e; }
+.btn-primary, .btn-whatsapp, .btn-secondary { will-change: translate; transition: translate 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
