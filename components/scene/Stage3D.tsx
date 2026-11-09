@@ -2383,6 +2383,9 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       "Press Tour for a guided walk-through.",
       "The laptop screen shows real projects.",
       "Click the cat. Gently.",
+      "A paper plane is waiting on the desk.",
+      "Spin the red chair. Go on.",
+      "Press 1 to 8 to jump between objects.",
     ];
     let bubbleI = 0;
     const bubbleTimers: number[] = [];
