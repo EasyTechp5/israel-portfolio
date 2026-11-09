@@ -138,6 +138,13 @@ const shots: Shot[] = [
   },
 ];
 
+const principles = [
+  { t: "Problem first", d: "I start with the business problem, then pick the tool. Never the other way round." },
+  { t: "Small, then bigger", d: "One workflow that works beats ten that almost do. We prove it, then extend it." },
+  { t: "Plain language", d: "You should understand what is running in your business, and why, without a glossary." },
+  { t: "Handed over, not hidden", d: "I train your team so the system is yours, not a black box you depend on me for." },
+];
+
 export default function AboutPage() {
   return (
     <>
@@ -369,6 +376,25 @@ export default function AboutPage() {
                 <p className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Start with the business problem.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How I work ───────────────────────────────────────── */}
+      <section className="section-padding section-alt" style={{ borderTop: "1px solid var(--border)" }}>
+        <div className="container-wide px-4 sm:px-6 lg:px-8 mx-auto">
+          <Reveal>
+            <h2 className="text-center mb-10" style={{ fontSize: "clamp(1.8rem,3.5vw,2.5rem)" }}>How I work</h2>
+          </Reveal>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {principles.map((pr, i) => (
+              <Reveal key={pr.t} delay={i * 70}>
+                <div className="card p-6 h-full" style={{ borderTop: "3px solid var(--primary-fill)" }}>
+                  <h3 className="mb-2">{pr.t}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{pr.d}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
