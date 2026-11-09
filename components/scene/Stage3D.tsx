@@ -132,15 +132,17 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     const mono = css.getPropertyValue("--font-plex-mono").trim() || "monospace";
 
     const texList: CanvasTex[] = [];
-    const makeCanvas = (w: number, h: number, paint: (c: CanvasRenderingContext2D, w: number, h: number) => void): CanvasTex => {
+    // `sc` draws the same picture on a finer pixel grid, so text and fine lines stay crisp up close
+    const makeCanvas = (w: number, h: number, paint: (c: CanvasRenderingContext2D, w: number, h: number) => void, sc = 1): CanvasTex => {
       const c = document.createElement("canvas");
-      c.width = w;
-      c.height = h;
+      c.width = Math.round(w * sc);
+      c.height = Math.round(h * sc);
       const ctx = c.getContext("2d")!;
       const tex = track(new THREE.CanvasTexture(c));
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.anisotropy = maxAniso;
       const draw = () => {
+        ctx.setTransform(sc, 0, 0, sc, 0, 0);
         ctx.clearRect(0, 0, w, h);
         paint(ctx, w, h);
         tex.needsUpdate = true;
@@ -698,7 +700,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.fillText("ISRAEL AFOLABI", w / 2, 62);
         c.font = `500 24px ${mono}`;
         c.fillText("AI ENGINEER · LAGOS", w / 2, 100);
-      });
+      }, 2);
       g.add(flat(0.3, 0.075, plate.tex, 0, -0.27, 0.046));
       // glass reflection
       const gl = makeCanvas(128, 128, (c, w, h) => {
@@ -762,7 +764,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.fillStyle = "#5f636b";
         c.font = `500 40px ${mono}`;
         c.fillText("MINUTES", w / 2, 556);
-      });
+      }, 2);
       const g = new THREE.Group();
       g.add(box(0.44, 0.54, 0.02, mat(0xffffff, 0.8), 0, 0, 0, 0.012));
       g.add(flat(0.42, 0.525, cal.tex, 0, 0, 0.011));
@@ -818,7 +820,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       c.beginPath();
       c.arc(px, 325, 13, 0, Math.PI * 2);
       c.fill();
-    });
+    }, 1.5);
     {
       const g = new THREE.Group();
       g.add(box(1.16, 0.74, 0.04, mat(INK, 0.35), 0, 0, 0, 0.012));
@@ -893,7 +895,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       c.fillStyle = "#0055da";
       c.fillRect(R - 28, R + 214, 56, 5);
       c.textBaseline = "alphabetic";
-    });
+    }, 1.5);
     const clockG = new THREE.Group();
     clockG.position.set(2.15, 2.28, DECOR_Z);
     clockG.userData.egg = "clock";
@@ -1074,7 +1076,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.lineWidth = 2;
         rr(c, w / 2 - 110, 296, 220, 120, 10);
         c.stroke();
-      });
+      }, 1.5);
       const kb = new THREE.Mesh(track(new THREE.PlaneGeometry(0.32, 0.22)), track(new THREE.MeshStandardMaterial({ map: deck.tex, roughness: 0.4, metalness: 0.5 })));
       kb.rotation.x = -Math.PI / 2;
       kb.position.set(0, 0.0112, 0.02);
@@ -1936,7 +1938,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
           c.textAlign = "center";
           c.font = `500 26px ${mono}`;
           c.fillText(sh.caption.toUpperCase().slice(0, 34), w / 2, 40);
-        });
+        }, 2);
         const plate = flat(0.4, 0.05, cap.tex, 0.02, -0.165, 0);
         plate.rotation.y = Math.PI / 2;
         g.add(plate);
@@ -2012,7 +2014,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         c.fillStyle = "#ffe3e6";
         c.font = `italic 500 146px ${serif}`;
         c.fillText("hello, world", w / 2, h / 2 + 6);
-      });
+      }, 2);
       const nm = track(new THREE.MeshBasicMaterial({ map: neon.tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, opacity: 0.95 }));
       const np = new THREE.Mesh(track(new THREE.PlaneGeometry(0.9, 0.225)), nm);
       np.position.set(1.2, 2.48, DECOR_Z + 0.01);
@@ -2585,6 +2587,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     let lastTex = 0;
     let lastNow = performance.now();
     let frames = 0;
+    let lastBoard = 0;
     let dtSum = 0;
     let spinV = 0;
     const startT = performance.now();
@@ -2601,8 +2604,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       if (frames < 140) {
         frames += 1;
         if (frames > 30) dtSum += dt;
-        if (frames === 140 && dtSum / 110 > 0.026 && renderer.getPixelRatio() > 1) {
-          renderer.setPixelRatio(1);
+        if (frames === 140 && dtSum / 110 > 0.034 && renderer.getPixelRatio() > 1.25) {
+          renderer.setPixelRatio(1.25);
           renderer.setSize(w, h, false);
         }
       }
@@ -2684,7 +2687,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
           eyes.blink = Math.sin(now / 1000 * 1.1) > 0.985 || (now % 4200) < 130 ? 1 : 0;
           robot.face.draw();
         }
-        board.draw();
+        if (now - lastBoard > 140) {
+          lastBoard = now;
+          board.draw();
+        }
       }
 
       // the real time in Lagos (UTC+1, no daylight saving)
