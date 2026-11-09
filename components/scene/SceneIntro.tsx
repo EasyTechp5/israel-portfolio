@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { sfx } from "@/lib/ambient";
 
 /**
  * The doors. A short loading beat ("Preparing the workspace"), then a
@@ -15,6 +16,27 @@ export default function SceneIntro({ onDone, onOpening, ready = true, sound = tr
   // The door is offered once the counter has finished AND the room behind it is ready.
   const phase: "loading" | "ready" | "opening" = opening ? "opening" : counted && ready ? "ready" : "loading";
   const button = useRef<HTMLButtonElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const [knocked, setKnocked] = useState(0);
+
+  // The doorway leans a little toward the pointer.
+  const onMove = (e: React.PointerEvent) => {
+    const r = root.current;
+    if (!r) return;
+    r.style.setProperty("--mx", String((e.clientX / window.innerWidth) * 2 - 1));
+    r.style.setProperty("--my", String((e.clientY / window.innerHeight) * 2 - 1));
+  };
+  // Knock on the door: the doors shudder and a voice from inside answers.
+  const knock = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    sfx("knock");
+    setKnocked((k) => k + 1);
+  };
+  useEffect(() => {
+    if (!knocked) return;
+    const t = window.setTimeout(() => setKnocked(0), 2600);
+    return () => window.clearTimeout(t);
+  }, [knocked]);
 
   // Count up to 100 over about a second, then offer the door.
   useEffect(() => {
@@ -42,28 +64,47 @@ export default function SceneIntro({ onDone, onOpening, ready = true, sound = tr
   };
 
   return (
-    <div className={`intro ${phase === "opening" ? "opening" : ""}`} role="dialog" aria-label="Welcome">
+    <div ref={root} onPointerMove={onMove} className={`intro ${phase === "opening" ? "opening" : ""}`} role="dialog" aria-label="Welcome">
       <div className="intro-bg" />
+      <div className="intro-rays" aria-hidden />
 
       <div className="intro-stage" aria-hidden>
-        <div className="intro-lintel">
-          <span className="intro-name">Israel Afolabi</span>
-          <span className="mono-label" style={{ color: "rgba(255,255,255,0.78)" }}>AI engineer · automation</span>
-        </div>
-        <div
-          className={`intro-frame ${phase === "ready" ? "is-ready" : ""}`}
-          onClick={enter}
-        >
-          <div className="intro-light" />
-          <div className="door door-l">
-            <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
-            <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+        <div className="intro-tilt">
+          <div className="intro-lintel">
+            <span className="intro-name">Israel Afolabi</span>
+            {knocked > 0 ? (
+              <span className="intro-say">Come in, it&apos;s open.</span>
+            ) : (
+              <span className="mono-label" style={{ color: "rgba(255,255,255,0.78)" }}>AI engineer · automation</span>
+            )}
           </div>
-          <div className="door door-r">
-            <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
-            <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+          <div className="intro-set">
+            <span className="lantern lantern-l" />
+            <span className="lantern lantern-r" />
+            <div className="plant plant-l">{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ "--i": i } as React.CSSProperties} />)}<b /></div>
+            <div className="plant plant-r">{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ "--i": i } as React.CSSProperties} />)}<b /></div>
+            <div
+              className={`intro-frame ${phase === "ready" ? "is-ready" : ""} ${knocked ? "knocked" : ""}`}
+              onClick={enter}
+            >
+              <div className="intro-fan" />
+              <div className="intro-light" />
+              <div className="door door-l">
+                <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
+                <i className="peephole" />
+                <button type="button" className="knocker" tabIndex={-1} onClick={knock} aria-hidden><i /><b /></button>
+                <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+                <i className="kick" />
+              </div>
+              <div className="door door-r">
+                <i className="hinge h1" /><i className="hinge h2" /><i className="hinge h3" />
+                <i className="slot" />
+                <span className="handle"><b className="plate" /><b className="lever" /><b className="keyhole" /></span>
+                <i className="kick" />
+              </div>
+              <span className="intro-step" />
+            </div>
           </div>
-          <span className="intro-step" />
         </div>
       </div>
 
