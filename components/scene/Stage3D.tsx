@@ -545,6 +545,21 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     scene.add(glassRainPlane, farRainPlane);
     let flash = 0;
     let nextThunder = 0;
+    // a shooting star now and then, on clear nights
+    const streakTex = makeCanvas(128, 16, (c, w, h) => {
+      const g2 = c.createLinearGradient(0, 0, w, 0);
+      g2.addColorStop(0, "rgba(255,255,255,0)");
+      g2.addColorStop(1, "rgba(255,255,255,0.95)");
+      c.fillStyle = g2;
+      c.fillRect(0, h / 2 - 2, w, 4);
+    });
+    const star = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: streakTex.tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0, rotation: -0.45 })));
+    star.scale.set(0.28, 0.035, 1);
+    star.position.set(-1.5, 2.3, -4.3);
+    scene.add(star);
+    let starT0 = -1;
+    let nextStar = performance.now() + 6000;
+    let lastChimeHour = -1;
     // glass: a faint diagonal reflection, plus a deep white casing and a sill with things on it
     {
       const streak = makeCanvas(128, 128, (c, w, h) => {
@@ -2553,6 +2568,20 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         nextThunder = now + 9000 + Math.random() * 15000;
       }
       flash *= Math.pow(0.004, dt);
+      if (isDark && !raining && entered && now > nextStar && starT0 < 0) {
+        starT0 = now;
+        nextStar = now + 8000 + Math.random() * 9000;
+      }
+      if (starT0 >= 0) {
+        const k = (now - starT0) / 900;
+        if (k >= 1) {
+          starT0 = -1;
+          (star.material as THREE.SpriteMaterial).opacity = 0;
+        } else {
+          star.position.set(-1.6 - k * 1.5, 2.35 - k * 0.65, -4.3);
+          (star.material as THREE.SpriteMaterial).opacity = Math.sin(k * Math.PI) * 0.95;
+        }
+      }
       if (now > nextChirp) {
         // a bird calls outside, on clear days
         if (!isDark && !raining && entered) sfx("chirp");
@@ -2604,6 +2633,16 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       // the real time in Lagos (UTC+1, no daylight saving)
       const d = new Date();
       const hh = (d.getUTCHours() + 1) % 24;
+      // on the hour, the wall clock chimes
+      if (d.getUTCMinutes() === 0 && lastChimeHour !== hh && entered) {
+        if (lastChimeHour !== -1) {
+          sfx("chime");
+          pops.push({ o: clockG, t0: performance.now(), base: 1 });
+        }
+        lastChimeHour = hh;
+      } else if (d.getUTCMinutes() !== 0 && lastChimeHour === -1) {
+        lastChimeHour = hh;
+      }
       const mm = d.getUTCMinutes();
       const ss = d.getUTCSeconds() + d.getUTCMilliseconds() / 1000;
       hourH.rotation.z = -((hh % 12) + mm / 60) * (Math.PI / 6);
