@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, Clock, MessageCircle, Calendar } from "lucide-react";
+import { MessageCircle, Calendar } from "lucide-react";
 import { allPosts, formatDate } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
+import BlogList from "@/components/BlogList";
 
 export const metadata: Metadata = {
   title: "AI Automation Blog | Israel Afolabi",
@@ -58,44 +58,7 @@ export default function BlogIndex() {
       {/* ══════════════ GRID ══════════════ */}
       <section className="section-padding" style={{ paddingTop: "2rem" }}>
         <div className="container-wide">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {allPosts.map((p, i) => (
-              <Reveal key={p.slug} delay={(i % 3) * 60}>
-                <Link href={`/blog/${p.slug}`} className="block h-full group">
-                  <article className="card card-hover p-7 h-full flex flex-col">
-                    <div className="flex items-center gap-2 mb-4 flex-wrap">
-                      <span className="badge badge-blue">{p.category}</span>
-                      <span
-                        className="inline-flex items-center gap-1 text-xs"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        <Clock className="w-3.5 h-3.5" /> {p.readTime}
-                      </span>
-                    </div>
-
-                    <h2 className="mb-3" style={{ fontSize: "1.2rem", lineHeight: 1.3 }}>
-                      {p.title}
-                    </h2>
-                    <p className="text-sm leading-relaxed mb-6 flex-1" style={{ color: "var(--text-muted)" }}>
-                      {p.excerpt}
-                    </p>
-
-                    <div
-                      className="flex items-center justify-between pt-4"
-                      style={{ borderTop: "1px solid var(--border)" }}
-                    >
-                      <span className="text-xs" style={{ color: "var(--text-subtle)" }}>
-                        {formatDate(p.date)}
-                      </span>
-                      <span className="link-arrow text-sm">
-                        Read <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
-                    </div>
-                  </article>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <BlogList posts={allPosts.map((p) => ({ slug: p.slug, title: p.title, excerpt: p.excerpt, category: p.category, readTime: p.readTime, date: p.date, dateLabel: formatDate(p.date) }))} />
         </div>
       </section>
 
