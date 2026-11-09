@@ -2,7 +2,7 @@ import type { MutableRefObject } from "react";
 import type { SceneId } from "@/lib/scene";
 
 /** What the shell can ask a stage (2D drawing or 3D room) to do. */
-export type StageApi = { zoomBy: (factor: number) => void; fit: () => void; /** Glide in through the doorway (3D only). */ enter?: () => void };
+export type StageApi = { zoomBy: (factor: number) => void; fit: () => void; /** Glide in through the doorway (3D only). */ enter?: () => void; /** Preview an object from the contents menu: fly toward it, or back when null. */ peek?: (id: SceneId | null) => void };
 
 export type StageProps = {
   lamp: boolean;

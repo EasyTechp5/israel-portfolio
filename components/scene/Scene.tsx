@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { ArrowRight, Calendar, Moon, Plus, Minus, Sun, X } from "lucide-react";
+import { ArrowRight, BarChart3, BookOpen, Briefcase, Calendar, CalendarDays, FileText, Layers, Mail, Moon, Plus, Minus, Sun, User, X } from "lucide-react";
+import { allPosts } from "@/lib/posts";
 import { sfx, startAmbient, stopAmbient } from "@/lib/ambient";
 import Typewriter from "@/components/Typewriter";
 import SceneIntro from "./SceneIntro";
@@ -17,6 +18,19 @@ import { hotspots, isSceneId, links, type SceneId } from "@/lib/scene";
 const Stage3D = dynamic(() => import("./Stage3D"), { ssr: false });
 
 const SEEN_KEY = "scene_intro_seen_v1";
+
+// What each contents entry holds, in a line. Taken from the panels themselves: nothing new is claimed here.
+const MENU_ICON = { work: Briefcase, call: CalendarDays, about: User, services: Layers, record: BarChart3, writing: BookOpen, resume: FileText, contact: Mail } as const;
+const MENU_BLURB: Record<SceneId, string> = {
+  work: "Systems I have built: what was wrong, and what each one does now.",
+  call: "Twenty minutes, no pitch. An honest answer on whether automation is worth it.",
+  about: "From teaching Mathematics to building AI systems for businesses.",
+  services: "Fixed scope, fixed price, fixed date, quoted in writing first.",
+  record: "1,500+ professionals trained, 10+ organizations, 3+ years automating.",
+  writing: allPosts[0] ? `Latest: ${allPosts[0].h1}` : "Plain-language guides on AI automation.",
+  resume: "AI Engineer and Automation Specialist. Read it or download the PDF.",
+  contact: "WhatsApp is fastest. Lagos, working with clients worldwide.",
+};
 const MUTE_KEY = "scene_muted_v1";
 
 /**
@@ -136,6 +150,10 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   useEffect(() => {
     if (!open && !menu) return;
     const onKey = (e: KeyboardEvent) => {
+      if (menu && !open && /^[1-8]$/.test(e.key)) {
+        openPanel(hotspots[Number(e.key) - 1].id);
+        return;
+      }
       if (e.key !== "Escape") return;
       if (open) openPanel(null);
       else setMenu(false);
@@ -143,6 +161,11 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, menu, openPanel]);
+
+  // Closing the menu without choosing sends the camera back from any preview.
+  useEffect(() => {
+    if (!menu && !open) api.current?.peek?.(null);
+  }, [menu, open]);
 
   const onReady = useCallback(() => setStageReady(true), []);
   // The doors begin to open: the latch, the creak, a few footsteps, and the camera walks in.
@@ -229,33 +252,56 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
       {/* ── Contents (the menu) ── */}
       {menu && (
         <nav id="scene-menu" className="scene-menu" aria-label="Contents">
-          <div className="container-wide pt-28 pb-16">
-            <p className="mono-label mb-6">Contents</p>
-            <ol>
-              {hotspots.map((h, i) => (
-                <li key={h.id}>
-                  <button type="button" className="menu-item" onClick={() => openPanel(h.id)}>
-                    <span className="menu-num">{String(i + 1).padStart(2, "0")}</span>
-                    <span className="menu-title">{h.label}</span>
-                  </button>
-                </li>
-              ))}
+          <div className="menu-inner">
+            <div className="menu-head">
+              <p className="mono-label">Contents</p>
+              <p className="menu-tip">Hover to peek · press 1–8 · Esc to close</p>
+            </div>
+            <ol className="menu-list" onMouseLeave={() => api.current?.peek?.(null)}>
+              {hotspots.map((h, i) => {
+                const Icon = MENU_ICON[h.id];
+                return (
+                  <li key={h.id} className="menu-li" style={{ "--i": i } as React.CSSProperties}>
+                    <button
+                      type="button"
+                      className="menu-item"
+                      onClick={() => openPanel(h.id)}
+                      onMouseEnter={() => api.current?.peek?.(h.id)}
+                      onFocus={() => api.current?.peek?.(h.id)}
+                    >
+                      <span className="menu-num">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="menu-main">
+                        <span className="menu-title">{h.label}</span>
+                        <span className="menu-desc">{MENU_BLURB[h.id]}</span>
+                      </span>
+                      <span className="menu-side">
+                        <span className="menu-obj">{h.object.replace(/^(On|In) the /, "")}</span>
+                        <Icon className="menu-icon h-5 w-5" aria-hidden />
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ol>
-            <p className="mono-label mt-12 mb-4">Pages</p>
-            <ul className="flex flex-wrap gap-x-7 gap-y-3 text-[0.95rem]">
-              {[
-                ["/overview", "Plain overview"],
-                ["/service-packages", "Pricing"],
-                ["/projects", "All work"],
-                ["/blog", "Blog"],
-                ["/automation-audit", "Free audit"],
-                ["/resume", "Résumé"],
-              ].map(([href, label]) => (
-                <li key={href}>
-                  <Link href={href} className="link-arrow">{label} <ArrowRight className="h-4 w-4" /></Link>
-                </li>
-              ))}
-            </ul>
+            <div className="menu-foot">
+              <a href={links.cal} target="_blank" rel="noopener noreferrer" className="menu-cta">
+                <Calendar className="h-4 w-4" /> Book a free call
+              </a>
+              <ul className="menu-pages">
+                {[
+                  ["/overview", "Plain overview"],
+                  ["/service-packages", "Pricing"],
+                  ["/projects", "All work"],
+                  ["/blog", "Blog"],
+                  ["/automation-audit", "Free audit"],
+                  ["/resume", "Résumé"],
+                ].map(([href, label]) => (
+                  <li key={href}>
+                    <Link href={href} className="link-arrow">{label} <ArrowRight className="h-4 w-4" /></Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </nav>
       )}

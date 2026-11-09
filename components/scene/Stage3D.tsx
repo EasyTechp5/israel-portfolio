@@ -1785,6 +1785,75 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       }, -0.65, 1.75, 0.3, 0.42);
     }
 
+    // warm string lights along the top of the wall, and a red neon sign
+    let stringK = 0.5;
+    const bulbs: { m: THREE.MeshStandardMaterial; s: THREE.Sprite; ph: number }[] = [];
+    const neonPlane: { m: THREE.MeshBasicMaterial | null } = { m: null };
+    const neonLight = new THREE.PointLight(0xff2a3a, 0.3, 2.4, 2);
+    {
+      const haloTex = makeCanvas(64, 64, (c, w, h) => {
+        const g2 = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+        g2.addColorStop(0, "rgba(255,236,190,1)");
+        g2.addColorStop(0.3, "rgba(255,210,130,0.45)");
+        g2.addColorStop(1, "rgba(255,200,110,0)");
+        c.fillStyle = g2;
+        c.fillRect(0, 0, w, h);
+      });
+      const pts: THREE.Vector3[] = [];
+      const positions: THREE.Vector3[] = [];
+      const arcs = 4;
+      const span = 6.0 / arcs;
+      for (let k = 0; k < arcs; k++) {
+        for (let i = 0; i <= 12; i++) {
+          const u = i / 12;
+          const x = -3.0 + k * span + u * span;
+          const y = 2.76 - Math.sin(u * Math.PI) * 0.11;
+          pts.push(new THREE.Vector3(x, y, -2.37));
+        }
+        for (let i = 1; i <= 5; i++) {
+          const u = i / 6;
+          positions.push(new THREE.Vector3(-3.0 + k * span + u * span, 2.76 - Math.sin(u * Math.PI) * 0.11 - 0.02, -2.36));
+        }
+      }
+      const wire = new THREE.Mesh(track(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, 0.0028, 5, false)), mat(0x16181d, 0.6));
+      room.add(wire);
+      positions.forEach((p, i) => {
+        const m = track(new THREE.MeshStandardMaterial({ color: 0xfff0cf, emissive: 0xffd48a, emissiveIntensity: 1.4 }));
+        const b = new THREE.Mesh(track(new THREE.SphereGeometry(0.012, 10, 8)), m);
+        b.position.copy(p);
+        room.add(b);
+        const sp = new THREE.Sprite(track(new THREE.SpriteMaterial({ map: haloTex.tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.5 })));
+        sp.position.copy(p);
+        sp.scale.setScalar(0.1);
+        room.add(sp);
+        bulbs.push({ m, s: sp, ph: i * 1.7 });
+      });
+      const neon = makeCanvas(1024, 256, (c, w, h) => {
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.font = `italic 500 150px ${serif}`;
+        c.shadowColor = "#ff2a3a";
+        c.shadowBlur = 50;
+        c.fillStyle = "#ff3b4a";
+        c.fillText("hello, world", w / 2, h / 2 + 6);
+        c.shadowBlur = 24;
+        c.fillText("hello, world", w / 2, h / 2 + 6);
+        c.shadowBlur = 0;
+        c.fillStyle = "#ffe3e6";
+        c.font = `italic 500 146px ${serif}`;
+        c.fillText("hello, world", w / 2, h / 2 + 6);
+      });
+      const nm = track(new THREE.MeshBasicMaterial({ map: neon.tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, opacity: 0.95 }));
+      const np = new THREE.Mesh(track(new THREE.PlaneGeometry(0.9, 0.225)), nm);
+      np.position.set(1.2, 2.48, DECOR_Z + 0.01);
+      np.renderOrder = 2;
+      room.add(np);
+      neonPlane.m = nm;
+      neonLight.position.set(1.2, 2.45, -2.1);
+      scene.add(neonLight);
+      [-0.38, 0.38].forEach((dx) => room.add(mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.02, 8), mat(INK, 0.4, 0.5), 1.2 + dx, 2.48, DECOR_Z + 0.006, false)).children.slice(-1)[0].rotateX(Math.PI / 2));
+    }
+
     // soft contact shadows so nothing seems to float
     const blobTex = makeCanvas(128, 128, (c, w, h) => {
       const g = c.createRadialGradient(w / 2, h / 2, 4, w / 2, h / 2, w / 2);
@@ -1953,6 +2022,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       (lampBulb.material as THREE.MeshStandardMaterial).emissiveIntensity = on ? 3 : 0;
       (lampHalo.material as THREE.SpriteMaterial).opacity = on ? (isDark ? 0.95 : 0.55) : 0;
       beamGroup.visible = !isDark;
+      stringK = isDark ? 1 : 0.45;
+      neonLight.intensity = isDark ? 1.6 : 0.3;
     };
     applyLight();
 
@@ -2031,16 +2102,21 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       expAnim = { t0: performance.now(), dur: reduced ? 0 : dur * 0.8 };
     };
 
-    const focus = (id: SceneId | null) => {
+    const focus = (id: SceneId | null, far = false) => {
       if (id) {
         if (!saved) saved = { pos: camera.position.clone(), target: controls.target.clone() };
         const a = new THREE.Vector3(...ANCHORS[id]);
-        const d = FOCUS[id];
+        const d = FOCUS[id] * (far ? 1.45 : 1);
         const dir = camera.position.clone().sub(a);
         dir.y = Math.max(dir.y, 0.05);
         dir.normalize();
         const target = a.clone().add(new THREE.Vector3(0, -0.34 * (d / 1.5), 0));
-        flyTo(target.clone().add(dir.multiplyScalar(d)), target);
+        // while the menu drawer covers the left, look a little to the left of the object so it sits in the clear area
+        if (far && w / h > 1.2) {
+          const right = new THREE.Vector3().crossVectors(dir.clone().negate(), new THREE.Vector3(0, 1, 0)).normalize();
+          target.addScaledVector(right, -d * 0.3);
+        }
+        flyTo(target.clone().add(dir.multiplyScalar(d)), target, far ? 800 : 1100);
         controls.enabled = false;
       } else {
         controls.enabled = true;
@@ -2078,7 +2154,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         isMusic = m;
       },
     };
-    apiRef.current = { zoomBy, fit: fitHome, enter: () => enterNow(2600) };
+    apiRef.current = { zoomBy, fit: fitHome, enter: () => enterNow(2600), peek: (id) => focus(id, true) };
 
     /* ── hotspots, projected from 3D into the page ── */
     const dotEls = new Map<string, HTMLButtonElement>();
@@ -2323,6 +2399,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         arm.rotation.y += ((isMusic ? -0.5 : 0.22) - arm.rotation.y) * Math.min(1, dt * 3);
       }
       // living things
+      bulbs.forEach((b) => {
+        const tw = 0.75 + 0.25 * Math.sin(t * 2.2 + b.ph);
+        b.m.emissiveIntensity = (0.8 + 1.8 * stringK) * tw;
+        (b.s.material as THREE.SpriteMaterial).opacity = (0.2 + 0.7 * stringK) * tw;
+      });
+      if (neonPlane.m) neonPlane.m.opacity = (isDark ? 1 : 0.82) * (Math.sin(t * 13) > 0.97 && Math.sin(t * 0.7) > 0.8 ? 0.55 : 1);
       if (!reduced) {
         if (robot.root) (robot.root as THREE.Group).position.y = TOP + Math.sin(t * 2.2) * 0.0015;
         if (robot.arm) {
