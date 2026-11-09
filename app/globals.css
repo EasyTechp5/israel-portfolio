@@ -1526,3 +1526,26 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .robot-bubble::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; background: #fff; transform: translateX(-50%) rotate(45deg); }
 .robot-bubble.show { opacity: 1; }
 .scene.panel-open .robot-bubble, .scene.menu-open .robot-bubble { opacity: 0; }
+
+/* ── Track record: the same sticky notes as on the wall, then a few polaroids ── */
+@keyframes note-in { from { opacity: 0; transform: translateY(18px) rotate(0deg); } to { opacity: 1; transform: rotate(var(--r, 0deg)); } }
+.notes-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.3rem 1.1rem; margin-top: 1.9rem; }
+@media (min-width: 900px) { .notes-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.note-card { position: relative; padding: 1.7rem 1.1rem 1.15rem; color: #14161b; background: var(--note, #f3dc72); box-shadow: 0 14px 26px rgba(30, 24, 8, 0.16), 0 2px 4px rgba(30, 24, 8, 0.1); transform: rotate(var(--r, 0deg)); animation: note-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--d, 0ms) + 200ms); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease; }
+.note-card:hover { transform: rotate(0deg) translateY(-4px) scale(1.02); box-shadow: 0 22px 36px rgba(30, 24, 8, 0.22), 0 2px 4px rgba(30, 24, 8, 0.1); }
+.note-card::before { content: ""; position: absolute; top: -10px; left: 50%; width: 62px; height: 20px; margin-left: -31px; background: rgba(255, 255, 255, 0.62); border: 1px solid rgba(0, 0, 0, 0.06); transform: rotate(-3deg); }
+.note-yellow { --note: #f3dc72; }
+.note-pink { --note: #ffb3c4; }
+.note-blue { --note: #a8e6ff; }
+.note-white { --note: #fbf9f3; }
+.note-white::before { background: rgba(215, 38, 46, 0.55); }
+.note-num { font-family: var(--font-display); font-size: clamp(2.1rem, 5vw, 3rem); line-height: 1; letter-spacing: -0.03em; }
+.note-label { margin-top: 0.45rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(20, 22, 27, 0.7); }
+.note-desc { margin-top: 0.7rem; font-size: 0.82rem; line-height: 1.4; color: rgba(20, 22, 27, 0.78); }
+.polaroids { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 2.4rem; }
+@media (max-width: 560px) { .polaroids { grid-template-columns: repeat(2, minmax(0, 1fr)); } .polaroids li:nth-child(3) { display: none; } }
+.polaroid { display: grid; gap: 0.5rem; padding: 0.5rem 0.5rem 0.7rem; background: #fff; box-shadow: 0 12px 26px rgba(30, 24, 8, 0.18); transform: rotate(var(--r, 0deg)); animation: note-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d, 400ms); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.polaroid:hover { transform: rotate(0deg) scale(1.03); }
+.polaroid img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.polaroid span { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: #3b3f48; text-align: center; line-height: 1.3; }
+@media (prefers-reduced-motion: reduce) { .note-card, .polaroid { animation: none; } }

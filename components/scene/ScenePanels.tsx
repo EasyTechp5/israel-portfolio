@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Calendar, Download, Mail, MapPin, MessageCircle } from "lucide-react";
+import CountUp from "@/components/CountUp";
 import { IntroPlayer } from "@/components/IntroVideo";
 import LagosClock from "@/components/LagosClock";
 import { bySlug, featuredSlugs } from "@/lib/projects";
@@ -116,32 +118,54 @@ export default function ScenePanel({ id }: { id: SceneId }) {
         </>
       );
 
-    case "record":
+    case "record": {
+      // One line under each number, drawn from what the rest of the site already says.
+      const notes = [
+        { tone: "yellow", r: "-1.6deg", desc: "Live cohorts, the AI Mastery Program and team workshops." },
+        { tone: "pink", r: "1.4deg", desc: "Training and automation work for businesses." },
+        { tone: "blue", r: "-1deg", desc: "Building AI-powered systems since leaving the classroom." },
+        { tone: "white", r: "1.8deg", desc: "Working remotely, across time zones." },
+      ];
+      const proof = [
+        { src: "/images/gallery/training-staff.jpg", caption: "Delivering the AI Mastery Program", r: "-2deg" },
+        { src: "/images/gallery/live-class.jpg", caption: "Teaching a live cohort", r: "1.5deg" },
+        { src: "/images/gallery/ai-summit.jpg", caption: "Data & AI Leadership Summit", r: "-1deg" },
+      ];
       return (
         <>
           <p className={lead} style={{ color: "var(--text-muted)" }}>
-            The short version of the track record.
+            The numbers behind the notes on the wall, and a few of the rooms they came from.
           </p>
-          <dl className="mt-6 grid grid-cols-2 lg:grid-cols-4" style={{ borderBlock: "1px solid var(--border-strong)" }}>
-            {stats.map((s, i) => (
-              <div
-                key={s.label}
-                className={`flex flex-col-reverse justify-end px-5 py-8 ${i % 2 === 1 ? "border-l" : ""} ${i > 0 ? "lg:border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""}`}
-              >
-                <dt className="mono-label">{s.label}</dt>
-                <dd className="mb-1.5 text-[2rem] sm:text-5xl" style={{ fontFamily: "var(--font-display)", color: "var(--text-primary)", lineHeight: 1.05, letterSpacing: "-0.03em" }}>
-                  {s.value}
+          <dl className="notes-grid">
+            {stats.map((st, i) => (
+              <div key={st.label} className={`note-card note-${notes[i].tone}`} style={{ "--r": notes[i].r, "--d": `${i * 90}ms` } as React.CSSProperties}>
+                <dd className="note-num">
+                  <CountUp value={st.value} />
                 </dd>
+                <dt className="note-label">{st.label}</dt>
+                <p className="note-desc">{notes[i].desc}</p>
               </div>
             ))}
           </dl>
-          <div className="mt-8">
+          <ul className="polaroids" aria-label="Photos from events and classes">
+            {proof.map((ph, i) => (
+              <li key={ph.src} className="polaroid" style={{ "--r": ph.r, "--d": `${400 + i * 120}ms` } as React.CSSProperties}>
+                <Image src={ph.src} alt={ph.caption} width={600} height={450} sizes="(max-width: 640px) 45vw, 260px" />
+                <span>{ph.caption}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
             <Link href="/projects" className="link-arrow">
               See the work behind it <ArrowRight className="h-4 w-4" />
             </Link>
+            <a href={links.cal} target="_blank" rel="noopener noreferrer" className="link-arrow">
+              Book a free call <ArrowUpRight className="h-4 w-4" />
+            </a>
           </div>
         </>
       );
+    }
 
     case "writing": {
       const latest = allPosts.slice(0, 4);
