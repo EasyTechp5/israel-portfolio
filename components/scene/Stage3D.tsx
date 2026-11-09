@@ -286,6 +286,9 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     // that shift against each other as you orbit, and change for night
     let raining = false;
     const night = () => initial.current.dark;
+    // the real hour in Lagos tints the daytime window: soft dawn, blue day, golden evening
+    const lagosHour = (new Date().getUTCHours() + 1) % 24;
+    const tint: "dawn" | "day" | "golden" = lagosHour >= 6 && lagosHour < 8 ? "dawn" : lagosHour >= 17 && lagosHour < 19 ? "golden" : "day";
     const skyTex = makeCanvas(1536, 1100, (c, w, h) => {
       const dk = night();
       const g = c.createLinearGradient(0, 0, 0, h);
@@ -293,6 +296,14 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         g.addColorStop(0, "#020716");
         g.addColorStop(0.6, "#0a2260");
         g.addColorStop(1, "#1a4aa8");
+      } else if (!raining && tint === "golden") {
+        g.addColorStop(0, "#4f6fc4");
+        g.addColorStop(0.55, "#f0a56c");
+        g.addColorStop(1, "#ffdca6");
+      } else if (!raining && tint === "dawn") {
+        g.addColorStop(0, "#7da3e6");
+        g.addColorStop(0.55, "#f3bfb2");
+        g.addColorStop(1, "#ffe9cf");
       } else if (raining) {
         g.addColorStop(0, "#58667e");
         g.addColorStop(0.55, "#8795ab");
@@ -2172,7 +2183,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         scene.background = bg.set(0x0a3b9c);
         hemi.intensity = 0.42;
         sun.intensity = raining ? 1.1 : 3.4;
-        sun.color.set(0xfff1d6);
+        sun.color.set(tint === "golden" ? 0xffc27a : tint === "dawn" ? 0xffd9c2 : 0xfff1d6);
         fill.intensity = 0.55;
         scene.environmentIntensity = 0.38;
         baseExposure = 0.92;

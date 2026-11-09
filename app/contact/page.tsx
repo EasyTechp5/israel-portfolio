@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import ContactComposer from "@/components/ContactComposer";
+import LagosClock from "@/components/LagosClock";
 import { Calendar, MessageCircle, Mail, MapPin, Globe, Clock, Users, ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
@@ -100,6 +102,20 @@ export default function ContactPage() {
               );
             })}
           </div>
+
+          {/* Write the first message */}
+          <Reveal>
+            <div className="mb-16 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] items-stretch">
+              <ContactComposer />
+              <div className="card p-8 flex flex-col justify-center text-center items-center">
+                <p className="mono-label mb-3">Right now in Lagos</p>
+                <p className="lagos-now"><LagosClock /></p>
+                <p className="text-sm mt-4 max-w-xs" style={{ color: "var(--text-muted)" }}>
+                  I work remotely with clients across time zones, so a message sent at any hour is read when I am next online.
+                </p>
+              </div>
+            </div>
+          </Reveal>
 
           {/* Details + community */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
