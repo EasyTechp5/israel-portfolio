@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, MessageCircle, ArrowRight, Bot, Users, Zap, TrendingUp, CheckCircle2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import HandCostCalc from "@/components/HandCostCalc";
 
 export const metadata: Metadata = {
   title: "Services | Israel Afolabi",
@@ -158,6 +159,10 @@ export default function ServicesPage() {
             })}
           </div>
         </div>
+      </section>
+
+      <section style={{ paddingBottom: "4rem" }}>
+        <div className="container-wide"><Reveal><HandCostCalc /></Reveal></div>
       </section>
 
       {/* ══════════════ PROCESS ══════════════ */}
