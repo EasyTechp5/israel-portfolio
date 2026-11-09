@@ -1550,3 +1550,6 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .polaroid span { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: #3b3f48; text-align: center; line-height: 1.3; }
 @media (prefers-reduced-motion: reduce) { .note-card, .polaroid { animation: none; } }
 .note-word { font-size: clamp(1.5rem, 3vw, 2.1rem); padding-top: 0.5rem; }
+/* short windows: keep the doormat clear of the Come in button */
+.intro-stage { margin-top: -10vh; }
+.intro-frame { height: min(48vh, 430px); }

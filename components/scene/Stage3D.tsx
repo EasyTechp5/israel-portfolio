@@ -1876,7 +1876,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         g.position.set(-3.18, sh.y, sh.z);
         room.add(g);
         window.setTimeout(() => {
-          new THREE.TextureLoader().load(sh.src, (tx) => {
+          new THREE.TextureLoader().load(`/_next/image?url=${encodeURIComponent(sh.src)}&w=640&q=75`, (tx) => {
             tx.colorSpace = THREE.SRGBColorSpace;
             tx.anisotropy = maxAniso;
             picMat.map = tx;
@@ -2478,6 +2478,16 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     };
     let tx = 0;
     let ty = 0;
+    // on phones that allow it (Android), tilting the phone moves the camera a little
+    let gyro = false;
+    const onTilt = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      gyro = true;
+      tx = Math.max(-1, Math.min(1, e.gamma / 22));
+      ty = Math.max(-1, Math.min(1, (e.beta - 55) / 22));
+    };
+    const doe = window.DeviceOrientationEvent as unknown as { requestPermission?: unknown } | undefined;
+    if (coarse && doe && typeof doe.requestPermission !== "function") window.addEventListener("deviceorientation", onTilt);
     let px = 0;
     let py = 0;
     canvas.addEventListener("pointerdown", onDown);
@@ -2488,6 +2498,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     let raf = 0;
     let running = true;
     let shadowTick = 0;
+    let nextChirp = performance.now() + 15000;
     let lastTex = 0;
     let lastNow = performance.now();
     let frames = 0;
@@ -2531,6 +2542,11 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         nextThunder = now + 9000 + Math.random() * 15000;
       }
       flash *= Math.pow(0.004, dt);
+      if (now > nextChirp) {
+        // a bird calls outside, on clear days
+        if (!isDark && !raining && entered) sfx("chirp");
+        nextChirp = now + 18000 + Math.random() * 16000;
+      }
       renderer.toneMappingExposure = baseExposure * expK * (1 + flash * 0.7);
       controls.update();
       // keep the look-at point inside the room
@@ -2679,7 +2695,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       // pointer parallax and a tiny beat-driven push-in
       px += (tx - px) * 0.05;
       py += (ty - py) * 0.05;
-      const par = reduced || coarse || tween ? 0 : 1;
+      const par = reduced || tween || (coarse && !gyro) ? 0 : 1;
       const ox = px * 0.07 * par;
       const oy = -py * 0.035 * par;
       camera.position.x += ox;
@@ -2743,6 +2759,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("deviceorientation", onTilt);
       controls.dispose();
       disposables.forEach((d) => d.dispose());
       scene.traverse((o) => {

@@ -194,7 +194,7 @@ export function ambientLevel(): number {
   return level;
 }
 
-export type Sfx = "thunder" | "tick" | "pop" | "whoosh" | "chime" | "clink" | "open" | "door" | "step" | "meow" | "beep";
+export type Sfx = "chirp" | "thunder" | "tick" | "pop" | "whoosh" | "chime" | "clink" | "open" | "door" | "step" | "meow" | "beep";
 
 /** Tiny interface sounds, made on the spot. Silent when the music is off. */
 export function sfx(kind: Sfx) {
@@ -256,6 +256,12 @@ export function sfx(kind: Sfx) {
       blip(95, 0.08, 0.3, "square", undefined, 0.05);
       blip(170, 0.9, 0.07, "sawtooth", 105, 0.14);
       blip(70, 0.3, 0.3, "sine", 40, 0.95);
+      break;
+    case "chirp":
+      blip(2800, 0.07, 0.07, "sine", 3700);
+      blip(3300, 0.06, 0.06, "sine", 4100, 0.1);
+      blip(3000, 0.07, 0.05, "sine", 3800, 0.2);
+      blip(3400, 0.05, 0.04, "sine", 4200, 0.32);
       break;
     case "thunder": {
       const s = c.createBufferSource();
