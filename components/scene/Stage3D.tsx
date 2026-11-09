@@ -8,6 +8,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { hotspots, type SceneId } from "@/lib/scene";
 import type { StageProps } from "./stage";
 import { ambientLevel, sfx } from "@/lib/ambient";
+import { bySlug, featuredSlugs } from "@/lib/projects";
 
 /**
  * The live 3D room. Everything is built from code (boxes, cylinders, canvas
@@ -102,7 +103,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     container.appendChild(canvas);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     const scene = new THREE.Scene();
@@ -858,6 +859,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     const TOP = DESK_Y + 0.0225;
 
     // MacBook-style laptop: silver aluminium, black bezel with a notch, a wallpaper, menu bar and dock
+    const featuredWork = featuredSlugs.map(bySlug).filter((p): p is NonNullable<typeof p> => Boolean(p));
     const screen = makeCanvas(1280, 800, (c, w, h) => {
       const bg = c.createLinearGradient(0, 0, w, h);
       bg.addColorStop(0, "#0a2a8c");
@@ -909,7 +911,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       });
       c.fillStyle = "#14161b";
       c.font = `600 26px ${mono}`;
-      c.fillText("Invoice follow-up · live", wx + 140, wy + 36);
+      const cur = featuredWork[Math.floor(performance.now() / 3200) % featuredWork.length];
+      c.fillText(cur ? cur.category : "Workflow · live", wx + 140, wy + 36);
       const labels = ["Trigger", "AI draft", "Send", "Paid"];
       labels.forEach((l, i) => {
         const x = wx + 50 + i * 180;
@@ -935,10 +938,11 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       c.beginPath();
       c.arc(wx + 70 + t * 540, wy + 215, 12, 0, Math.PI * 2);
       c.fill();
+      c.fillStyle = "#14161b";
+      c.font = `italic 500 34px ${serif}`;
+      c.fillText(cur ? cur.outcome : "", wx + 50, wy + 352);
       c.fillStyle = "#e7ebf3";
-      rr(c, wx + 50, wy + 330, 420, 16, 8);
-      c.fill();
-      rr(c, wx + 50, wy + 366, 300, 14, 7);
+      rr(c, wx + 50, wy + 384, 300, 12, 6);
       c.fill();
       // dock
       const icons = ["#0055da", "#ffffff", "#14161b", "#d7262e", "#2fbf71", "#f3dc72", "#9cc3ff"];
@@ -1009,6 +1013,13 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       bubble(20, 80, 150, "#2fbf71");
       bubble(70, 160, 150, "#fffdf7");
       bubble(20, 240, 120, "#2fbf71");
+      const ph = (performance.now() / 380) % 3;
+      for (let i = 0; i < 3; i++) {
+        c.fillStyle = `rgba(255,255,255,${i === Math.floor(ph) ? 1 : 0.45})`;
+        c.beginPath();
+        c.arc(46 + i * 26, 268, 7, 0, Math.PI * 2);
+        c.fill();
+      }
       c.fillStyle = "#e24d4d";
       c.beginPath();
       c.arc(w - 26, 28, 10, 0, Math.PI * 2);
@@ -1615,6 +1626,29 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       bs.position.set(-2.3, 1.3, -3.25);
       scene.add(bs);
       boat = bs;
+    }
+
+    // a small speaker whose LEDs dance to the music
+    const speakerBars: THREE.Mesh[] = [];
+    {
+      const g = new THREE.Group();
+      g.position.set(0.37, TOP, -2.1);
+      const body = mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.12, 24), mat(0x1b1e25, 0.7, 0.2), 0, 0.034, 0);
+      body.rotation.z = Math.PI / 2;
+      g.add(body);
+      [-1, 1].forEach((sd) => {
+        const cap = mesh(new THREE.CylinderGeometry(0.0345, 0.0345, 0.008, 24), mat(RED, 0.4, 0.3), sd * 0.062, 0.034, 0, false);
+        cap.rotation.z = Math.PI / 2;
+        g.add(cap);
+      });
+      g.add(box(0.1, 0.006, 0.01, mat(0x0b0c10, 0.8), 0, 0.034, 0.0335));
+      for (let i = 0; i < 7; i++) {
+        const bar = new THREE.Mesh(track(new THREE.BoxGeometry(0.008, 0.01, 0.004)), track(new THREE.MeshStandardMaterial({ color: 0x4da3ff, emissive: 0x4da3ff, emissiveIntensity: 2 })));
+        bar.position.set(-0.04 + i * 0.0133, 0.034, 0.035);
+        g.add(bar);
+        speakerBars.push(bar);
+      }
+      room.add(g);
     }
 
     // black desk mat, headphones, a stack of books and a pencil pot
@@ -2316,12 +2350,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     let frames = 0;
     let dtSum = 0;
     let spinV = 0;
-    const clock = new THREE.Clock();
+    const startT = performance.now();
     const frame = () => {
       raf = requestAnimationFrame(frame);
       if (!running) return;
       const now = performance.now();
-      const t = clock.getElapsedTime();
+      const t = (now - startT) / 1000;
       const dt = Math.min(0.1, Math.max(0.001, (now - lastNow) / 1000));
       lastNow = now;
       // adaptive quality: if the first seconds run slow, drop the resolution once
@@ -2357,6 +2391,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       if (now - lastTex > 50) {
         lastTex = now;
         screen.draw();
+        phoneScr.draw();
         if (robot.face) {
           eyes.x += (tx * 12 - eyes.x) * 0.35;
           eyes.y += (ty * 7 - eyes.y) * 0.35;
@@ -2399,6 +2434,11 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         arm.rotation.y += ((isMusic ? -0.5 : 0.22) - arm.rotation.y) * Math.min(1, dt * 3);
       }
       // living things
+      const slv = ambientLevel();
+      speakerBars.forEach((b, i) => {
+        const h2 = 0.004 + (isMusic ? slv : 0.03) * 0.05 * (0.5 + 0.5 * Math.abs(Math.sin(t * 7 + i * 1.9)));
+        b.scale.y = Math.max(0.3, h2 / 0.01);
+      });
       bulbs.forEach((b) => {
         const tw = 0.75 + 0.25 * Math.sin(t * 2.2 + b.ph);
         b.m.emissiveIntensity = (0.8 + 1.8 * stringK) * tw;

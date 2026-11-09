@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { ArrowRight, BarChart3, BookOpen, Briefcase, Calendar, CalendarDays, FileText, Layers, Mail, Moon, Plus, Minus, Sun, User, X } from "lucide-react";
+import { ArrowRight, BarChart3, Play, BookOpen, Briefcase, Calendar, CalendarDays, FileText, Layers, Mail, Moon, Plus, Minus, Sun, User, X } from "lucide-react";
 import { allPosts } from "@/lib/posts";
 import { sfx, startAmbient, stopAmbient } from "@/lib/ambient";
 import Typewriter from "@/components/Typewriter";
@@ -40,12 +40,19 @@ const MUTE_KEY = "scene_muted_v1";
  */
 export default function Scene({ children }: { children?: React.ReactNode }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const dark = resolvedTheme === "dark";
+  // The theme is only known in the browser: render the neutral state on the server so hydration matches.
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
+  const dark = mounted && resolvedTheme === "dark";
 
   const [mode, setMode] = useState<"2d" | "3d" | null>(null);
   const [stageReady, setStageReady] = useState(false);
   const [intro, setIntro] = useState(true);
   const [entered, setEntered] = useState(false);
+  const [tour, setTour] = useState<number | null>(null);
   const [lamp, setLamp] = useState(false);
   const [open, setOpen] = useState<SceneId | null>(null);
   const [menu, setMenu] = useState(false);
@@ -96,6 +103,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   const openPanel = useCallback((id: SceneId | null) => {
     setOpen(id);
     setMenu(false);
+    setTour(null);
     const url = new URL(window.location.href);
     if (id) url.searchParams.set("open", id);
     else url.searchParams.delete("open");
@@ -148,8 +156,12 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!open && !menu) return;
+    if (!open && !menu && tour === null) return;
     const onKey = (e: KeyboardEvent) => {
+      if (tour !== null && e.key === "Escape") {
+        setTour(null);
+        return;
+      }
       if (menu && !open && /^[1-8]$/.test(e.key)) {
         openPanel(hotspots[Number(e.key) - 1].id);
         return;
@@ -160,12 +172,25 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, menu, openPanel]);
+  }, [open, menu, tour, openPanel]);
 
   // Closing the menu without choosing sends the camera back from any preview.
   useEffect(() => {
-    if (!menu && !open) api.current?.peek?.(null);
-  }, [menu, open]);
+    if (!menu && !open && tour === null) api.current?.peek?.(null);
+  }, [menu, open, tour]);
+
+  // The tour: fly to each object in turn, a few seconds apiece.
+  useEffect(() => {
+    if (tour === null) return;
+    api.current?.peek?.(hotspots[tour].id);
+    const id = window.setTimeout(() => setTour(tour >= hotspots.length - 1 ? null : tour + 1), 4200);
+    return () => window.clearTimeout(id);
+  }, [tour]);
+  const startTour = () => {
+    openPanel(null);
+    setMenu(false);
+    setTour(0);
+  };
 
   const onReady = useCallback(() => setStageReady(true), []);
   // The doors begin to open: the latch, the creak, a few footsteps, and the camera walks in.
@@ -213,6 +238,7 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
               className="scene-btn"
               onClick={() => setTheme(dark ? "light" : "dark")}
               aria-label={dark ? "Switch to day" : "Switch to night"}
+              suppressHydrationWarning
             >
               {dark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
             </button>
@@ -245,9 +271,23 @@ export default function Scene({ children }: { children?: React.ReactNode }) {
 
       <div className="scene-zoom" role="group" aria-label="Zoom">
         <button type="button" className="scene-btn" onClick={() => api.current?.zoomBy(1 / 1.35)} aria-label="Zoom out"><Minus className="h-4 w-4" /></button>
+        <button type="button" className="scene-btn scene-tour-btn" onClick={startTour}><Play className="h-3.5 w-3.5" /> Tour</button>
         <button type="button" className="scene-btn scene-fit" onClick={() => api.current?.fit()}>Fit</button>
         <button type="button" className="scene-btn" onClick={() => api.current?.zoomBy(1.35)} aria-label="Zoom in"><Plus className="h-4 w-4" /></button>
       </div>
+
+      {tour !== null && (
+        <div className="tour-cap" role="status">
+          <span className="tour-step">{String(tour + 1).padStart(2, "0")} / {String(hotspots.length).padStart(2, "0")}</span>
+          <strong className="tour-title">{hotspots[tour].label}</strong>
+          <span className="tour-desc">{MENU_BLURB[hotspots[tour].id]}</span>
+          <span className="tour-actions">
+            <button type="button" onClick={() => openPanel(hotspots[tour].id)}>Open</button>
+            <button type="button" onClick={() => setTour(null)}>Stop</button>
+          </span>
+          <i key={tour} className="tour-bar" />
+        </div>
+      )}
 
       {/* ── Contents (the menu) ── */}
       {menu && (

@@ -1495,3 +1495,18 @@ body:has(.scene) { overflow: hidden; overscroll-behavior: none; }
 .scene.menu-open .scene-name { color: #fff; background: rgba(8, 12, 28, 0.5); border-color: rgba(255, 255, 255, 0.18); }
 @media (max-width: 1100px) { .scene.menu-open .scene-name { visibility: hidden; } }
 .scene.menu-open .scene-bar > .scene-btn:hover { background: #fff; color: var(--ink); }
+
+/* ── The tour: a caption that follows the camera from object to object ── */
+@keyframes tour-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.tour-cap { position: absolute; z-index: 30; left: 50%; bottom: clamp(18px, 4vh, 40px); transform: translateX(-50%); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.35rem 1rem; width: min(640px, calc(100% - 32px)); padding: 0.9rem 1.1rem 1rem; border-radius: 18px; background: rgba(8, 12, 28, 0.78); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff; overflow: hidden; box-shadow: 0 20px 50px rgba(2, 8, 28, 0.45); }
+.tour-step { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; color: #ff7a82; }
+.tour-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 500; }
+.tour-desc { grid-column: 1 / -1; font-size: 0.86rem; line-height: 1.4; color: rgba(255, 255, 255, 0.78); }
+.tour-actions { display: inline-flex; gap: 0.5rem; }
+.tour-actions button { padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.3); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; transition: background-color 0.2s ease, color 0.2s ease; }
+.tour-actions button:first-child { background: #d7262e; border-color: transparent; }
+.tour-actions button:hover { background: #fff; color: #0b0d12; }
+.tour-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #d7262e; transform-origin: left; animation: tour-fill 4.2s linear both; }
+.scene:has(.tour-cap) .scene-zoom, .scene:has(.tour-cap) .scene-title { opacity: 0; pointer-events: none; }
+.scene-tour-btn { padding-inline: 0.9rem; background: #d7262e !important; border-color: transparent !important; }
+.scene-tour-btn:hover { background: #fff !important; color: #d7262e !important; }
