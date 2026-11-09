@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Faq from "@/components/Faq";
+import TierFinder from "@/components/TierFinder";
 
 export const metadata: Metadata = {
   title: "Pricing | Israel Afolabi",
@@ -180,6 +181,7 @@ export default function PricingPage() {
               Three ways to work together, priced on outcome rather than hours. Every
               engagement is quoted in writing before anything is built.
             </p>
+            <div className="mb-8"><TierFinder /></div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href={CAL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
                 <Calendar className="w-[18px] h-[18px]" /> Book a free call <ArrowRight className="w-4 h-4" />
