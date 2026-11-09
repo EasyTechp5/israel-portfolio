@@ -1151,6 +1151,8 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     let boat: THREE.Sprite | null = null;
     const eyes = { x: 0, y: 0, blink: 0, happy: 0 };
     let chairG: THREE.Group | null = null;
+    let planeG: THREE.Group | null = null;
+    const planeHome = new THREE.Vector3(0.38, 0, -1.48);
     let vinyl: THREE.Group | null = null;
     let tonearm: THREE.Group | null = null;
     let vinylLabel: THREE.Mesh | null = null;
@@ -1244,6 +1246,35 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       g.add(shade);
       lampBulb.position.set(hx + 0.012, hy - 0.04, 0);
       g.add(lampBulb);
+      room.add(g);
+    }
+
+    // a paper plane resting on the desk: click it and it loops round the room, then lands again
+    {
+      const g = new THREE.Group();
+      planeHome.y = TOP + 0.004;
+      g.position.copy(planeHome);
+      g.rotation.y = 0.5;
+      g.userData.egg = "plane";
+      const geo = track(new THREE.BufferGeometry());
+      // nose points along +z; a shallow V keel underneath
+      const v = new Float32Array([
+        0, 0, 0.11, -0.05, 0.012, -0.07, 0, -0.008, -0.05,
+        0, 0, 0.11, 0, -0.008, -0.05, 0.05, 0.012, -0.07,
+      ]);
+      geo.setAttribute("position", new THREE.BufferAttribute(v, 3));
+      geo.computeVertexNormals();
+      const body = new THREE.Mesh(geo, track(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85, side: THREE.DoubleSide })));
+      body.castShadow = true;
+      g.add(body);
+      const tip = new THREE.Mesh(track(new THREE.ConeGeometry(0.012, 0.03, 4)), mat(RED, 0.6));
+      tip.rotation.x = Math.PI / 2;
+      tip.position.set(0, 0, 0.1);
+      g.add(tip);
+      // a larger invisible target so it is easy to click
+      const hit = new THREE.Mesh(track(new THREE.SphereGeometry(0.1, 8, 6)), track(new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
+      g.add(hit);
+      planeG = g;
       room.add(g);
     }
 
@@ -2418,6 +2449,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     };
     const pops: { o: THREE.Object3D; t0: number; base: number }[] = [];
     let spin: { t0: number; from: number } | null = null;
+    let flight: { t0: number } | null = null;
     let steamBurst = 0;
     let shake = 0;
     let hoverId: string | null = null;
@@ -2483,6 +2515,12 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         case "chair":
           if (chairG && !spin) {
             spin = { t0: now2, from: chairG.rotation.y };
+            sfx("whoosh");
+          }
+          break;
+        case "plane":
+          if (!flight) {
+            flight = { t0: now2 };
             sfx("whoosh");
           }
           break;
@@ -2740,6 +2778,30 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
         const e = 1 - Math.pow(1 - k, 3);
         (chairG as THREE.Group).rotation.y = spin.from + e * Math.PI * 2;
         if (k >= 1) spin = null;
+      }
+      if (flight && planeG) {
+        const D = 3600;
+        const u = Math.min(1, (now - flight.t0) / D);
+        const at = (k: number, out: THREE.Vector3) => {
+          const w = Math.sin(Math.PI * k);
+          return out.set(
+            planeHome.x + 1.7 * Math.sin(2 * Math.PI * k) * w,
+            planeHome.y + 0.15 + 0.95 * w + 0.12 * Math.sin(4 * Math.PI * k) * w,
+            planeHome.z + 1.3 * w * Math.cos(2 * Math.PI * k * 0.5 + 0.4) - 0.2 * w,
+          );
+        };
+        const pg = planeG as THREE.Group;
+        at(u, pg.position);
+        if (u < 1) {
+          const ahead = at(Math.min(1, u + 0.02), new THREE.Vector3());
+          pg.lookAt(ahead);
+          pg.rotateZ(Math.sin(2 * Math.PI * u) * 0.5);
+        } else {
+          pg.position.copy(planeHome);
+          pg.rotation.set(0, 0.5, 0);
+          flight = null;
+        }
+        renderer.shadowMap.needsUpdate = true;
       }
       shake *= Math.pow(0.02, dt);
       steamBurst *= Math.pow(0.12, dt);
