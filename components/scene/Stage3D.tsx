@@ -1955,6 +1955,37 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       [-0.38, 0.38].forEach((dx) => room.add(mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.02, 8), mat(INK, 0.4, 0.5), 1.2 + dx, 2.48, DECOR_Z + 0.006, false)).children.slice(-1)[0].rotateX(Math.PI / 2));
     }
 
+    // soft ambient shade where walls meet each other and the floor, so the room has depth
+    {
+      const grad = (dir: "l" | "r" | "t" | "b") =>
+        makeCanvas(64, 64, (c, w, h) => {
+          const g2 = dir === "l" ? c.createLinearGradient(0, 0, w, 0) : dir === "r" ? c.createLinearGradient(w, 0, 0, 0) : dir === "t" ? c.createLinearGradient(0, 0, 0, h) : c.createLinearGradient(0, h, 0, 0);
+          g2.addColorStop(0, "rgba(4,10,36,0.5)");
+          g2.addColorStop(0.5, "rgba(4,10,36,0.16)");
+          g2.addColorStop(1, "rgba(4,10,36,0)");
+          c.fillStyle = g2;
+          c.fillRect(0, 0, w, h);
+        });
+      const mk = (t: CanvasTex) => track(new THREE.MeshBasicMaterial({ map: t.tex, transparent: true, depthWrite: false, toneMapped: false }));
+      const gl = mk(grad("l"));
+      const gr = mk(grad("r"));
+      const gt = mk(grad("t"));
+      const gb = mk(grad("b"));
+      const shade = (w2: number, h2: number, m: THREE.Material, x: number, y: number, z: number, rx = 0, ry = 0) => {
+        const p = new THREE.Mesh(track(new THREE.PlaneGeometry(w2, h2)), m);
+        p.position.set(x, y, z);
+        p.rotation.set(rx, ry, 0);
+        p.renderOrder = 1;
+        room.add(p);
+      };
+      shade(0.6, 2.9, gl, -2.9, 1.45, -2.355);
+      shade(0.6, 2.9, gr, 2.9, 1.45, -2.355);
+      shade(0.6, 2.9, gr, -3.17, 1.45, -2.1, 0, Math.PI / 2);
+      shade(0.6, 2.9, gl, 3.17, 1.45, -2.1, 0, -Math.PI / 2);
+      shade(6.4, 0.34, gb, 0, 0.17, -2.36);
+      shade(6.4, 0.5, gt, 0, 0.01, -2.15, -Math.PI / 2);
+    }
+
     // soft contact shadows so nothing seems to float
     const blobTex = makeCanvas(128, 128, (c, w, h) => {
       const g = c.createRadialGradient(w / 2, h / 2, 4, w / 2, h / 2, w / 2);
@@ -2271,7 +2302,32 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
     const dotEls = new Map<string, HTMLButtonElement>();
     dots.querySelectorAll<HTMLButtonElement>("button[data-id]").forEach((b) => dotEls.set(b.dataset.id!, b));
     const v3 = new THREE.Vector3();
+    const bubbleEl = dots.querySelector<HTMLDivElement>(".robot-bubble");
+    const BUBBLE_MSGS = [
+      "Hi! Click me to book a free call.",
+      "Try the turntable: it plays the music.",
+      "Psst: click the window for rain.",
+      "Press Tour for a guided walk-through.",
+      "The laptop screen shows real projects.",
+      "Click the cat. Gently.",
+    ];
+    let bubbleI = 0;
+    const bubbleTimers: number[] = [];
+    const showBubble = () => {
+      if (!bubbleEl || !entered || saved) return;
+      bubbleEl.textContent = BUBBLE_MSGS[bubbleI++ % BUBBLE_MSGS.length];
+      bubbleEl.classList.add("show");
+      bubbleTimers.push(window.setTimeout(() => bubbleEl.classList.remove("show"), 4200));
+    };
+    bubbleTimers.push(window.setInterval(showBubble, 11000));
+    bubbleTimers.push(window.setTimeout(showBubble, 7000));
     const placeDots = () => {
+      if (bubbleEl) {
+        v3.set(-0.04, TOP + 0.2, -1.56).project(camera);
+        const bx = (v3.x * 0.5 + 0.5) * w;
+        const by = (-v3.y * 0.5 + 0.5) * h;
+        bubbleEl.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0) translate(-50%, -100%)`;
+      }
       dotEls.forEach((el, id) => {
         const a = ANCHORS[id as keyof typeof ANCHORS];
         v3.set(a[0], a[1], a[2]).project(camera);
@@ -2671,6 +2727,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       canvas.removeEventListener("webglcontextlost", onLost);
+      bubbleTimers.forEach((id) => {
+        window.clearTimeout(id);
+        window.clearInterval(id);
+      });
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointermove", onMove);
@@ -2731,6 +2791,7 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
           <span className="hotspot-dot" />
           <span className="hotspot-label">{lamp ? "Lamp off" : "Lamp on"}</span>
         </button>
+        <div className="robot-bubble" aria-hidden />
         <button
           type="button"
           data-id="weather"
