@@ -139,7 +139,7 @@ export default function ScenePanel({ id }: { id: SceneId }) {
           <dl className="notes-grid">
             {stats.map((st, i) => (
               <div key={st.label} className={`note-card note-${notes[i].tone}`} style={{ "--r": notes[i].r, "--d": `${i * 90}ms` } as React.CSSProperties}>
-                <dd className="note-num">
+                <dd className={`note-num ${/\d/.test(st.value) ? "" : "note-word"}`}>
                   <CountUp value={st.value} />
                 </dd>
                 <dt className="note-label">{st.label}</dt>

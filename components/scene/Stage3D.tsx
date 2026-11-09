@@ -2581,7 +2581,10 @@ export default function Stage3D({ lamp, dark, open, intro = true, onOpen, onLamp
       const ss = d.getUTCSeconds() + d.getUTCMilliseconds() / 1000;
       hourH.rotation.z = -((hh % 12) + mm / 60) * (Math.PI / 6);
       minH.rotation.z = -(mm + ss / 60) * (Math.PI / 30);
-      secH.rotation.z = -ss * (Math.PI / 30);
+      // the second hand ticks: a quick step, a tiny overshoot, then still
+      const sk = Math.min(1, (ss % 1) * 6);
+      const stepE = 1 - Math.pow(1 - sk, 3) + Math.sin(sk * Math.PI) * 0.12;
+      secH.rotation.z = -(Math.floor(ss) + stepE) * (Math.PI / 30);
 
       if (!reduced) {
         steam.forEach((p) => {
